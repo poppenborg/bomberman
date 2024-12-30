@@ -167,6 +167,7 @@ public class GameMap {
         return null;
     }
 
+
     /**
      * Helper method to find and return a regex specified by 2 patterns
      * purpose: make the code of the method prasingMap more readable
