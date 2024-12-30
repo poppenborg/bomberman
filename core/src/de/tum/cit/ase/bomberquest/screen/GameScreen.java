@@ -85,12 +85,12 @@ public class GameScreen implements Screen {
     
     /**
      * Updates the camera to match the current state of the game.
-     * Currently, this just centers the camera at the origin.
+     * Currently the camera follows the player.
      */
     private void updateCamera() {
         mapCamera.setToOrtho(false);
-        mapCamera.position.x = 3.5f * TILE_SIZE_PX * SCALE;
-        mapCamera.position.y = 3.5f * TILE_SIZE_PX * SCALE;
+        mapCamera.position.x = map.getPlayer().getX() * TILE_SIZE_PX * SCALE;
+        mapCamera.position.y = map.getPlayer().getY() * TILE_SIZE_PX * SCALE;
         mapCamera.update(); // This is necessary to apply the changes
     }
     
@@ -106,18 +106,19 @@ public class GameScreen implements Screen {
         for (Flowers flowers : map.getFlowers()) {
             draw(spriteBatch, flowers);
         }
-        draw(spriteBatch, map.getChest());
-        draw(spriteBatch, map.getPlayer());
         for (IndestructibleWall indestructibleWall : map.getIndestructibleWalls()) {
             draw(spriteBatch, indestructibleWall);
         }
         for (DestructibleWall destructibleWall : map.getDestructibleWalls()) {
             draw(spriteBatch, destructibleWall);
         }
-        //TODO: replce placeholder for Entrance + Enemy + Exit + power-up until respective class was created
+        // TODO: replace placeholder for Entrance + Enemy + Exit + power-up until respective class was created
+        // TODO: code must be placed before loop for destructibleWall to be placed underneath it
         for (Placeholder placeholder : map.getPlaceholders()) {
             draw(spriteBatch, placeholder);
         }
+        draw(spriteBatch, map.getChest());
+        draw(spriteBatch, map.getPlayer());
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();
     }

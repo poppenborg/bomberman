@@ -48,7 +48,8 @@ public class GameMap {
     private final BomberQuestGame game;
     /** The Box2D world for physics simulation. */
     private final World world;
-
+    /** Map used in the game */
+    private final File mapFile;
     // Game objects
     private final Player player;
     
@@ -62,37 +63,33 @@ public class GameMap {
     //TODO: replce placeholder for Entrance + Enemy + Exit + power-up until respective class was created
     private List<Placeholder> placeholders;
 
-    private List<Chest> chests;
-    
     public GameMap(BomberQuestGame game) {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
         // Create a player with initial position (1, 3)
-        this.player = new Player(this.world, 1, 3);
+        this.player = new Player(this.world, 6, 5);
         // Create a chest in the middle of the map
-        this.chest = new Chest(world, 3, 3);
-        // Create flowers/ ground for all tials
+        this.chest = new Chest(world, 10, 6);
         //TODO: replace manual file insertion!!!!
-        int x = prasingMap(fillMapFiles()[2]).keySet().stream().map(Coordinates::getX).max(Integer::compare ).orElse(0);
+        this.mapFile = fillMapFiles()[1];
+        // Create flowers/ ground for all tials
+        int x = prasingMap(mapFile).keySet().stream().map(Coordinates::getX).max(Integer::compare).orElse(0) + 1;
         // increases x by 1 because otherwise the coordinate 0 isn´t represented
-        x++;
-        int y = prasingMap(fillMapFiles()[2]).keySet().stream().map(Coordinates::getY).max(Integer::compare).orElse(0);
+        int y = prasingMap(mapFile).keySet().stream().map(Coordinates::getY).max(Integer::compare).orElse(0) + 1;
         // increases y by 1 because otherwise the coordinate 0 isn´t represented
-        y++;
         this.flowers = new Flowers[x][y];
         for (int i = 0; i < flowers.length; i++) {
             for (int j = 0; j < flowers[i].length; j++) {
                 this.flowers[i][j] = new Flowers(i, j);
             }
         }
-        // initialice Lists of varoiuse objects
+        // initialize Lists of various objects
         indestructibleWalls = new ArrayList<>();
         destructibleWalls = new ArrayList<>();
         placeholders = new ArrayList<>();
-        chests = new ArrayList<>();
         // Iterates over the gameObjects map
-        //TODO: replace manual file insertion!!!!
-        for (Map.Entry<Coordinates, Integer> entry : prasingMap(fillMapFiles()[2]).entrySet()) {
+        //TODO: replace placeholders
+        for (Map.Entry<Coordinates, Integer> entry : prasingMap(mapFile).entrySet()) {
             switch (entry.getValue()) {
                 case 0: indestructibleWalls.add(new IndestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY())); break;
                 case 1: destructibleWalls.add(new DestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY())); break;
