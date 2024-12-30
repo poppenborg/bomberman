@@ -1,12 +1,19 @@
 package de.tum.cit.ase.bomberquest.map;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.sound.midi.Soundbank;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Represents the game map.
@@ -41,7 +48,7 @@ public class GameMap {
     private final BomberQuestGame game;
     /** The Box2D world for physics simulation. */
     private final World world;
-    
+
     // Game objects
     private final Player player;
     
@@ -57,12 +64,14 @@ public class GameMap {
         // Create a chest in the middle of the map
         this.chest = new Chest(world, 3, 3);
         // Create flowers in a 7x7 grid
-        this.flowers = new Flowers[7][7];
+        this.flowers = new Flowers[23][14];
         for (int i = 0; i < flowers.length; i++) {
             for (int j = 0; j < flowers[i].length; j++) {
                 this.flowers[i][j] = new Flowers(i, j);
             }
         }
+        // Create a Map of the Mapfiles
+        prasingMap(fillMapFiles()[0]);
     }
     
     /**
@@ -101,5 +110,81 @@ public class GameMap {
     /** Returns the flowers on the map. */
     public List<Flowers> getFlowers() {
         return Arrays.stream(flowers).flatMap(Arrays::stream).toList();
+    }
+
+    // added by Flo
+    /**
+     * Fills up an array with all the existing maps
+     * @return Array of all file paths for maps
+     */
+    public File[] fillMapFiles() {
+        File directory = new File("maps");
+        File[] mapFiles = new File[]{};
+        if (directory.exists() && directory.isDirectory()) {
+            mapFiles = directory.listFiles();
+        }
+        return mapFiles;
+    }
+
+    /**
+     * Prases a map
+     * @param mapFile the file to be prase (change later to mapFile when it´s clear where to get the input from)
+     * @return Map with keys consiting of x- and y-coordinates and values indicating the game object
+     */
+    public Map<Coordinates, Integer> prasingMap(File mapFile) {
+        // Change file path format to use java.nio.file.Files.readString
+        java.nio.file.Path filePath = java.nio.file.Paths.get(mapFile.toString());
+        String fileContent = "";
+        // save the file content in fileContent
+        try {
+            fileContent = java.nio.file.Files.readString(filePath);
+        } catch (IOException e) {
+            System.out.println("Exception " + e + " thrown!");
+        }
+        // split the fileContent for every new line
+        String[] linesAsArray = fileContent.split("\n");
+        Map<Coordinates, Integer> gameObjects = new HashMap<>();
+        // specifies the necessary basic structure of every line (int,int=int) while leaving the possibility for whitespaces
+        Pattern overallPattern = Pattern.compile("\\s*\\d+\\s*\\,\\s*\\d+\\s*\\=\\s*\\d\\s*$");
+        // Patterns for x, y and value respectively
+        Pattern xPattern = Pattern.compile("\\s*\\d+\\s*\\,");
+        Pattern yPattern = Pattern.compile("\\,\\s*\\d+\\s*\\=");
+        Pattern valuePattern = Pattern.compile("\\=\\s*\\d\\s*$");
+        // Pattern to filter the digit
+        Pattern digitPattern = Pattern.compile("\\d+");
+        // Fill up the Map
+        for (String line : linesAsArray) {
+            // excluding empty lines and those starting with #
+            if (!line.startsWith("#") && overallPattern.matcher(line).matches()) {
+                // Convert respective Strings into Integers
+                Integer x = Integer.parseInt(twoLvlMatching(line, xPattern, digitPattern));
+                Integer y = Integer.parseInt(twoLvlMatching(line, yPattern, digitPattern));
+                Integer value = Integer.parseInt(twoLvlMatching(line, valuePattern, digitPattern));
+                // parse the values into a map
+                gameObjects.put(new Coordinates(x, y), value);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Helper method to find and return a regex specified by 2 patterns
+     * purpose: make the code of the method prasingMap more readable
+     * @param input String to be filetred
+     * @param lvl1Pattern first filerting condition
+     * @param lvl2Pattern second filerting condition
+     * @return String found when applying both filters
+     */
+    public String twoLvlMatching(String input, Pattern lvl1Pattern, Pattern lvl2Pattern) {
+        String lvl2Filtered = "";
+        Matcher lvl1Matcher = lvl1Pattern.matcher(input);
+        if (lvl1Matcher.find()) {
+            String lvl1Filtered = lvl1Matcher.group();
+            Matcher lvl2Matcher = lvl2Pattern.matcher(lvl1Filtered);
+            if (lvl2Matcher.find()) {
+                lvl2Filtered = lvl2Matcher.group();
+            }
+        }
+        return lvl2Filtered;
     }
 }
