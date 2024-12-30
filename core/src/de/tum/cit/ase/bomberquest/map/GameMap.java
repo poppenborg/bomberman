@@ -66,12 +66,12 @@ public class GameMap {
     public GameMap(BomberQuestGame game) {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
-        // Create a player with initial position (1, 3)
-        this.player = new Player(this.world, 6, 5);
+        // initialise player position
+        Coordinates entrancePlayerCoordinates = new Coordinates(0,0);
         // Create a chest in the middle of the map
         this.chest = new Chest(world, 10, 6);
         //TODO: replace manual file insertion!!!!
-        this.mapFile = fillMapFiles()[1];
+        this.mapFile = fillMapFiles()[2];
         // Create flowers/ ground for all tials
         int x = prasingMap(mapFile).keySet().stream().map(Coordinates::getX).max(Integer::compare).orElse(0) + 1;
         // increases x by 1 because otherwise the coordinate 0 isn´t represented
@@ -87,14 +87,17 @@ public class GameMap {
         indestructibleWalls = new ArrayList<>();
         destructibleWalls = new ArrayList<>();
         placeholders = new ArrayList<>();
-        // Iterates over the gameObjects map
         //TODO: replace placeholders
-        for (Map.Entry<Coordinates, Integer> entry : prasingMap(mapFile).entrySet()) {
+        Map<Coordinates, Integer> prasedMap = prasingMap(mapFile);
+        // Iterates over the gameObjects map
+        for (Map.Entry<Coordinates, Integer> entry : prasedMap.entrySet()) {
             switch (entry.getValue()) {
                 case 0: indestructibleWalls.add(new IndestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY())); break;
                 case 1: destructibleWalls.add(new DestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY())); break;
-                // needs to replce placeholder for Entrance
-                case 2: placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY())); break;
+                case 2:
+                    entrancePlayerCoordinates.setX(entry.getKey().getX());
+                    entrancePlayerCoordinates.setY(entry.getKey().getY());
+                    break;
                 // needs to replce placeholder for Enemy
                 case 3: placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY())); break;
                 // needs to replce placeholder for Exit
@@ -114,6 +117,8 @@ public class GameMap {
                     break;
             }
         }
+        // Create a player with initial position at entrance (or 0, 0 if no entrance was specified)
+        this.player = new Player(this.world, entrancePlayerCoordinates.getX(), entrancePlayerCoordinates.getY());
     }
     
     /**
