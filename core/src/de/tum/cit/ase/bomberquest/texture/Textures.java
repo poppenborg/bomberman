@@ -21,5 +21,9 @@ public class Textures {
     // Added textures for blank tiles (e.g. when they are destroyed)
 
     public static final TextureRegion EMPTY = SpriteSheet.BASIC_TILES.at(13, 1);
-    
+
+    // Added textures for Placeholders
+
+    public static final TextureRegion PLACEHOLDER = SpriteSheet.ORIGINAL_BOMBERMAN.at(15, 9);
+
 }

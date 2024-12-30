@@ -55,6 +55,14 @@ public class GameMap {
     private final Chest chest;
     
     private final Flowers[][] flowers;
+
+    private List<IndestructibleWall> indestructibleWalls;
+
+    private List<DestructibleWall> destructibleWalls;
+    //TODO: replce placeholder for Entrance + Enemy + Exit + power-up until respective class was created
+    private List<Placeholder> placeholders;
+
+    private List<Chest> chests;
     
     public GameMap(BomberQuestGame game) {
         this.game = game;
@@ -63,15 +71,52 @@ public class GameMap {
         this.player = new Player(this.world, 1, 3);
         // Create a chest in the middle of the map
         this.chest = new Chest(world, 3, 3);
-        // Create flowers in a 7x7 grid
-        this.flowers = new Flowers[23][14];
+        // Create flowers/ ground for all tials
+        //TODO: replace manual file insertion!!!!
+        int x = prasingMap(fillMapFiles()[2]).keySet().stream().map(Coordinates::getX).max(Integer::compare ).orElse(0);
+        // increases x by 1 because otherwise the coordinate 0 isn´t represented
+        x++;
+        int y = prasingMap(fillMapFiles()[2]).keySet().stream().map(Coordinates::getY).max(Integer::compare).orElse(0);
+        // increases y by 1 because otherwise the coordinate 0 isn´t represented
+        y++;
+        this.flowers = new Flowers[x][y];
         for (int i = 0; i < flowers.length; i++) {
             for (int j = 0; j < flowers[i].length; j++) {
                 this.flowers[i][j] = new Flowers(i, j);
             }
         }
-        // Create a Map of the Mapfiles
-        prasingMap(fillMapFiles()[0]);
+        // initialice Lists of varoiuse objects
+        indestructibleWalls = new ArrayList<>();
+        destructibleWalls = new ArrayList<>();
+        placeholders = new ArrayList<>();
+        chests = new ArrayList<>();
+        // Iterates over the gameObjects map
+        //TODO: replace manual file insertion!!!!
+        for (Map.Entry<Coordinates, Integer> entry : prasingMap(fillMapFiles()[2]).entrySet()) {
+            switch (entry.getValue()) {
+                case 0: indestructibleWalls.add(new IndestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY())); break;
+                case 1: destructibleWalls.add(new DestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY())); break;
+                // needs to replce placeholder for Entrance
+                case 2: placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY())); break;
+                // needs to replce placeholder for Enemy
+                case 3: placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY())); break;
+                // needs to replce placeholder for Exit
+                case 4:
+                    placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY()));
+                    destructibleWalls.add(new DestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY()));
+                    break;
+                // needs to replce placeholder for Concurrent bomb power-up
+                case 5:
+                    placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY()));
+                    destructibleWalls.add(new DestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY()));
+                    break;
+                // needs to replce placeholder for Blast radius power-up
+                case 6:
+                    placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY()));
+                    destructibleWalls.add(new DestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY()));
+                    break;
+            }
+        }
     }
     
     /**
@@ -112,7 +157,22 @@ public class GameMap {
         return Arrays.stream(flowers).flatMap(Arrays::stream).toList();
     }
 
-    // added by Flo
+    /** Returns the indestructibleWalls on the map. */
+    public List<IndestructibleWall> getIndestructibleWalls() {
+        return indestructibleWalls;
+    }
+
+    /** Returns the destructibleWalls on the map. */
+    public List<DestructibleWall> getDestructibleWalls() {
+        return destructibleWalls;
+    }
+
+    /** Returns the placeholders on the map. */
+    public List<Placeholder> getPlaceholders() {
+        return placeholders;
+    }
+
+// added by Flo
     /**
      * Fills up an array with all the existing maps
      * @return Array of all file paths for maps
@@ -164,9 +224,8 @@ public class GameMap {
                 gameObjects.put(new Coordinates(x, y), value);
             }
         }
-        return null;
+        return gameObjects;
     }
-
 
     /**
      * Helper method to find and return a regex specified by 2 patterns

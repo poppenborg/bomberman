@@ -9,9 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
-import de.tum.cit.ase.bomberquest.map.Flowers;
+import de.tum.cit.ase.bomberquest.map.*;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
-import de.tum.cit.ase.bomberquest.map.GameMap;
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -109,7 +108,16 @@ public class GameScreen implements Screen {
         }
         draw(spriteBatch, map.getChest());
         draw(spriteBatch, map.getPlayer());
-        
+        for (IndestructibleWall indestructibleWall : map.getIndestructibleWalls()) {
+            draw(spriteBatch, indestructibleWall);
+        }
+        for (DestructibleWall destructibleWall : map.getDestructibleWalls()) {
+            draw(spriteBatch, destructibleWall);
+        }
+        //TODO: replce placeholder for Entrance + Enemy + Exit + power-up until respective class was created
+        for (Placeholder placeholder : map.getPlaceholders()) {
+            draw(spriteBatch, placeholder);
+        }
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();
     }
