@@ -12,5 +12,14 @@ public class Textures {
     public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(2, 5);
 
     public static final TextureRegion CHEST = SpriteSheet.BASIC_TILES.at(5, 5);
+
+    // Added textures for Destructible and Indestructible Walls
+
+    public static final TextureRegion DESTRUCTIBLE_WALL = SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 5);
+    public static final TextureRegion INDESTRUCTIBLE_WALL = SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 4);
+
+    // Added textures for blank tiles (e.g. when they are destroyed)
+
+    public static final TextureRegion EMPTY = SpriteSheet.BASIC_TILES.at(13, 1);
     
 }
