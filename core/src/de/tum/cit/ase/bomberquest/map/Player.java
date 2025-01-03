@@ -1,5 +1,7 @@
 package de.tum.cit.ase.bomberquest.map;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -64,17 +66,57 @@ public class Player implements Drawable {
     public void tick(float frameTime) {
         this.elapsedTime += frameTime;
         // Make the player move in a circle with radius 2 tiles
-        // You can change this to make the player move differently, e.g. in response to user input.
-        // See Gdx.input.isKeyPressed() for keyboard input
-        float xVelocity = (float) Math.sin(this.elapsedTime) * 2;
-        float yVelocity = (float) Math.cos(this.elapsedTime) * 2;
+
+        float xVelocity = 0;
+        float yVelocity = 0;
+
+        //Player can be controlled via the keyboard using the arrow keys OR the WASD as an alternative
+
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
+            xVelocity -= 2;
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+            xVelocity += 2;
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
+            yVelocity += 2;
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
+            yVelocity -= 2;
+        }
+
+
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
     
     @Override
     public TextureRegion getCurrentAppearance() {
-        // Get the frame of the walk down animation that corresponds to the current time.
-        return Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);
+        // Get the player's current velocity
+
+        float xVelocity = hitbox.getLinearVelocity().x;
+        float yVelocity = hitbox.getLinearVelocity().y;
+
+        // Return animation based on movement direction
+
+        if (xVelocity > 0) {
+
+            return Animations.CHARACTER_WALK_RIGHT.getKeyFrame(this.elapsedTime, true);
+        } else if (xVelocity < 0) {
+
+            return Animations.CHARACTER_WALK_LEFT.getKeyFrame(this.elapsedTime, true);
+        } else if (yVelocity > 0) {
+
+            return Animations.CHARACTER_WALK_UP.getKeyFrame(this.elapsedTime, true);
+        } else if (yVelocity < 0) {
+
+            return Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);
+        } else {
+
+            return Animations.CHARACTER_WALK_DOWN.getKeyFrame( 0, false);
+        }
     }
     
     @Override
