@@ -75,12 +75,18 @@ public class GameScreen implements Screen {
         
         // Update the camera
         updateCamera();
-        
+
+        //Update the destructible walls
+        for (DestructibleWall wall : map.getDestructibleWalls()) {
+            wall.update(frameTime);
+        }
+
         // Render the map on the screen
         renderMap();
         
         // Render the HUD on the screen
         hud.render();
+
     }
     
     /**

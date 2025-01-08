@@ -174,7 +174,12 @@ public class GameMap {
         return placeholders;
     }
 
-// added by Flo
+    /** Returns the world of the map. */
+    public World getWorld() {
+        return world;
+    }
+
+    // added by Flo
     /**
      * Fills up an array with all the existing maps
      * @return Array of all file paths for maps
@@ -249,4 +254,9 @@ public class GameMap {
         }
         return lvl2Filtered;
     }
+
+
+
+
+
 }

@@ -9,7 +9,25 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * These can be referenced anywhere they are needed.
  */
 public class Animations {
-    
+
+
+    //DESTRUCTIBLE WALL
+    /**
+     * The animation for the DestructibleWall being destroyed.
+     */
+    public static final Animation<TextureRegion> DESTRUCTIBLE_WALL_DESTROY = new Animation<>(0.1f,
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 6),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 7),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 8),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 9),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 10),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 11)
+    );
+
+
+
+
+    // PLAYER
     /**
      * The animation for the character walking down.
      */
