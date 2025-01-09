@@ -73,12 +73,12 @@ public class DestructibleWall extends Wall{
     /**
      * Method update () for updating the state of the wall and the elapsed time for the animation
      * Gets called in the GameScreen class
-     * @param deltaTime time that the animation has been going on.
+     * @param elapsedTime time that the animation has been going on.
      */
 
-    public void update(float deltaTime) {
+    public void update(float elapsedTime) {
         if (playAnimation) {
-            animationTime += deltaTime;
+            animationTime += elapsedTime;
         }
     }
 
