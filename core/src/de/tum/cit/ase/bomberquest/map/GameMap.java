@@ -117,6 +117,13 @@ public class GameMap {
                     break;
             }
         }
+        // add the exit underneath a random destructible wall if no exit was specified
+        if (prasedMap.values().stream().filter(entry -> entry.equals(4)).count() == 0) {
+            List<Coordinates> possibleEntries = prasedMap.entrySet().stream().filter(entry -> entry.getValue().equals(1)).map(entry -> entry.getKey()).toList();
+            Coordinates entryCoordinate = possibleEntries.get((int) (Math.random() * possibleEntries.size()));
+            // TODO: replace placeholder with exit object
+            placeholders.add(new Placeholder(entryCoordinate.getX(), entryCoordinate.getY()));
+        }
         // Create a player with initial position at entrance (or 0, 0 if no entrance was specified)
         this.player = new Player(this.world, entrancePlayerCoordinates.getX(), entrancePlayerCoordinates.getY());
     }
@@ -181,7 +188,7 @@ public class GameMap {
 
     // added by Flo
     /**
-     * Fills up an array with all the existing maps
+     * Fills up an array of files with all the existing maps
      * @return Array of all file paths for maps
      */
     public File[] fillMapFiles() {
