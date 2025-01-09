@@ -21,10 +21,11 @@ public enum SpriteSheet {
     BASIC_TILES("basictiles.png", 16, 16),
 
     //Added the original bomberman textures
-
     /** The basic tiles spritesheet, which has a grid size of 16x16. */
-    ORIGINAL_BOMBERMAN("original-bomberman.png", 16, 16);
+    ORIGINAL_BOMBERMAN("original-bomberman.png", 16, 16),
 
+    /** The basic mobs spritesheet, which has a grid size of 16x16. */
+    MOBS("mobs.png", 16, 16);
 
 
 

@@ -60,6 +60,8 @@ public class GameMap {
     private List<IndestructibleWall> indestructibleWalls;
 
     private List<DestructibleWall> destructibleWalls;
+
+    private List<Mob> mobs;
     //TODO: replce placeholder for Entrance + Enemy + Exit + power-up until respective class was created
     private List<Placeholder> placeholders;
 
@@ -71,7 +73,7 @@ public class GameMap {
         // Create a chest in the middle of the map
         this.chest = new Chest(world, 10, 6);
         //TODO: replace manual file insertion!!!!
-        this.mapFile = fillMapFiles()[2];
+        this.mapFile = fillMapFiles()[1];
         // Create flowers/ ground for all tials
         int x = prasingMap(mapFile).keySet().stream().map(Coordinates::getX).max(Integer::compare).orElse(0) + 1;
         // increases x by 1 because otherwise the coordinate 0 isn´t represented
@@ -87,6 +89,7 @@ public class GameMap {
         indestructibleWalls = new ArrayList<>();
         destructibleWalls = new ArrayList<>();
         placeholders = new ArrayList<>();
+        mobs = new ArrayList<>();
         //TODO: replace placeholders
         Map<Coordinates, Integer> prasedMap = prasingMap(mapFile);
         // Iterates over the gameObjects map
@@ -98,8 +101,7 @@ public class GameMap {
                     entrancePlayerCoordinates.setX(entry.getKey().getX());
                     entrancePlayerCoordinates.setY(entry.getKey().getY());
                     break;
-                // needs to replce placeholder for Enemy
-                case 3: placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY())); break;
+                case 3: mobs.add(new Mob(this.world,entry.getKey().getX(),entry.getKey().getY())); break;
                 // needs to replce placeholder for Exit
                 case 4:
                     placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY()));
@@ -135,6 +137,9 @@ public class GameMap {
      */
     public void tick(float frameTime) {
         this.player.tick(frameTime);
+        for (Mob mob : mobs) {
+            mob.tick(frameTime);
+        }
         doPhysicsStep(frameTime);
     }
     
@@ -176,6 +181,11 @@ public class GameMap {
         return destructibleWalls;
     }
 
+    /** Returns the Mobs on the map. */
+    public List<Mob> getMobs() {
+        return mobs;
+    }
+
     /** Returns the placeholders on the map. */
     public List<Placeholder> getPlaceholders() {
         return placeholders;
@@ -186,7 +196,6 @@ public class GameMap {
         return world;
     }
 
-    // added by Flo
     /**
      * Fills up an array of files with all the existing maps
      * @return Array of all file paths for maps
@@ -261,9 +270,5 @@ public class GameMap {
         }
         return lvl2Filtered;
     }
-
-
-
-
 
 }

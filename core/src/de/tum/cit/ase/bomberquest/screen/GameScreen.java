@@ -118,6 +118,9 @@ public class GameScreen implements Screen {
         for (DestructibleWall destructibleWall : map.getDestructibleWalls()) {
             draw(spriteBatch, destructibleWall);
         }
+        for (Mob mob : map.getMobs()) {
+            draw(spriteBatch, mob);
+        }
         // TODO: replace placeholder for Enemy + Exit + power-up until respective class was created
         // TODO: code must be placed before loop for destructibleWall to be placed underneath it
         for (Placeholder placeholder : map.getPlaceholders()) {
