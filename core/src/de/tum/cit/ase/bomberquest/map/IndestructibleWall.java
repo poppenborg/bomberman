@@ -6,9 +6,10 @@ import de.tum.cit.ase.bomberquest.texture.Textures;
 
 public class IndestructibleWall extends Wall{
     /**
-     * Create a chest at the given position.
+     * Create a IndestructibleWall at the given position.
+     * This wall can not be destroyed.
      *
-     * @param world The Box2D world to add the chest's hitbox to.
+     * @param world The Box2D world to add the IndestructibleWall's hitbox to.
      * @param x     The X position.
      * @param y     The Y position.
      */

@@ -7,9 +7,10 @@ import de.tum.cit.ase.bomberquest.texture.Textures;
 
 public class DestructibleWall extends Wall{
     /**
-     * Create a chest at the given position.
+     * Create a DestructibleWall at the given position.
+     * This wall can be destroyed
      *
-     * @param world The Box2D world to add the chest's hitbox to.
+     * @param world The Box2D world to add the DestructibleWall's hitbox to.
      * @param x     The X position.
      * @param y     The Y position.
      */
@@ -27,16 +28,23 @@ public class DestructibleWall extends Wall{
 
     //Methods
 
+    /**
+     * Method for returning the correct texture for the DestructibleWall
+     * Default texture if not destroyed
+     * Empty texture if destroyed
+     * Animation if being destroyed
+     */
+
     @Override
     public TextureRegion getCurrentAppearance() {
 
         if (destroyed && playAnimation) {
             TextureRegion currentFrame = Animations.DESTRUCTIBLE_WALL_DESTROY.getKeyFrame(animationTime, false);
+
             // check if the Animation has finished and stop it
             if (Animations.DESTRUCTIBLE_WALL_DESTROY.isAnimationFinished(animationTime)) {
                 playAnimation = false;
             }
-
             return currentFrame;
         }
 
@@ -44,6 +52,13 @@ public class DestructibleWall extends Wall{
             return Textures.DESTRUCTIBLE_WALL;
         } else return Textures.EMPTY;
     }
+
+    /**
+     * Method for destroying the DestructibleWall
+     * Sets destroyed to true
+     * Starts the animation
+     * @param world The Box2D world to destroy the body.
+     */
 
     public void destroy(World world) {
         if (!destroyed) {
@@ -54,10 +69,12 @@ public class DestructibleWall extends Wall{
         }
     }
 
-    /*
-    * Method update () for updating the state of the wall and the elapsed time for the animation
-    * Gets called in the GameScreen class
-    * */
+
+    /**
+     * Method update () for updating the state of the wall and the elapsed time for the animation
+     * Gets called in the GameScreen class
+     * @param deltaTime time that the animation has been going on.
+     */
 
     public void update(float deltaTime) {
         if (playAnimation) {

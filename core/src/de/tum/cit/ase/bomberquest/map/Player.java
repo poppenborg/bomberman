@@ -59,13 +59,12 @@ public class Player implements Drawable {
     }
     
     /**
-     * Move the player around in a circle by updating the linear velocity of its hitbox every frame.
-     * This doesn't actually move the player, but it tells the physics engine how the player should move next frame.
+     * Move the player via the keyboard using the arrow keys OR the WASD as an alternative
      * @param frameTime the time since the last frame.
      */
+
     public void tick(float frameTime) {
         this.elapsedTime += frameTime;
-        // Make the player move in a circle with radius 2 tiles
 
         float xVelocity = 0;
         float yVelocity = 0;
@@ -88,18 +87,22 @@ public class Player implements Drawable {
             yVelocity -= 2;
         }
 
-
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
+
+    /**
+     * Method for the animation of the player
+     * Detects the current velocity of the player and returns the animation based on the movement direction
+     */
     
     @Override
     public TextureRegion getCurrentAppearance() {
-        // Get the player's current velocity
+        // Get the current velocity of the player
 
         float xVelocity = hitbox.getLinearVelocity().x;
         float yVelocity = hitbox.getLinearVelocity().y;
 
-        // Return animation based on movement direction
+        // Return animation based on the movement direction
 
         if (xVelocity > 0) {
 
@@ -114,7 +117,6 @@ public class Player implements Drawable {
 
             return Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);
         } else {
-
             return Animations.CHARACTER_WALK_DOWN.getKeyFrame( 0, false);
         }
     }
