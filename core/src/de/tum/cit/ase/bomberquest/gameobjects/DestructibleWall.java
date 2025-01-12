@@ -1,11 +1,11 @@
-package de.tum.cit.ase.bomberquest.map;
+package de.tum.cit.ase.bomberquest.gameobjects;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
-public class DestructibleWall extends Wall{
+public class DestructibleWall extends Wall {
     /**
      * Create a DestructibleWall at the given position.
      * This wall can be destroyed

@@ -1,16 +1,15 @@
 package de.tum.cit.ase.bomberquest.map;
 
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
+import de.tum.cit.ase.bomberquest.gameobjects.*;
+import de.tum.cit.ase.bomberquest.mobs.Enemy;
+import de.tum.cit.ase.bomberquest.mobs.Player;
 
-import javax.sound.midi.Soundbank;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,7 +60,7 @@ public class GameMap {
 
     private List<DestructibleWall> destructibleWalls;
 
-    private List<Mob> mobs;
+    private List<Enemy> enemies;
     //TODO: replce placeholder for Entrance + Enemy + Exit + power-up until respective class was created
     private List<Placeholder> placeholders;
 
@@ -73,11 +72,20 @@ public class GameMap {
         // Create a chest in the middle of the map
         this.chest = new Chest(world, 10, 6);
         //TODO: replace manual file insertion!!!!
-        this.mapFile = fillMapFiles()[1];
+        MapLoader mapLoader = new MapLoader("maps");
+        // let user choose a map
+        File selectedFile = null;
+//        try {
+//            selectedFile = game.getFileChooser().chooseFile();
+//        } catch (Exception e) {
+//            System.out.println("Exception: " + e);
+//        }
+//        this.mapFile = selectedFile;
+        this.mapFile = mapLoader.getMapFiles()[1];
         // Create flowers/ ground for all tials
-        int x = prasingMap(mapFile).keySet().stream().map(Coordinates::getX).max(Integer::compare).orElse(0) + 1;
+        int x = mapLoader.prasingMap(mapFile).keySet().stream().map(Coordinates::getX).max(Integer::compare).orElse(0) + 1;
         // increases x by 1 because otherwise the coordinate 0 isn´t represented
-        int y = prasingMap(mapFile).keySet().stream().map(Coordinates::getY).max(Integer::compare).orElse(0) + 1;
+        int y = mapLoader.prasingMap(mapFile).keySet().stream().map(Coordinates::getY).max(Integer::compare).orElse(0) + 1;
         // increases y by 1 because otherwise the coordinate 0 isn´t represented
         this.flowers = new Flowers[x][y];
         for (int i = 0; i < flowers.length; i++) {
@@ -89,9 +97,9 @@ public class GameMap {
         indestructibleWalls = new ArrayList<>();
         destructibleWalls = new ArrayList<>();
         placeholders = new ArrayList<>();
-        mobs = new ArrayList<>();
+        enemies = new ArrayList<>();
         //TODO: replace placeholders
-        Map<Coordinates, Integer> prasedMap = prasingMap(mapFile);
+        Map<Coordinates, Integer> prasedMap = mapLoader.prasingMap(mapFile);
         // Iterates over the gameObjects map
         for (Map.Entry<Coordinates, Integer> entry : prasedMap.entrySet()) {
             switch (entry.getValue()) {
@@ -101,7 +109,7 @@ public class GameMap {
                     entrancePlayerCoordinates.setX(entry.getKey().getX());
                     entrancePlayerCoordinates.setY(entry.getKey().getY());
                     break;
-                case 3: mobs.add(new Mob(this.world,entry.getKey().getX(),entry.getKey().getY())); break;
+                case 3: enemies.add(new Enemy(this.world,entry.getKey().getX(),entry.getKey().getY())); break;
                 // needs to replce placeholder for Exit
                 case 4:
                     placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY()));
@@ -137,8 +145,8 @@ public class GameMap {
      */
     public void tick(float frameTime) {
         this.player.tick(frameTime);
-        for (Mob mob : mobs) {
-            mob.tick(frameTime);
+        for (Enemy enemy : enemies) {
+            enemy.tick(frameTime);
         }
         doPhysicsStep(frameTime);
     }
@@ -182,8 +190,8 @@ public class GameMap {
     }
 
     /** Returns the Mobs on the map. */
-    public List<Mob> getMobs() {
-        return mobs;
+    public List<Enemy> getEnemies() {
+        return enemies;
     }
 
     /** Returns the placeholders on the map. */
@@ -194,81 +202,6 @@ public class GameMap {
     /** Returns the world of the map. */
     public World getWorld() {
         return world;
-    }
-
-    /**
-     * Fills up an array of files with all the existing maps
-     * @return Array of all file paths for maps
-     */
-    public File[] fillMapFiles() {
-        File directory = new File("maps");
-        File[] mapFiles = new File[]{};
-        if (directory.exists() && directory.isDirectory()) {
-            mapFiles = directory.listFiles();
-        }
-        return mapFiles;
-    }
-
-    /**
-     * Prases a map
-     * @param mapFile the file to be prase (change later to mapFile when it´s clear where to get the input from)
-     * @return Map with keys consiting of x- and y-coordinates and values indicating the game object
-     */
-    public Map<Coordinates, Integer> prasingMap(File mapFile) {
-        // Change file path format to use java.nio.file.Files.readString
-        java.nio.file.Path filePath = java.nio.file.Paths.get(mapFile.toString());
-        String fileContent = "";
-        // save the file content in fileContent
-        try {
-            fileContent = java.nio.file.Files.readString(filePath);
-        } catch (IOException e) {
-            System.out.println("Exception " + e + " thrown!");
-        }
-        // split the fileContent for every new line
-        String[] linesAsArray = fileContent.split("\n");
-        Map<Coordinates, Integer> gameObjects = new HashMap<>();
-        // specifies the necessary basic structure of every line (int,int=int) while leaving the possibility for whitespaces
-        Pattern overallPattern = Pattern.compile("\\s*\\d+\\s*\\,\\s*\\d+\\s*\\=\\s*\\d\\s*$");
-        // Patterns for x, y and value respectively
-        Pattern xPattern = Pattern.compile("\\s*\\d+\\s*\\,");
-        Pattern yPattern = Pattern.compile("\\,\\s*\\d+\\s*\\=");
-        Pattern valuePattern = Pattern.compile("\\=\\s*\\d\\s*$");
-        // Pattern to filter the digit
-        Pattern digitPattern = Pattern.compile("\\d+");
-        // Fill up the Map
-        for (String line : linesAsArray) {
-            // excluding empty lines and those starting with #
-            if (!line.startsWith("#") && overallPattern.matcher(line).matches()) {
-                // Convert respective Strings into Integers
-                Integer x = Integer.parseInt(twoLvlMatching(line, xPattern, digitPattern));
-                Integer y = Integer.parseInt(twoLvlMatching(line, yPattern, digitPattern));
-                Integer value = Integer.parseInt(twoLvlMatching(line, valuePattern, digitPattern));
-                // parse the values into a map
-                gameObjects.put(new Coordinates(x, y), value);
-            }
-        }
-        return gameObjects;
-    }
-
-    /**
-     * Helper method to find and return a regex specified by 2 patterns
-     * purpose: make the code of the method prasingMap more readable
-     * @param input String to be filetred
-     * @param lvl1Pattern first filerting condition
-     * @param lvl2Pattern second filerting condition
-     * @return String found when applying both filters
-     */
-    public String twoLvlMatching(String input, Pattern lvl1Pattern, Pattern lvl2Pattern) {
-        String lvl2Filtered = "";
-        Matcher lvl1Matcher = lvl1Pattern.matcher(input);
-        if (lvl1Matcher.find()) {
-            String lvl1Filtered = lvl1Matcher.group();
-            Matcher lvl2Matcher = lvl2Pattern.matcher(lvl1Filtered);
-            if (lvl2Matcher.find()) {
-                lvl2Filtered = lvl2Matcher.group();
-            }
-        }
-        return lvl2Filtered;
     }
 
 }

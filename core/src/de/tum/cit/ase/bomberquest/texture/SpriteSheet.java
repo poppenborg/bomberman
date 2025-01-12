@@ -25,7 +25,7 @@ public enum SpriteSheet {
     ORIGINAL_BOMBERMAN("original-bomberman.png", 16, 16),
 
     /** The basic mobs spritesheet, which has a grid size of 16x16. */
-    MOBS("mobs.png", 16, 16);
+    ENEMY("mobs.png", 16, 16);
 
 
 

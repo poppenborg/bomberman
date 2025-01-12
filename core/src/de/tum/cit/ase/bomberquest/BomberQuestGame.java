@@ -92,7 +92,12 @@ public class BomberQuestGame extends Game {
     public GameMap getMap() {
         return map;
     }
-    
+
+    /** Returns the current file, if there is one. */
+    public NativeFileChooser getFileChooser() {
+        return fileChooser;
+    }
+
     /**
      * Switches to the given screen and disposes of the previous screen.
      * @param screen the new screen
