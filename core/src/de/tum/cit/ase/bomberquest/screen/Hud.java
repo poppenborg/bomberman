@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import de.tum.cit.ase.bomberquest.map.GameMap;
 
 /**
  * A Heads-Up Display (HUD) that displays information on the screen.
@@ -17,7 +18,9 @@ public class Hud {
     private final BitmapFont font;
     /** The camera used to render the HUD. */
     private final OrthographicCamera camera;
-    
+    /** The time left in the Game. */
+    private float timeLeft;
+
     public Hud(SpriteBatch spriteBatch, BitmapFont font) {
         this.spriteBatch = spriteBatch;
         this.font = font;
@@ -35,6 +38,7 @@ public class Hud {
         spriteBatch.begin();
         // Draw the HUD elements
         font.draw(spriteBatch, "Press Esc to Pause!", 10, Gdx.graphics.getHeight() - 10);
+        font.draw(spriteBatch, "Time left: " + String.format("%.1f", timeLeft), 10, Gdx.graphics.getHeight() - 40);
         // Finish drawing
         spriteBatch.end();
     }
@@ -48,5 +52,11 @@ public class Hud {
     public void resize(int width, int height) {
         camera.setToOrtho(false, width, height);
     }
-    
+
+    /**
+     * Update the Timer
+     */
+    public void setTimeLeft(float timeLeft) {
+        this.timeLeft = timeLeft;
+    }
 }

@@ -42,7 +42,10 @@ public class GameScreen implements Screen {
     private final GameMap map;
     private final Hud hud;
     private final OrthographicCamera mapCamera;
-
+    /**
+     * Timer of the game
+     */
+    private float timeLeft;
     /**
      * Constructor for GameScreen. Sets up the camera and font.
      *
@@ -56,6 +59,7 @@ public class GameScreen implements Screen {
         // Create and configure the camera for the game view
         this.mapCamera = new OrthographicCamera();
         this.mapCamera.setToOrtho(false);
+        this.timeLeft = map.getTimeLeft();
     }
     
     /**
@@ -85,6 +89,13 @@ public class GameScreen implements Screen {
         for (DestructibleWall wall : map.getDestructibleWalls()) {
             wall.update(frameTime);
         }
+        // update the timer
+        timeLeft -= deltaTime;
+        hud.setTimeLeft(timeLeft);
+        map.setTimeLeft(timeLeft);
+
+        // check the game status
+        game.checkGameState();
 
         // Render the map on the screen
         renderMap();
@@ -92,11 +103,13 @@ public class GameScreen implements Screen {
         // Render the HUD on the screen
         hud.render();
 
+
+
     }
     
     /**
      * Updates the camera to match the current state of the game.
-     * Currently the camera follows the player.
+     * currently the camera follows the player.
      */
     private void updateCamera() {
         mapCamera.setToOrtho(false);

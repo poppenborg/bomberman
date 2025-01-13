@@ -10,7 +10,9 @@ import de.tum.cit.ase.bomberquest.audio.MusicTrack;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.map.MapLoader;
 import de.tum.cit.ase.bomberquest.screen.GameScreen;
+import de.tum.cit.ase.bomberquest.screen.LoseScreen;
 import de.tum.cit.ase.bomberquest.screen.MenuScreen;
+import de.tum.cit.ase.bomberquest.screen.WinScreen;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
@@ -91,8 +93,21 @@ public class BomberQuestGame extends Game {
     }
 
     /**
-     * Opens a folder to choos a map file from
-     *
+     * Switches to the game screen.
+     */
+    public void goToWinScreen() {
+        this.setScreen(new WinScreen(this)); // Set the current screen to GameScreen
+    }
+
+    /**
+     * Switches to the game screen.
+     */
+    public void goToLoseScreen() {
+        this.setScreen(new LoseScreen(this)); // Set the current screen to GameScreen
+    }
+
+    /**
+     * Opens a folder to choose a map file from
      */
     public void openFileChooser() {
         NativeFileChooserConfiguration nativeFileChooserConfiguration = new NativeFileChooserConfiguration();
@@ -107,7 +122,6 @@ public class BomberQuestGame extends Game {
             }
             @Override
             public void onCancellation() {
-
             }
             @Override
             public void onError(Exception e) {
@@ -166,4 +180,20 @@ public class BomberQuestGame extends Game {
     public void setMap(GameMap map) {
         this.map = map;
     }
+
+    /**
+     * Checks whether game is won or lost or still in progress
+     * Sets the screen acordingly
+     */
+    public void checkGameState() {
+        if (map.checkLoseStatus()){
+            goToLoseScreen();
+        }
+        if (map.checkWinStatus()) {
+            goToWinScreen();
+        }
+    }
+
+
+
 }

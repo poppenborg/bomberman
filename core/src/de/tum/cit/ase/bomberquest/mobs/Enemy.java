@@ -22,9 +22,10 @@ public class Enemy extends Mob implements Drawable {
     }
 
     /**
-     * Move the enemis randomly
+     * Let the enemis move in a circle
      * @param frameTime the time since the last frame.
      */
+    @Override
     public void tick(float frameTime) {
         setElapsedTime(getElapsedTime() + frameTime);
         // TODO: implement inteligent movement
@@ -37,7 +38,6 @@ public class Enemy extends Mob implements Drawable {
      * Method for the animation of the player
      * Detects the current velocity of the player and returns the animation based on the movement direction
      */
-
     @Override
     public TextureRegion getCurrentAppearance() {
         // Get the current velocity of the player

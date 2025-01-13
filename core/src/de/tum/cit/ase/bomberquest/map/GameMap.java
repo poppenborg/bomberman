@@ -66,15 +66,19 @@ public class GameMap {
     //TODO: replce placeholder for Entrance + Enemy + Exit + power-up until respective class was created
     private List<Placeholder> placeholders;
 
+    /** The time left in the Game. */
+    private float timeLeft;
+
+
     public GameMap(BomberQuestGame game, FileHandle mapFile) {
         this.game = game;
         this.mapFile = mapFile;
+        timeLeft = 10;
         this.world = new World(Vector2.Zero, true);
         // initialise player position
         Coordinates entrancePlayerCoordinates = new Coordinates(0,0);
         // Create a chest in the middle of the map
         this.chest = new Chest(world, 10, 6);
-        //TODO: replace manual file insertion!!!!
         MapLoader mapLoader = new MapLoader();
         // Create flowers/ ground for all tials
         int x = mapLoader.prasingMap(mapFile).keySet().stream().map(Coordinates::getX).max(Integer::compare).orElse(0) + 1;
@@ -157,6 +161,23 @@ public class GameMap {
             this.physicsTime -= TIME_STEP;
         }
     }
+
+    /**
+     * Chescks wether one of the conditions to win the game is fulfilled
+     * @return returns ture if one of the conditions to win the game is fulfilled
+     */
+    public boolean checkWinStatus() {
+        boolean allEnemiesDefeated = getEnemies().isEmpty();
+        return allEnemiesDefeated;
+    }
+    /**
+     * Chescks wether one of the conditions to lose the game is fulfilled
+     * @return returns true if one of the conditions to lose the game is fulfilled
+     */
+    public boolean checkLoseStatus() {
+        boolean timeRunOut = timeLeft <= 0;
+        return timeRunOut;
+    }
     
     /** Returns the player on the map. */
     public Player getPlayer() {
@@ -198,4 +219,12 @@ public class GameMap {
         return world;
     }
 
+
+    // getter and setter for the timer
+    public void setTimeLeft(float timeLeft) {
+        this.timeLeft = timeLeft;
+    }
+    public float getTimeLeft() {
+        return timeLeft;
+    }
 }

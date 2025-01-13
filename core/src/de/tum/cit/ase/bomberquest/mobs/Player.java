@@ -24,6 +24,7 @@ public class Player extends Mob implements Drawable {
      * Move the player via the keyboard using the arrow keys OR the WASD as an alternative
      * @param frameTime the time since the last frame.
      */
+    @Override
     public void tick(float frameTime) {
         setElapsedTime(getElapsedTime() + frameTime);
 

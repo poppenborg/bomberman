@@ -17,13 +17,17 @@ import java.util.regex.Pattern;
  */
 public class MapLoader {
 
-    public MapLoader() {}
+    private FileHandle[] mapFiles;
+
+    public MapLoader() {
+        this.mapFiles = loadMapFiles();
+    }
 
     /**
      * Fills up an array of files with all the existing maps
      * @return Array of all file paths for maps
      */
-    public FileHandle[] getMapFiles() {
+    public FileHandle[] loadMapFiles() {
         FileHandle directory = new FileHandle("maps");
         FileHandle[] mapFiles = new FileHandle[]{};
         if (directory.exists() && directory.isDirectory()) {
@@ -94,4 +98,7 @@ public class MapLoader {
         return lvl2Filtered;
     }
 
+    public FileHandle[] getMapFiles() {
+        return mapFiles;
+    }
 }

@@ -14,7 +14,7 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
  * Represents the mob in the game.
  * The mob has a hitbox, so it can collide with other objects in the game.
  */
-public class Mob implements Drawable {
+public abstract class Mob implements Drawable {
 
     /** Total time elapsed since the game started. We use this for calculating the mob movement and animating it. */
     private float elapsedTime;
@@ -58,16 +58,18 @@ public class Mob implements Drawable {
         return body;
     }
 
+    /**
+     * Method to let the mob move
+     * @param frameTime the time since the last frame.
+     */
+    abstract public void tick(float frameTime);
 
     /**
      * Method for the animation of the mob
      * Detects the current velocity of the mob and returns the animation based on the movement direction
      */
-
     @Override
-    public TextureRegion getCurrentAppearance() {
-        return Animations.CHARACTER_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
-    }
+    abstract public TextureRegion getCurrentAppearance();
 
     @Override
     public float getX() {
