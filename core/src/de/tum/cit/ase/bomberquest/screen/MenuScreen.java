@@ -2,6 +2,7 @@ package de.tum.cit.ase.bomberquest.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -14,6 +15,8 @@ import com.badlogic.gdx.utils.Select;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
+import de.tum.cit.ase.bomberquest.map.GameMap;
+import de.tum.cit.ase.bomberquest.map.MapLoader;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -48,15 +51,21 @@ public class MenuScreen implements Screen {
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (game.getMap() == null) {
+                    game.setMap(new GameMap(game, new MapLoader().getMapFiles()[(int) Math.random()])); // if no map was chosen a random one is selected
+                }
                 game.goToGame(); // Change to the game screen when button is pressed
             }
         });
-
-        // TODO: finish function
-        // Create and add a button to go to a screen for schoosing a map
-        TextButton goToMapSelection = new TextButton("Select Map", game.getSkin());
-        table.add(goToMapSelection).width(300).row();
-//        goToMapSelection.addListener()
+        // Create and add a button to go to select a map file
+        TextButton mapButton = new TextButton("Select Map", game.getSkin());
+        table.add(mapButton).width(300).row();
+        mapButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                game.openFileChooser();
+            }
+        });
     }
     
     /**
@@ -106,4 +115,5 @@ public class MenuScreen implements Screen {
     @Override
     public void hide() {
     }
+
 }

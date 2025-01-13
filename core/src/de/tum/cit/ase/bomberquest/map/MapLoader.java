@@ -1,8 +1,12 @@
 package de.tum.cit.ase.bomberquest.map;
 
+import com.badlogic.gdx.files.FileHandle;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,21 +16,18 @@ import java.util.regex.Pattern;
  * Loads a map file according to the file logic of this game.
  */
 public class MapLoader {
-    private final String mapDirectory;
 
-    public MapLoader(String mapDirectory) {
-        this.mapDirectory = mapDirectory;
-    }
+    public MapLoader() {}
 
     /**
      * Fills up an array of files with all the existing maps
      * @return Array of all file paths for maps
      */
-    public File[] getMapFiles() {
-        File directory = new File(mapDirectory);
-        File[] mapFiles = new File[]{};
+    public FileHandle[] getMapFiles() {
+        FileHandle directory = new FileHandle("maps");
+        FileHandle[] mapFiles = new FileHandle[]{};
         if (directory.exists() && directory.isDirectory()) {
-            mapFiles = directory.listFiles();
+            mapFiles = directory.list();
         }
         return mapFiles;
     }
@@ -36,7 +37,7 @@ public class MapLoader {
      * @param mapFile the file to be prase (change later to mapFile when it´s clear where to get the input from)
      * @return Map with keys consiting of x- and y-coordinates and values indicating the game object
      */
-    public Map<Coordinates, Integer> prasingMap(File mapFile) {
+    public Map<Coordinates, Integer> prasingMap(FileHandle mapFile) {
         // Change file path format to use java.nio.file.Files.readString
         java.nio.file.Path filePath = java.nio.file.Paths.get(mapFile.toString());
         String fileContent = "";
@@ -91,10 +92,6 @@ public class MapLoader {
             }
         }
         return lvl2Filtered;
-    }
-
-    public String getMapDirectory() {
-        return mapDirectory;
     }
 
 }

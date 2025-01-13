@@ -1,12 +1,14 @@
 package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.gameobjects.*;
 import de.tum.cit.ase.bomberquest.mobs.Enemy;
 import de.tum.cit.ase.bomberquest.mobs.Player;
+import de.tum.cit.ase.bomberquest.screen.MenuScreen;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +50,7 @@ public class GameMap {
     /** The Box2D world for physics simulation. */
     private final World world;
     /** Map used in the game */
-    private final File mapFile;
+    private final FileHandle mapFile;
     // Game objects
     private final Player player;
     
@@ -64,24 +66,16 @@ public class GameMap {
     //TODO: replce placeholder for Entrance + Enemy + Exit + power-up until respective class was created
     private List<Placeholder> placeholders;
 
-    public GameMap(BomberQuestGame game) {
+    public GameMap(BomberQuestGame game, FileHandle mapFile) {
         this.game = game;
+        this.mapFile = mapFile;
         this.world = new World(Vector2.Zero, true);
         // initialise player position
         Coordinates entrancePlayerCoordinates = new Coordinates(0,0);
         // Create a chest in the middle of the map
         this.chest = new Chest(world, 10, 6);
         //TODO: replace manual file insertion!!!!
-        MapLoader mapLoader = new MapLoader("maps");
-        // let user choose a map
-        File selectedFile = null;
-//        try {
-//            selectedFile = game.getFileChooser().chooseFile();
-//        } catch (Exception e) {
-//            System.out.println("Exception: " + e);
-//        }
-//        this.mapFile = selectedFile;
-        this.mapFile = mapLoader.getMapFiles()[1];
+        MapLoader mapLoader = new MapLoader();
         // Create flowers/ ground for all tials
         int x = mapLoader.prasingMap(mapFile).keySet().stream().map(Coordinates::getX).max(Integer::compare).orElse(0) + 1;
         // increases x by 1 because otherwise the coordinate 0 isn´t represented

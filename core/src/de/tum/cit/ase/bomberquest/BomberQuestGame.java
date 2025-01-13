@@ -3,13 +3,20 @@ package de.tum.cit.ase.bomberquest;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import de.tum.cit.ase.bomberquest.audio.MusicTrack;
 import de.tum.cit.ase.bomberquest.map.GameMap;
+import de.tum.cit.ase.bomberquest.map.MapLoader;
 import de.tum.cit.ase.bomberquest.screen.GameScreen;
 import de.tum.cit.ase.bomberquest.screen.MenuScreen;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserIntent;
+
+import java.io.FilenameFilter;
 
 /**
  * The BomberQuestGame class represents the core of the Bomber Quest game.
@@ -41,6 +48,11 @@ public class BomberQuestGame extends Game {
     private GameMap map;
 
     /**
+     * The File. This is the File that can be choosen with the fileChooser
+     */
+    private FileHandle file;
+
+    /**
      * Constructor for BomberQuestGame.
      *
      * @param fileChooser The file chooser for the game, typically used in desktop environment.
@@ -59,7 +71,7 @@ public class BomberQuestGame extends Game {
     public void create() {
         this.spriteBatch = new SpriteBatch(); // Create SpriteBatch for rendering
         this.skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json")); // Load UI skin
-        this.map = new GameMap(this); // Create a new game map (you should change this to load the map from a file instead)
+        this.map = null; // Create an empty game map
         MusicTrack.BACKGROUND.play(); // Play some background music
         goToMenu(); // Navigate to the menu screen
     }
@@ -76,6 +88,37 @@ public class BomberQuestGame extends Game {
      */
     public void goToGame() {
         this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
+    }
+
+    /**
+     * Opens a folder to choos a map file from
+     *
+     */
+    public void openFileChooser() {
+        NativeFileChooserConfiguration nativeFileChooserConfiguration = new NativeFileChooserConfiguration();
+        nativeFileChooserConfiguration.directory = Gdx.files.local("maps");
+        nativeFileChooserConfiguration.title = "Choose a map file";
+        nativeFileChooserConfiguration.mimeFilter = "text/plain";
+        nativeFileChooserConfiguration.intent = NativeFileChooserIntent.OPEN;
+        NativeFileChooserCallback nativeFileChooserCallback = new NativeFileChooserCallback() {
+            @Override
+            public void onFileChosen(FileHandle fileHandle) {
+                initializeMap(fileHandle);
+            }
+            @Override
+            public void onCancellation() {
+
+            }
+            @Override
+            public void onError(Exception e) {
+                System.out.println("Error: " + e);
+            }
+        };
+        fileChooser.chooseFile(nativeFileChooserConfiguration, nativeFileChooserCallback);
+    }
+
+    public void initializeMap(FileHandle fileHandle) {
+        this.map = new GameMap(this, fileHandle);
     }
 
     /** Returns the skin for UI elements. */
@@ -118,5 +161,9 @@ public class BomberQuestGame extends Game {
         getScreen().dispose(); // Dispose the current screen
         spriteBatch.dispose(); // Dispose the spriteBatch
         skin.dispose(); // Dispose the skin
+    }
+
+    public void setMap(GameMap map) {
+        this.map = map;
     }
 }
