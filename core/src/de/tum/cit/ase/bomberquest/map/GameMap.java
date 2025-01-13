@@ -54,7 +54,7 @@ public class GameMap {
     // Game objects
     private final Player player;
     
-    private final Chest chest;
+//    private final Chest chest;
     
     private final Flowers[][] flowers;
 
@@ -73,12 +73,12 @@ public class GameMap {
     public GameMap(BomberQuestGame game, FileHandle mapFile) {
         this.game = game;
         this.mapFile = mapFile;
-        timeLeft = 10;
+        timeLeft = 3;
         this.world = new World(Vector2.Zero, true);
         // initialise player position
         Coordinates entrancePlayerCoordinates = new Coordinates(0,0);
         // Create a chest in the middle of the map
-        this.chest = new Chest(world, 10, 6);
+//        this.chest = new Chest(world, 10, 6);
         MapLoader mapLoader = new MapLoader();
         // Create flowers/ ground for all tials
         int x = mapLoader.prasingMap(mapFile).keySet().stream().map(Coordinates::getX).max(Integer::compare).orElse(0) + 1;
@@ -178,16 +178,21 @@ public class GameMap {
         boolean timeRunOut = timeLeft <= 0;
         return timeRunOut;
     }
-    
+
+    /** Cleans up resources when the game is disposed. */
+    public void dispose() {
+        world.dispose();
+    }
+
     /** Returns the player on the map. */
     public Player getPlayer() {
         return player;
     }
     
     /** Returns the chest on the map. */
-    public Chest getChest() {
-        return chest;
-    }
+//    public Chest getChest() {
+//        return chest;
+//    }
     
     /** Returns the flowers on the map. */
     public List<Flowers> getFlowers() {

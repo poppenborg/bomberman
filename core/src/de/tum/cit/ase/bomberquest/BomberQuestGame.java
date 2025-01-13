@@ -183,14 +183,16 @@ public class BomberQuestGame extends Game {
 
     /**
      * Checks whether game is won or lost or still in progress
-     * Sets the screen acordingly
+     * Sets the screen accordingly
      */
     public void checkGameState() {
         if (map.checkLoseStatus()){
             goToLoseScreen();
+            map.dispose();
         }
         if (map.checkWinStatus()) {
             goToWinScreen();
+            map.dispose();
         }
     }
 

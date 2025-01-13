@@ -144,7 +144,7 @@ public class GameScreen implements Screen {
         for (Placeholder placeholder : map.getPlaceholders()) {
             draw(spriteBatch, placeholder);
         }
-        draw(spriteBatch, map.getChest());
+//        draw(spriteBatch, map.getChest());
         draw(spriteBatch, map.getPlayer());
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();
@@ -197,8 +197,11 @@ public class GameScreen implements Screen {
     public void hide() {
     }
 
+    /** Cleans up resources when the game is disposed. */
     @Override
     public void dispose() {
+//        hud.dispose();
+//        map.dispose();
     }
 
 }

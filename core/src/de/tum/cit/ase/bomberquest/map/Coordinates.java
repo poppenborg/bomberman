@@ -1,7 +1,7 @@
 package de.tum.cit.ase.bomberquest.map;
 
 /**
- * Collects the x- and y-values of a coorinate into 1 object to avoid confusing length an hight
+ * Collects the x- and y-values of a coorinate into 1 object to avoid confusing length and hight
  */
 public class Coordinates {
     // Extends horizontally

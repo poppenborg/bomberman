@@ -83,10 +83,7 @@ public class DestructibleWall extends Wall {
     }
 
 
-
-
     //Getters and Setters
-
 
     public boolean isDestroyed() {
         return destroyed;

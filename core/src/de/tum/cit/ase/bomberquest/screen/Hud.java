@@ -59,4 +59,9 @@ public class Hud {
     public void setTimeLeft(float timeLeft) {
         this.timeLeft = timeLeft;
     }
+
+    /** Cleans up resources when the game is disposed. */
+    public void dispose() {
+        spriteBatch.dispose();
+    }
 }
