@@ -5,28 +5,28 @@ package de.tum.cit.ase.bomberquest.map;
  */
 public class Coordinates {
     // Extends horizontally
-    private int x;
+    private float x;
     // Extends vertically
-    private int y;
+    private float y;
 
-    public Coordinates(int x, int y) {
+    public Coordinates(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 
-    public void setX(int x) {
+    public void setX(float x) {
         this.x = x;
     }
 
-    public void setY(int y) {
+    public void setY(float y) {
         this.y = y;
     }
 }

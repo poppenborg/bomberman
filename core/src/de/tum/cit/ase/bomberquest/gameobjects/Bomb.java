@@ -2,19 +2,19 @@ package de.tum.cit.ase.bomberquest.gameobjects;
 
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import de.tum.cit.ase.bomberquest.map.Coordinates;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
-public class Bomb {
+import java.util.Comparator;
 
-    private final float x;
-    private final float y;
+public class Bomb extends Coordinates {
+
     private float elapsedTime;
 
 
     public Bomb(float x, float y) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.elapsedTime = 0;
     }
 
@@ -36,15 +36,6 @@ public class Bomb {
 
 
     //Getters and Setter
-
-
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
 
     public float getElapsedTime() {
         return elapsedTime;

@@ -10,6 +10,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
+import java.awt.*;
+
 /**
  * Represents the mob in the game.
  * The mob has a hitbox, so it can collide with other objects in the game.
@@ -21,6 +23,9 @@ public abstract class Mob implements Drawable {
 
     /** The Box2D hitbox of the mob, used for position and collision detection. */
     private final Body hitbox;
+
+    /** A threshold to avoid unintended animations because of colosions */
+    private final float VELOCITYTHRESHOLD = 0.1f;
 
     public Mob(World world, float x, float y) {
         this.hitbox = createHitbox(world, x, y);
@@ -34,29 +39,7 @@ public abstract class Mob implements Drawable {
      * @param startY The initial Y position.
      * @return The created body.
      */
-    protected Body createHitbox(World world, float startX, float startY) {
-        // BodyDef is like a blueprint for the movement properties of the body.
-        BodyDef bodyDef = new BodyDef();
-        // Dynamic bodies are affected by forces and collisions.
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        // Set the initial position of the body.
-        bodyDef.position.set(startX, startY);
-        // Create the body in the world using the body definition.
-        Body body = world.createBody(bodyDef);
-        // Now we need to give the body a shape so the physics engine knows how to collide with it.
-        // We'll use a circle shape for the mob.
-        CircleShape circle = new CircleShape();
-        // Give the circle a radius of 0.3 tiles (the mob is 0.6 tiles wide).
-        circle.setRadius(0.3f);
-        // Attach the shape to the body as a fixture.
-        // Bodies can have multiple fixtures, but we only need one for the mob.
-        body.createFixture(circle, 1.0f);
-        // We're done with the shape, so we should dispose of it to free up memory.
-        circle.dispose();
-        // Set the mob as the user data of the body so we can look up the mob from the body later.
-        body.setUserData(this);
-        return body;
-    }
+    protected abstract Body createHitbox(World world, float startX, float startY);
 
     /**
      * Method to let the mob move
@@ -93,5 +76,9 @@ public abstract class Mob implements Drawable {
 
     public void setElapsedTime(float elapsedTime) {
         this.elapsedTime = elapsedTime;
+    }
+
+    public float getVELOCITYTHRESHOLD() {
+        return VELOCITYTHRESHOLD;
     }
 }

@@ -3,10 +3,7 @@ package de.tum.cit.ase.bomberquest.mobs;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
@@ -19,6 +16,32 @@ public class Player extends Mob implements Drawable {
     public Player(World world, float x, float y) {
         super(world, x, y);
     }
+
+    @Override
+    protected Body createHitbox(World world, float startX, float startY) {
+        // BodyDef is like a blueprint for the movement properties of the body.
+        BodyDef bodyDef = new BodyDef();
+        // Dynamic bodies are affected by forces and collisions.
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        // Set the initial position of the body.
+        bodyDef.position.set(startX, startY);
+        // Create the body in the world using the body definition.
+        Body body = world.createBody(bodyDef);
+        // Now we need to give the body a shape so the physics engine knows how to collide with it.
+        // We'll use a circle shape for the mob.
+        CircleShape circle = new CircleShape();
+        // Give the circle a radius of 0.3 tiles (the mob is 0.6 tiles wide).
+        circle.setRadius(0.3f);
+        // Attach the shape to the body as a fixture.
+        // Bodies can have multiple fixtures, but we only need one for the mob.
+        body.createFixture(circle, 1.0f);
+        // We're done with the shape, so we should dispose of it to free up memory.
+        circle.dispose();
+        // Set the mob as the user data of the body so we can look up the mob from the body later.
+        body.setUserData(this);
+        return body;
+    }
+
 
     /**
      * Move the player via the keyboard using the arrow keys OR the WASD as an alternative
@@ -52,11 +75,6 @@ public class Player extends Mob implements Drawable {
         getHitbox().setLinearVelocity(xVelocity, yVelocity);
     }
 
-    /**
-     * Method for the animation of the player
-     * Detects the current velocity of the mob and returns the animation based on the movement direction
-     */
-
     @Override
     public TextureRegion getCurrentAppearance() {
         // Get the current velocity of the mob
@@ -66,20 +84,37 @@ public class Player extends Mob implements Drawable {
 
         // Return animation based on the movement direction
 
-        if (xVelocity > 0) {
-
+        if (xVelocity > 0 && xVelocity > getVELOCITYTHRESHOLD()) {
             return Animations.CHARACTER_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
-        } else if (xVelocity < 0) {
 
+        } else if (xVelocity < 0 && Math.abs(xVelocity) > getVELOCITYTHRESHOLD()) {
             return Animations.CHARACTER_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
-        } else if (yVelocity > 0) {
 
+        } else if (yVelocity > 0 && yVelocity > getVELOCITYTHRESHOLD()) {
             return Animations.CHARACTER_WALK_UP.getKeyFrame(getElapsedTime(), true);
-        } else if (yVelocity < 0) {
 
+        } else if (yVelocity < 0 && Math.abs(yVelocity) > getVELOCITYTHRESHOLD()) {
             return Animations.CHARACTER_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
+
         } else {
             return Animations.CHARACTER_WALK_DOWN.getKeyFrame( 0, false);
         }
+
+//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+//            return Animations.CHARACTER_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
+//
+//        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
+//            return Animations.CHARACTER_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
+//
+//        } else if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
+//            return Animations.CHARACTER_WALK_UP.getKeyFrame(getElapsedTime(), true);
+//
+//        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
+//            return Animations.CHARACTER_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
+//
+//        } else {
+//            return Animations.CHARACTER_WALK_DOWN.getKeyFrame( 0, false);
+//        }
     }
+
 }

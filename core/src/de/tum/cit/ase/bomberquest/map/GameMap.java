@@ -2,6 +2,7 @@ package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
@@ -73,7 +74,7 @@ public class GameMap {
     public GameMap(BomberQuestGame game, FileHandle mapFile) {
         this.game = game;
         this.mapFile = mapFile;
-        timeLeft = 3;
+        timeLeft = 300;
         this.world = new World(Vector2.Zero, true);
         // initialise player position
         Coordinates entrancePlayerCoordinates = new Coordinates(0,0);
@@ -81,11 +82,11 @@ public class GameMap {
 //        this.chest = new Chest(world, 10, 6);
         MapLoader mapLoader = new MapLoader();
         // Create flowers/ ground for all tials
-        int x = mapLoader.prasingMap(mapFile).keySet().stream().map(Coordinates::getX).max(Integer::compare).orElse(0) + 1;
+        float x = mapLoader.prasingMap(mapFile).keySet().stream().map(Coordinates::getX).max(Float::compare).orElse(0f) + 1f;
         // increases x by 1 because otherwise the coordinate 0 isn´t represented
-        int y = mapLoader.prasingMap(mapFile).keySet().stream().map(Coordinates::getY).max(Integer::compare).orElse(0) + 1;
+        float y = mapLoader.prasingMap(mapFile).keySet().stream().map(Coordinates::getY).max(Float::compare).orElse(0f) + 1f;
         // increases y by 1 because otherwise the coordinate 0 isn´t represented
-        this.flowers = new Flowers[x][y];
+        this.flowers = new Flowers[(int) x][(int) y];
         for (int i = 0; i < flowers.length; i++) {
             for (int j = 0; j < flowers[i].length; j++) {
                 this.flowers[i][j] = new Flowers(i, j);
@@ -171,12 +172,28 @@ public class GameMap {
         return allEnemiesDefeated;
     }
     /**
-     * Chescks wether one of the conditions to lose the game is fulfilled
+     * Chescks whether one of the conditions to lose the game is fulfilled
      * @return returns true if one of the conditions to lose the game is fulfilled
      */
     public boolean checkLoseStatus() {
         boolean timeRunOut = timeLeft <= 0;
         return timeRunOut;
+    }
+
+    /**
+     * Tests wether the player collides with an enemy
+     * @return true if the player collides with the enemy
+     */
+    public boolean collisionPlayerEnemy() {
+//        for (Enemy enemy : enemies) {
+//            double xDistance = player.getX() - enemy.getX();
+//            double yDistance = player.getY() - enemy.getY();
+//            double squaredDistance = Math.pow(xDistance, 2.) + Math.pow(yDistance, 2);
+//            double distance = Math.sqrt(squaredDistance);
+//            if (distance < (player.getHitbox().)) {
+//            }
+//        }
+        return false;
     }
 
     /** Cleans up resources when the game is disposed. */
@@ -223,7 +240,6 @@ public class GameMap {
     public World getWorld() {
         return world;
     }
-
 
     // getter and setter for the timer
     public void setTimeLeft(float timeLeft) {

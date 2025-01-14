@@ -5,17 +5,16 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import de.tum.cit.ase.bomberquest.map.Coordinates;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
 /**
  * A wall is a static object with a hitbox, so the player cannot walk through it, unless destroyed.
  */
-public abstract class Wall implements Drawable {
+public abstract class Wall extends Coordinates implements Drawable {
 
     // We would normally get the position from the hitbox, but since we don't need to move the chest, we can store the position directly.
-    private final float x;
-    private final float y;
     private final Body body;
 
     /**
@@ -25,8 +24,7 @@ public abstract class Wall implements Drawable {
      * @param y The Y position.
      */
     public Wall(World world, float x, float y) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         // Since the hitbox never moves, and we never need to change it, we don't need to store a reference to it.
         this.body = createHitbox(world);
     }
@@ -38,7 +36,7 @@ public abstract class Wall implements Drawable {
     private Body createHitbox(World world) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(this.x, this.y);
+        bodyDef.position.set(getX(), getY());
         Body body = world.createBody(bodyDef);
         PolygonShape box = new PolygonShape();
         box.setAsBox(0.5f, 0.5f);
@@ -50,16 +48,6 @@ public abstract class Wall implements Drawable {
     
     @Override
     public abstract TextureRegion getCurrentAppearance();
-
-    @Override
-    public float getX() {
-        return x;
-    }
-    
-    @Override
-    public float getY() {
-        return y;
-    }
 
     public Body getBody() {
         return body;

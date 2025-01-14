@@ -1,6 +1,7 @@
 package de.tum.cit.ase.bomberquest.gameobjects;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import de.tum.cit.ase.bomberquest.map.Coordinates;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
@@ -10,28 +11,15 @@ import de.tum.cit.ase.bomberquest.texture.Textures;
  * they do not have a hitbox, so the player does not collide with them and
  * they are purely decorative and serve as a nice floor decoration.
  */
-public class Placeholder implements Drawable {
+public class Placeholder extends Coordinates implements Drawable {
 
-    private final int x;
-    private final int y;
-
-    public Placeholder(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Placeholder(float x, float y) {
+        super(x, y);
     }
     
     @Override
     public TextureRegion getCurrentAppearance() {
         return Textures.PLACEHOLDER;
     }
-    
-    @Override
-    public float getX() {
-        return x;
-    }
-    
-    @Override
-    public float getY() {
-        return y;
-    }
+
 }
