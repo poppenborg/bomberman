@@ -3,8 +3,12 @@ package de.tum.cit.ase.bomberquest.gameobjects;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import de.tum.cit.ase.bomberquest.map.Coordinates;
+import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bomb extends Coordinates implements Drawable {
 
@@ -13,6 +17,10 @@ public class Bomb extends Coordinates implements Drawable {
     private float stateTime; //time variable for the bomb
     private boolean isExploding; // current state of the bomb (igniting or exploding)
     private boolean toBeRemoved; // After the explosion, the bomb should be removed from the game
+
+    private int blastRadius = 1; // default blast radius
+    private List<Coordinates> blastCoordinates = new ArrayList<>(); // Coordinates of the explosion animation
+    private GameMap gameMap;
 
 
     /**
@@ -23,8 +31,9 @@ public class Bomb extends Coordinates implements Drawable {
      */
 
 
-    public Bomb(float x, float y) {
+    public Bomb(float x, float y, GameMap gameMap) {
         super(x, y);
+        this.gameMap = gameMap;
         this.stateTime = 0f;
         this.isExploding = false;
         this.toBeRemoved = false;
@@ -42,9 +51,61 @@ public class Bomb extends Coordinates implements Drawable {
 
     public TextureRegion getCurrentAppearance () {
         if (isExploding) {
-            return Animations.BOMB_EXPLODING.getKeyFrame(stateTime, false); // Explosion Animation (single time)
+            return Animations.BOMB_CENTER_EXPLOSION.getKeyFrame(stateTime, false); // Render center explosion
         }
         return Animations.BOMB_IGNITING.getKeyFrame(stateTime, true); // Looping the Animation of the ignition
+    }
+
+    /**
+     * Retrieves the animation for an explosion specific to given coordinates.
+     *
+     * @param coord The coordinate for which to retrieve the appearance.
+     * @return The appropriate texture region for a specific part of the explosion.
+     */
+    public TextureRegion getAppearanceForCoordinate(Coordinates coord) {
+        // Center explosion
+        if (coord.equals(new Coordinates(getX(), getY()))) {
+            return Animations.BOMB_CENTER_EXPLOSION.getKeyFrame(stateTime, false);
+        }
+
+        // Vertical explosion
+        if (coord.getX() == getX()) {
+            if (coord.getY() > getY() && coord.getY() < getY() + blastRadius) { // Up
+                return Animations.BOMB_BLAST_VERTICAL.getKeyFrame(stateTime, false);
+            }
+            if (coord.getY() < getY() && coord.getY() > getY() - blastRadius) { // Down
+                return Animations.BOMB_BLAST_VERTICAL.getKeyFrame(stateTime, false);
+            }
+        }
+
+        // Horizontal explosion
+        if (coord.getY() == getY()) {
+            if (coord.getX() > getX() && coord.getX() < getX() + blastRadius) { // Right
+                return Animations.BOMB_BLAST_HORIZONTAL.getKeyFrame(stateTime, false);
+            }
+            if (coord.getX() < getX() && coord.getX() > getX() - blastRadius) { // Left
+                return Animations.BOMB_BLAST_HORIZONTAL.getKeyFrame(stateTime, false);
+            }
+        }
+
+        // Endpoints of vertical explosion
+        if (coord.equals(new Coordinates(getX(), getY() + blastRadius))) { // End-Up
+            return Animations.BOMB_BLAST_END_UP.getKeyFrame(stateTime, false);
+        }
+        if (coord.equals(new Coordinates(getX(), getY() - blastRadius))) { // End-Down
+            return Animations.BOMB_BLAST_END_DOWN.getKeyFrame(stateTime, false);
+        }
+
+        // Endpoints of horizontal explosion
+        if (coord.equals(new Coordinates(getX() + blastRadius, getY()))) { // End-Right
+            return Animations.BOMB_BLAST_END_RIGHT.getKeyFrame(stateTime, false);
+        }
+        if (coord.equals(new Coordinates(getX() - blastRadius, getY()))) { // End-Left
+            return Animations.BOMB_BLAST_END_LEFT.getKeyFrame(stateTime, false);
+        }
+
+        // Fallback (just in case)
+        return Animations.BOMB_CENTER_EXPLOSION.getKeyFrame(stateTime, false);
     }
 
     /**
@@ -72,10 +133,37 @@ public class Bomb extends Coordinates implements Drawable {
     public void explode() {
         isExploding = true;
         stateTime = 0f; // reset timer for explosion
+        calculateBlastCoordinates(); //calculate the explosion radius
     }
 
+    private void calculateBlastCoordinates() {
+        blastCoordinates.clear();
+
+        // Central explsion
+        blastCoordinates.add(new Coordinates(getX(), getY()));
+
+        addBlastCoordinatesInDirection(0, 1);   // Up
+        addBlastCoordinatesInDirection(0, -1);  // Down
+        addBlastCoordinatesInDirection(-1, 0);  // Left
+        addBlastCoordinatesInDirection(1, 0);   // Right
+    }
+
+    private void addBlastCoordinatesInDirection(int dx, int dy) {
+        for (int i = 0; i <= blastRadius; i++) {
+            float newX = getX() + i * dx;
+            float newY = getY() + i * dy;
+
+            // stop the animation at a wall if there are walls within the blast radius
 
 
+            if (gameMap.isIndestructibleWallAt(newX, newY)) {
+                break;
+            }
+
+            blastCoordinates.add(new Coordinates(newX, newY));
+
+        }
+    }
 
 
 
@@ -83,5 +171,21 @@ public class Bomb extends Coordinates implements Drawable {
 
     public boolean isToBeRemoved() {
         return toBeRemoved;
+    }
+
+    public float getStateTime() {
+        return stateTime;
+    }
+
+    public boolean isExploding() {
+        return isExploding;
+    }
+
+    public int getBlastRadius() {
+        return blastRadius;
+    }
+
+    public List<Coordinates> getBlastCoordinates() {
+        return blastCoordinates;
     }
 }

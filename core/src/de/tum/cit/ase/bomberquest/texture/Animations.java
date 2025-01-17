@@ -111,12 +111,55 @@ public class Animations {
     );
 
     /**
-     * The animation for the bomb exploding;
+     * The animation for the bomb exploding in every direction;
      */
 
-    public static final Animation<TextureRegion> BOMB_EXPLODING = new Animation<>(0.1f,
-            SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 3),
-            SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 2),
-            SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 1)
+    public static final Animation<TextureRegion> BOMB_CENTER_EXPLOSION = new Animation<>(0.1f,
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(7, 3),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(7, 8),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(12, 3),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(12, 8)
+    );
+
+    public static final Animation<TextureRegion> BOMB_BLAST_VERTICAL = new Animation<>(0.1f,
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(6, 3),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(6, 8),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(11, 3),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(11, 8)
+    );
+
+    public static final Animation<TextureRegion> BOMB_BLAST_HORIZONTAL = new Animation<>(0.1f,
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(7, 2),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(7, 7),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(12, 2),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(12, 7)
+    );
+
+    public static final Animation<TextureRegion> BOMB_BLAST_END_UP = new Animation<>(0.1f,
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(5, 3),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(5, 8),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(10, 3),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(10, 8)
+    );
+
+    public static final Animation<TextureRegion> BOMB_BLAST_END_DOWN = new Animation<>(0.1f,
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(9, 3),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(9, 8),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(14, 3),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(14, 8)
+    );
+
+    public static final Animation<TextureRegion> BOMB_BLAST_END_LEFT = new Animation<>(0.1f,
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(7, 1),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(7, 6),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(12, 1),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(12, 6)
+    );
+
+    public static final Animation<TextureRegion> BOMB_BLAST_END_RIGHT = new Animation<>(0.1f,
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(7, 5),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(7, 10),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(12, 5),
+            SpriteSheet.ORIGINAL_BOMBERMAN.at(12, 10)
     );
 }

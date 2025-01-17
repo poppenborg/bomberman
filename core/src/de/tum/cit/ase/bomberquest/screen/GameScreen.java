@@ -145,7 +145,19 @@ public class GameScreen implements Screen {
         //Draw bombs
         for (Bomb bomb : map.getBombs()) {
             draw(spriteBatch, bomb);
+
+            for (Coordinates coord : bomb.getBlastCoordinates()) {
+                float x = coord.getX() * TILE_SIZE_PX * SCALE;
+                float y = coord.getY() * TILE_SIZE_PX * SCALE;
+
+                TextureRegion texture = bomb.getAppearanceForCoordinate(coord);
+
+                if (texture != null) {
+                    spriteBatch.draw(texture, x, y, TILE_SIZE_PX * SCALE, TILE_SIZE_PX * SCALE);
+                }
+            }
         }
+
 
         // TODO: replace placeholder for Enemy + Exit + power-up until respective class was created
         // TODO: code must be placed before loop for destructibleWall to be placed underneath it

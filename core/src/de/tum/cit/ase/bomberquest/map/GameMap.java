@@ -224,8 +224,40 @@ public class GameMap {
         bombs.removeAll(bombsToRemove);
     }
 
+    /**
+     * Checks if there is an indestructible wall at the specified coordinates in the parameter. Is used to properly animate the blast of the bomb.
+     *
+     * @param x the x-coordinate to check
+     * @param y the y-coordinate to check
+     * @return true if an indestructible wall exists at the given coordinates, false otherwise
+     */
 
 
+    public boolean isIndestructibleWallAt(float x, float y) {
+        for (Wall wall : indestructibleWalls) {
+            if (wall.getX() == x && wall.getY() == y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if there is an destructible wall at the specified coordinates in the parameter. Is used to properly animate the blast of the bomb.
+     *
+     * @param x the x-coordinate to check
+     * @param y the y-coordinate to check
+     * @return true if an destructible wall exists at the given coordinates, false otherwise
+     */
+
+    public boolean isDestructibleWallAt(float x, float y) {
+        for (Wall wall : destructibleWalls) {
+            if (wall.getX() == x && wall.getY() == y) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     /** Cleans up resources when the game is disposed. */

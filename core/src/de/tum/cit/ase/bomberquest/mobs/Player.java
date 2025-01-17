@@ -131,7 +131,7 @@ public class Player extends Mob implements Drawable {
         float bombY = Math.round(getY());
 
         // Create Bomb and place it on the GameMap
-        Bomb bomb = new Bomb(bombX, bombY);
+        Bomb bomb = new Bomb(bombX, bombY, gameMap);
         gameMap.getBombs().add(bomb);
 
         System.out.println("Bomb dropped at position: " + bombX + ", " + bombY);
