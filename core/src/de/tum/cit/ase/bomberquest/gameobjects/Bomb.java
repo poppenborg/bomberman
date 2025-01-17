@@ -2,6 +2,7 @@ package de.tum.cit.ase.bomberquest.gameobjects;
 
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Timer;
 import de.tum.cit.ase.bomberquest.map.Coordinates;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.texture.Animations;
@@ -18,7 +19,7 @@ public class Bomb extends Coordinates implements Drawable {
     private boolean isExploding; // current state of the bomb (igniting or exploding)
     private boolean toBeRemoved; // After the explosion, the bomb should be removed from the game
 
-    private int blastRadius = 1; // default blast radius
+    private int blastRadius = 2; // default blast radius
     private List<Coordinates> blastCoordinates = new ArrayList<>(); // Coordinates of the explosion animation
     private GameMap gameMap;
 
@@ -134,6 +135,20 @@ public class Bomb extends Coordinates implements Drawable {
         isExploding = true;
         stateTime = 0f; // reset timer for explosion
         calculateBlastCoordinates(); //calculate the explosion radius
+
+        for (Coordinates coord : blastCoordinates) {
+            if (gameMap.isDestructibleWallAt(coord.getX(), coord.getY())) {
+                DestructibleWall wallToDestroy = gameMap.getDestructibleWall(coord.getX(), coord.getY());
+                if (wallToDestroy != null) {
+                    Timer.schedule(new Timer.Task() {
+                        @Override
+                        public void run() {
+                            wallToDestroy.destroy(gameMap.getWorld());
+                        }
+                    }, 0.25f);
+                }
+            }
+        }
     }
 
     private void calculateBlastCoordinates() {
@@ -162,6 +177,9 @@ public class Bomb extends Coordinates implements Drawable {
 
             blastCoordinates.add(new Coordinates(newX, newY));
 
+            if (gameMap.isDestructibleWallAt(newX, newY)) {
+                break;
+            }
         }
     }
 

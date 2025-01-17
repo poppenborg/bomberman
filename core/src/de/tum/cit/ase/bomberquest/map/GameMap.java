@@ -259,6 +259,25 @@ public class GameMap {
         return false;
     }
 
+    /**
+     * Retrieves a destructible wall located at the specified coordinates.
+     * Searches through the list of destructible walls and returns the wall
+     * matching the provided coordinates, if it exists.
+     *
+     * @param x the x-coordinate of the desired destructible wall
+     * @param y the y-coordinate of the desired destructible wall
+     * @return the DestructibleWall at the specified coordinates, or null if no such wall exists
+     */
+
+    public DestructibleWall getDestructibleWall(float x, float y) {
+        for (DestructibleWall wall : destructibleWalls) {
+            if (wall.getX() == x && wall.getY() == y) {
+                return wall;
+            }
+        }
+        return null;
+    }
+
 
     /** Cleans up resources when the game is disposed. */
     public void dispose() {
