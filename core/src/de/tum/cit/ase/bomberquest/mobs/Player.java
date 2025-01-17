@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
+import de.tum.cit.ase.bomberquest.gameobjects.Bomb;
+import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
@@ -13,8 +15,14 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
  */
 public class Player extends Mob implements Drawable {
 
-    public Player(World world, float x, float y) {
+    private static final float BOMB_COOLDOWN = 3.0f;
+    private float timeSinceLastBomb = 3.0f;
+    private GameMap gameMap;
+
+
+    public Player(World world, float x, float y, GameMap gameMap) {
         super(world, x, y);
+        this.gameMap = gameMap;
     }
 
     @Override
@@ -73,6 +81,20 @@ public class Player extends Mob implements Drawable {
         }
 
         getHitbox().setLinearVelocity(xVelocity, yVelocity);
+
+        //Bomb cooldown
+
+        timeSinceLastBomb += frameTime;
+
+        //Drop Bomb
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && timeSinceLastBomb >= BOMB_COOLDOWN) {
+            dropBomb();
+            timeSinceLastBomb = 0f;
+        }
+
+        //Update bombs
+
     }
 
     @Override
@@ -99,22 +121,25 @@ public class Player extends Mob implements Drawable {
         } else {
             return Animations.CHARACTER_WALK_DOWN.getKeyFrame( 0, false);
         }
-
-//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-//            return Animations.CHARACTER_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
-//
-//        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-//            return Animations.CHARACTER_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
-//
-//        } else if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-//            return Animations.CHARACTER_WALK_UP.getKeyFrame(getElapsedTime(), true);
-//
-//        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-//            return Animations.CHARACTER_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
-//
-//        } else {
-//            return Animations.CHARACTER_WALK_DOWN.getKeyFrame( 0, false);
-//        }
     }
+
+    //Bombs
+
+    private void dropBomb() {
+        //place bomb at position of player
+        float bombX = Math.round(getX());
+        float bombY = Math.round(getY());
+
+        // Create Bomb and place it on the GameMap
+        Bomb bomb = new Bomb(bombX, bombY);
+        gameMap.getBombs().add(bomb);
+
+        System.out.println("Bomb dropped at position: " + bombX + ", " + bombY);
+
+    }
+
+
+    //Getter and Setters
+
 
 }

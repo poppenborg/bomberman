@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
-import de.tum.cit.ase.bomberquest.gameobjects.DestructibleWall;
-import de.tum.cit.ase.bomberquest.gameobjects.Flowers;
-import de.tum.cit.ase.bomberquest.gameobjects.IndestructibleWall;
-import de.tum.cit.ase.bomberquest.gameobjects.Placeholder;
+import de.tum.cit.ase.bomberquest.gameobjects.*;
 import de.tum.cit.ase.bomberquest.map.*;
 import de.tum.cit.ase.bomberquest.mobs.Enemy;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
@@ -89,6 +86,11 @@ public class GameScreen implements Screen {
         for (DestructibleWall wall : map.getDestructibleWalls()) {
             wall.update(frameTime);
         }
+
+        //Render the Bombs
+
+        map.updateBombs(deltaTime);
+
         // update the timer
         timeLeft -= deltaTime;
         hud.setTimeLeft(timeLeft);
@@ -139,6 +141,12 @@ public class GameScreen implements Screen {
         for (Enemy enemy : map.getEnemies()) {
             draw(spriteBatch, enemy);
         }
+
+        //Draw bombs
+        for (Bomb bomb : map.getBombs()) {
+            draw(spriteBatch, bomb);
+        }
+
         // TODO: replace placeholder for Enemy + Exit + power-up until respective class was created
         // TODO: code must be placed before loop for destructibleWall to be placed underneath it
         for (Placeholder placeholder : map.getPlaceholders()) {
@@ -148,6 +156,7 @@ public class GameScreen implements Screen {
         draw(spriteBatch, map.getPlayer());
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();
+
     }
     
     /**

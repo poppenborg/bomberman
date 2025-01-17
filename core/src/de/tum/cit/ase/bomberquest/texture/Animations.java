@@ -114,7 +114,7 @@ public class Animations {
      * The animation for the bomb exploding;
      */
 
-    public static final Animation<TextureRegion> BOMB_Exploding = new Animation<>(0.1f,
+    public static final Animation<TextureRegion> BOMB_EXPLODING = new Animation<>(0.1f,
             SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 3),
             SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 2),
             SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 1)

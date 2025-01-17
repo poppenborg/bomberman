@@ -4,94 +4,84 @@ package de.tum.cit.ase.bomberquest.gameobjects;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import de.tum.cit.ase.bomberquest.map.Coordinates;
 import de.tum.cit.ase.bomberquest.texture.Animations;
-import de.tum.cit.ase.bomberquest.texture.Textures;
+import de.tum.cit.ase.bomberquest.texture.Drawable;
 
-public class Bomb extends Coordinates {
+public class Bomb extends Coordinates implements Drawable {
 
-    private float elapsedTime;
-    private float ignitingAnimationTime;
-    private float explosionAnimationTime;
-    private boolean isExplosionAnimationPlaying;
-    private float explosionDelay;
-    private boolean exploded;
+    private static final float IGNITING_DURATION = 3.0f;
+    private static final float EXPLOSION_DURATION = 0.5f;
+    private float stateTime; //time variable for the bomb
+    private boolean isExploding; // current state of the bomb (igniting or exploding)
+    private boolean toBeRemoved; // After the explosion, the bomb should be removed from the game
+
 
     /**
+     * Creates a new Bomb object at the specified coordinates.
      *
-     * @param x x-coordinate of the Bomb
-     * @param y y-coordinate of the Bomb
-     * @param explosionDelay Time between the bomb has been dropped and the actual explosion
-     *
-     *
+     * @param x The x-coordinate where the bomb is placed.
+     * @param y The y-coordinate where the bomb is placed.
      */
 
 
-    public Bomb(float x, float y, float explosionDelay) {
+    public Bomb(float x, float y) {
         super(x, y);
-        this.elapsedTime = 0;
-        this.ignitingAnimationTime = 0;
-        this.explosionAnimationTime = 0;
-        this.isExplosionAnimationPlaying = false;
-        this.explosionDelay= explosionDelay;
-        this.exploded = false;
-
+        this.stateTime = 0f;
+        this.isExploding = false;
+        this.toBeRemoved = false;
     }
 
     //Methods
 
     /**
-     * Method for the bombs texture
-     * @return
+     * Retrieves the current appearance of the bomb based on its state.
+     * If the bomb is in the "exploding" state, it returns the appropriate frame of the explosion
+     * animation. Otherwise, it returns the appropriate frame of the ignition animation.
+     *
+     * @return The current texture region representing the bomb's appearance.
      */
 
     public TextureRegion getCurrentAppearance () {
-        if (!exploded) {
-            return Animations.BOMB_IGNITING.getKeyFrame(elapsedTime, true);
-        } else if (isExplosionAnimationPlaying) {
-            return Animations.BOMB_Exploding.getKeyFrame(explosionAnimationTime, false);
+        if (isExploding) {
+            return Animations.BOMB_EXPLODING.getKeyFrame(stateTime, false); // Explosion Animation (single time)
         }
-        else return null;
-    }
-
-
-
-    public void explode() {
-        exploded = true;
-        isExplosionAnimationPlaying = true;
-
+        return Animations.BOMB_IGNITING.getKeyFrame(stateTime, true); // Looping the Animation of the ignition
     }
 
     /**
-     * Method to update the elapsed Time, ignitingAnimationTime, explosionAnimationTime;
-     * @param deltaTime time of the game;
+     * Updates the bombs state depending o the passed time.
      */
 
     public void update(float deltaTime) {
-        if (!exploded) {
-            elapsedTime += deltaTime;
-            ignitingAnimationTime += deltaTime;
-            if (elapsedTime >= explosionDelay) {
-                explode();
+        stateTime += deltaTime;
+
+        if (isExploding) {
+            if (stateTime > EXPLOSION_DURATION) {
+                toBeRemoved = true;
             }
-        } else if (isExplosionAnimationPlaying) {
-            explosionAnimationTime += deltaTime;
-            if (Animations.BOMB_Exploding.isAnimationFinished(explosionAnimationTime)) {
-                isExplosionAnimationPlaying = false;
+        } else {
+            if (stateTime > IGNITING_DURATION) {
+                explode();
             }
         }
     }
+
+    /**
+     * Triggers the explosion of this bomb.
+     */
+
+    public void explode() {
+        isExploding = true;
+        stateTime = 0f; // reset timer for explosion
+    }
+
+
+
+
 
 
     //Getters and Setter
 
-    public float getElapsedTime() {
-        return elapsedTime;
-    }
-
-    public float getExplosionDelay() {
-        return explosionDelay;
-    }
-
-    public boolean isExploded() {
-        return exploded;
+    public boolean isToBeRemoved() {
+        return toBeRemoved;
     }
 }

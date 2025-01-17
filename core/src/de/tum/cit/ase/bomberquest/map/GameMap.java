@@ -64,6 +64,9 @@ public class GameMap {
     private List<DestructibleWall> destructibleWalls;
 
     private List<Enemy> enemies;
+
+    private List<Bomb> bombs;
+
     //TODO: replce placeholder for Entrance + Enemy + Exit + power-up until respective class was created
     private List<Placeholder> placeholders;
 
@@ -97,6 +100,7 @@ public class GameMap {
         destructibleWalls = new ArrayList<>();
         placeholders = new ArrayList<>();
         enemies = new ArrayList<>();
+        bombs = new ArrayList<>();
         //TODO: replace placeholders
         Map<Coordinates, Integer> prasedMap = mapLoader.prasingMap(mapFile);
         // Iterates over the gameObjects map
@@ -134,7 +138,7 @@ public class GameMap {
             placeholders.add(new Placeholder(entryCoordinate.getX(), entryCoordinate.getY()));
         }
         // Create a player with initial position at entrance (or 0, 0 if no entrance was specified)
-        this.player = new Player(this.world, entrancePlayerCoordinates.getX(), entrancePlayerCoordinates.getY());
+        this.player = new Player(this.world, entrancePlayerCoordinates.getX(), entrancePlayerCoordinates.getY(), this);
     }
     
     /**
@@ -143,10 +147,14 @@ public class GameMap {
      * @param frameTime the time that has passed since the last update
      */
     public void tick(float frameTime) {
+
+        //Player
+
         this.player.tick(frameTime);
         for (Enemy enemy : enemies) {
             enemy.tick(frameTime);
         }
+
         doPhysicsStep(frameTime);
     }
     
@@ -196,6 +204,30 @@ public class GameMap {
         return false;
     }
 
+    //Bombs
+
+    /**
+     * Update all the bombs on the map and remove them if they've exploded.
+     */
+    public void updateBombs(float deltaTime) {
+        List<Bomb> bombsToRemove = new ArrayList<>();
+
+        for (Bomb bomb : bombs) {
+            bomb.update(deltaTime);
+
+            if (bomb.isToBeRemoved()) {
+                bombsToRemove.add(bomb);
+            }
+        }
+
+        // Delete exploded Bombs
+        bombs.removeAll(bombsToRemove);
+    }
+
+
+
+
+
     /** Cleans up resources when the game is disposed. */
     public void dispose() {
         world.dispose();
@@ -229,6 +261,11 @@ public class GameMap {
     /** Returns the Mobs on the map. */
     public List<Enemy> getEnemies() {
         return enemies;
+    }
+
+    /** Returns the Bombs on the map. */
+    public List<Bomb> getBombs() {
+        return bombs;
     }
 
     /** Returns the placeholders on the map. */
