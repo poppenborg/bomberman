@@ -19,7 +19,7 @@ public class Bomb extends Coordinates implements Drawable {
     private boolean isExploding; // current state of the bomb (igniting or exploding)
     private boolean toBeRemoved; // After the explosion, the bomb should be removed from the game
 
-    private int blastRadius = 2; // default blast radius
+    private int blastRadius = 1; // default blast radius
     private List<Coordinates> blastCoordinates = new ArrayList<>(); // Coordinates of the explosion animation
     private GameMap gameMap;
 
@@ -128,7 +128,12 @@ public class Bomb extends Coordinates implements Drawable {
     }
 
     /**
-     * Triggers the explosion of this bomb.
+     * Triggers the explosion sequence for the bomb. This method performs the following tasks:
+     * 1. Sets the bomb's state to "exploding" and resets the internal timer to track the explosion animation.
+     * 2. Calculates the bomb's blast coordinates to determine the explosion radius using the surrounding area.
+     * 3. Checks each blast coordinate for destructible walls. If a destructible wall is present at a given coordinate:
+     *    a. Schedules the destruction of the wall after the explosion animation is complete.
+     *    b. Schedules the removal of the wall from the game map once both the wall destruction and explosion animations are finished.
      */
 
     public void explode() {
@@ -140,14 +145,26 @@ public class Bomb extends Coordinates implements Drawable {
             if (gameMap.isDestructibleWallAt(coord.getX(), coord.getY())) {
                 DestructibleWall wallToDestroy = gameMap.getDestructibleWall(coord.getX(), coord.getY());
                 if (wallToDestroy != null) {
+
+                    // detroy the  wall, after the explosion animation is finished
+
                     Timer.schedule(new Timer.Task() {
                         @Override
                         public void run() {
-                            wallToDestroy.destroy(gameMap.getWorld());
+                            wallToDestroy.destroy(gameMap.getWorld()); // call destroy () on wall
                         }
-                    }, 0.25f);
+                    }, Animations.BOMB_CENTER_EXPLOSION.getAnimationDuration());
+
+                    // remove wall, after the wall and explosion animation is finished
+                    Timer.schedule(new Timer.Task() {
+                        @Override
+                        public void run() {
+                            gameMap.removeDestructibleWall(wallToDestroy); //remove wall from the map
+                        }
+                    }, Animations.DESTRUCTIBLE_WALL_DESTROY.getAnimationDuration() + Animations.BOMB_CENTER_EXPLOSION.getAnimationDuration());
                 }
             }
+
         }
     }
 
@@ -185,6 +202,7 @@ public class Bomb extends Coordinates implements Drawable {
 
 
 
+
     //Getters and Setter
 
     public boolean isToBeRemoved() {
@@ -199,8 +217,13 @@ public class Bomb extends Coordinates implements Drawable {
         return isExploding;
     }
 
+
     public int getBlastRadius() {
         return blastRadius;
+    }
+
+    public void setBlastRadius(int blastRadius) {
+        this.blastRadius = blastRadius;
     }
 
     public List<Coordinates> getBlastCoordinates() {

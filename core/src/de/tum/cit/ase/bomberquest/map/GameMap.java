@@ -278,6 +278,16 @@ public class GameMap {
         return null;
     }
 
+    /**
+     * Removes the specified destructible wall from the list of destructible walls in the game map.
+     *
+     * @param wall the DestructibleWall to be removed from the game map
+     */
+
+    public void removeDestructibleWall(DestructibleWall wall) {
+        destructibleWalls.remove(wall);
+    }
+
 
     /** Cleans up resources when the game is disposed. */
     public void dispose() {

@@ -20,6 +20,11 @@ public class Hud {
     private final OrthographicCamera camera;
     /** The time left in the Game. */
     private float timeLeft;
+    /** The Cooldown for the player to drop the next bomb*/
+    private float bombCooldown;
+    /** The current blast Radius*/
+    private float blastRadius;
+
 
     public Hud(SpriteBatch spriteBatch, BitmapFont font) {
         this.spriteBatch = spriteBatch;
@@ -39,6 +44,22 @@ public class Hud {
         // Draw the HUD elements
         font.draw(spriteBatch, "Press Esc to Pause!", 10, Gdx.graphics.getHeight() - 10);
         font.draw(spriteBatch, "Time left: " + String.format("%.1f", timeLeft), 10, Gdx.graphics.getHeight() - 40);
+
+
+        //Bomb-Cooldown
+        if (bombCooldown <= 0) {
+            font.draw(spriteBatch, "BOMB READY!!!", 10, 80); // Text if ready
+        } else {
+            font.draw(spriteBatch, "Bomb Cooldown: " + String.format("%.1f", bombCooldown), 10, 80);
+        }
+
+        //Blast Radius
+        if (blastRadius == 8) {
+            font.draw(spriteBatch, "Blast Radius: 8 (Max)", 10, 30); // if max is reached
+        } else {
+            font.draw(spriteBatch, "Blast Radius: " + blastRadius, 10, 30);
+        }
+
         // Finish drawing
         spriteBatch.end();
     }
@@ -64,4 +85,22 @@ public class Hud {
     public void dispose() {
         spriteBatch.dispose();
     }
+
+
+    /**
+     * Set the bomb cooldown
+     */
+    public void setBombCooldown(float bombCooldown) {
+        this.bombCooldown = bombCooldown;
+    }
+
+    /**
+     * Set the blastradius
+     */
+    public void setBlastRadius(float blastRadius) {
+        this.blastRadius = blastRadius;
+    }
+
+
+
 }

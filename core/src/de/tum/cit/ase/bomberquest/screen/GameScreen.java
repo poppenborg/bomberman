@@ -91,6 +91,15 @@ public class GameScreen implements Screen {
 
         map.updateBombs(deltaTime);
 
+        //render the Bomb-Cooldown for the hud
+
+        float bombCooldown = map.getPlayer().getRemainingBombCooldown();
+        hud.setBombCooldown(bombCooldown);
+
+        //load the current blast radius
+        int blastRadius = map.getPlayer().getBlastRadius();
+        hud.setBlastRadius(blastRadius);
+
         // update the timer
         timeLeft -= deltaTime;
         hud.setTimeLeft(timeLeft);

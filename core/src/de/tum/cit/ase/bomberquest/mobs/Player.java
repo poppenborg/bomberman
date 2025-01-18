@@ -17,6 +17,7 @@ public class Player extends Mob implements Drawable {
 
     private static final float BOMB_COOLDOWN = 3.0f;
     private float timeSinceLastBomb = 3.0f;
+    private int blastRadius = 1;
     private GameMap gameMap;
 
 
@@ -132,14 +133,40 @@ public class Player extends Mob implements Drawable {
 
         // Create Bomb and place it on the GameMap
         Bomb bomb = new Bomb(bombX, bombY, gameMap);
+        bomb.setBlastRadius(blastRadius);
         gameMap.getBombs().add(bomb);
 
         System.out.println("Bomb dropped at position: " + bombX + ", " + bombY);
 
     }
 
+    /**
+     * Calculates and returns the remaining cooldown time before the player
+     * can drop another bomb. Can not be negative.
+     * @return A float representing the remaining cooldown time in seconds.
+     *         Returns 0 if the cooldown period has already elapsed.
+     */
+
+
+    public float getRemainingBombCooldown() {
+        return Math.max(0, BOMB_COOLDOWN -timeSinceLastBomb);
+    }
+
 
     //Getter and Setters
 
 
+    public int getBlastRadius() {
+        return blastRadius;
+    }
+
+    public void setBlastRadius(int blastRadius) {
+        if (blastRadius > 0 && blastRadius <= 8) {
+            this.blastRadius = blastRadius;
+        } else if (blastRadius < 0) {
+            this.blastRadius = 1;
+        } else if (blastRadius > 8) {
+            this.blastRadius = 8;
+        }
+    }
 }
