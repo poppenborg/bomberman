@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
+import de.tum.cit.ase.bomberquest.audio.MusicTrack;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.map.MapLoader;
 
@@ -25,13 +26,13 @@ public abstract class BaseScreen implements Screen {
     protected final OrthographicCamera camera;
     protected final Viewport viewport;
     protected final Table table;
+    protected MusicTrack musicTrack;
     /**
      * Constructor for BaseScreen. Sets up the camera, viewport, stage, and UI elements.
      * @param game The main game class, used to access global resources and methods.
      */
     public BaseScreen(BomberQuestGame game) {
         this.camera = new OrthographicCamera();
-        camera.zoom = 1.5f; // Set camera zoom for a closer view
 
         this.viewport = new ScreenViewport(camera); // Create a viewport with the camera
         this.stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
@@ -39,6 +40,8 @@ public abstract class BaseScreen implements Screen {
         this.table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
+
+        this.musicTrack = null;
     }
 
     /**
@@ -68,6 +71,7 @@ public abstract class BaseScreen implements Screen {
     public void dispose() {
         // Dispose of the stage when screen is disposed
         stage.dispose();
+        getMusicTrack().stop();
     }
 
     @Override
@@ -87,5 +91,12 @@ public abstract class BaseScreen implements Screen {
 
     @Override
     public void hide() {
+    }
+
+    public void setMusicTrack(MusicTrack musicTrack) {
+        this.musicTrack = musicTrack;
+    }
+    public MusicTrack getMusicTrack() {
+        return musicTrack;
     }
 }

@@ -9,10 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import de.tum.cit.ase.bomberquest.audio.MusicTrack;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.map.MapLoader;
-import de.tum.cit.ase.bomberquest.screen.GameScreen;
-import de.tum.cit.ase.bomberquest.screen.LoseScreen;
-import de.tum.cit.ase.bomberquest.screen.MenuScreen;
-import de.tum.cit.ase.bomberquest.screen.WinScreen;
+import de.tum.cit.ase.bomberquest.screen.*;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
@@ -34,14 +31,14 @@ public class BomberQuestGame extends Game {
 
     /** The game's UI skin. This is used to style the game's UI elements. */
     private Skin skin;
-    
+
     /**
      * The file chooser for loading map files from the user's computer.
      * This will give you access to a {@link com.badlogic.gdx.files.FileHandle} object,
      * which you can use to read the contents of the map file as a String, and then parse it into a {@link GameMap}.
      */
     private final NativeFileChooser fileChooser;
-    
+
     /**
      * The map. This is where all the game objects are stored.
      * This is owned by {@link BomberQuestGame} and not by {@link GameScreen}
@@ -50,7 +47,13 @@ public class BomberQuestGame extends Game {
     private GameMap map;
 
     /**
-     * The File. This is the File that can be choosen with the fileChooser
+     * Respective music track to be played
+     * changes dependently on t. displayed screen
+     */
+    private MusicTrack musicTrack;
+
+    /**
+     * The File. This is the File that can be chosen with the fileChooser
      */
     private FileHandle file;
 
@@ -74,7 +77,8 @@ public class BomberQuestGame extends Game {
         this.spriteBatch = new SpriteBatch(); // Create SpriteBatch for rendering
         this.skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json")); // Load UI skin
         this.map = null; // Create an empty game map
-        MusicTrack.BACKGROUND.play(); // Play some background music
+//        this.musicTrack = null;
+//        MusicTrack.BACKGROUND.play(); // Play some background music
         goToMenu(); // Navigate to the menu screen
     }
 
@@ -93,17 +97,24 @@ public class BomberQuestGame extends Game {
     }
 
     /**
-     * Switches to the game screen.
+     * Switches to the pause screen.
+     */
+    public void goToPauseScreen() {
+        this.setScreen(new PauseScreen(this));
+    }
+
+    /**
+     * Switches to the win screen.
      */
     public void goToWinScreen() {
         this.setScreen(new WinScreen(this)); // Set the current screen to GameScreen
     }
 
     /**
-     * Switches to the game screen.
+     * Switches to the loose screen.
      */
-    public void goToLoseScreen() {
-        this.setScreen(new LoseScreen(this)); // Set the current screen to GameScreen
+    public void goToLooseScreen() {
+        this.setScreen(new LooseScreen(this)); // Set the current screen to GameScreen
     }
 
     /**
@@ -144,7 +155,7 @@ public class BomberQuestGame extends Game {
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
-    
+
     /** Returns the current map, if there is one. */
     public GameMap getMap() {
         return map;
@@ -187,15 +198,18 @@ public class BomberQuestGame extends Game {
      */
     public void checkGameState() {
         if (map.checkLoseStatus()){
-            goToLoseScreen();
+            goToLooseScreen();
             map.dispose();
         }
         if (map.checkWinStatus()) {
             goToWinScreen();
-            map.dispose();
+            map.setMapFile(null);
         }
     }
-
-
-
+    public MusicTrack getMusicTrack() {
+        return musicTrack;
+    }
+    public void setMusicTrack(MusicTrack musicTrack) {
+        this.musicTrack = musicTrack;
+    }
 }

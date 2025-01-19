@@ -2,64 +2,55 @@ package de.tum.cit.ase.bomberquest.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.Select;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.audio.MusicTrack;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.map.MapLoader;
 
-import java.util.Random;
-
 /**
- * The MenuScreen class is responsible for displaying the main menu of the game.
+ * The PauseScreen class is responsible for displaying the pause menu of the game.
  * It extends the LibGDX Screen class and sets up the UI components for the menu.
  */
-public class MenuScreen extends BaseScreen implements Screen {
+public class PauseScreen extends BaseScreen implements Screen {
     /**
-     * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
+     * Constructor for PauseScreen. Sets up the camera, viewport, stage, and UI elements.
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public MenuScreen(BomberQuestGame game) {
+    public PauseScreen(BomberQuestGame game) {
         super(game);
         // play looser music
-        setMusicTrack(MusicTrack.MENU);
+        setMusicTrack(MusicTrack.PAUSE);
         getMusicTrack().play();
         // Set camera zoom for a closer view
         camera.zoom = 1.5f;
         // Add a label as a title
-        table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
+        table.add(new Label("Pause", game.getSkin(), "title")).padBottom(80).row();
         // Create and add a button to go to the game screen
-        TextButton goToGameButton = new TextButton("Go To Game", game.getSkin());
-        table.add(goToGameButton).width(300).row();
-        goToGameButton.addListener(new ChangeListener() {
+        TextButton goResumeGameButton = new TextButton("Resume Game", game.getSkin());
+        table.add(goResumeGameButton).width(300).row();
+        goResumeGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (game.getMap() == null) {
-                    game.setMap(new GameMap(game, new MapLoader().loadRandomMap())); // if no map was chosen a random one is selected
-                }
                 dispose();
                 game.goToGame(); // Change to the game screen when button is pressed
+                dispose();
+
             }
         });
         // Create and add a button to go to select a map file
-        TextButton mapButton = new TextButton("Select Map", game.getSkin());
-        table.add(mapButton).width(300).row();
-        mapButton.addListener(new ChangeListener() {
+        TextButton newMapButton = new TextButton("Restart new map", game.getSkin());
+        table.add(newMapButton).width(300).row();
+        newMapButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 game.openFileChooser();
+                dispose();
+                game.goToGame();
             }
         });
         // Create and add a button to exit the game

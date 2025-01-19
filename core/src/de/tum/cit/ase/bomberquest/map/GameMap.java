@@ -22,13 +22,13 @@ import java.util.regex.Pattern;
  * Holds all the objects and entities in the game.
  */
 public class GameMap {
-    
+
     // A static block is executed once when the class is referenced for the first time.
     static {
         // Initialize the Box2D physics engine.
         com.badlogic.gdx.physics.box2d.Box2D.init();
     }
-    
+
     // Box2D physics simulation parameters (you can experiment with these if you want, but they work well as they are)
     /**
      * The time step for the physics simulation.
@@ -45,18 +45,18 @@ public class GameMap {
      * We use this to keep the physics simulation at a constant rate even if the frame rate is variable.
      */
     private float physicsTime = 0;
-    
+
     /** The game, in case the map needs to access it. */
     private final BomberQuestGame game;
     /** The Box2D world for physics simulation. */
     private final World world;
     /** Map used in the game */
-    private final FileHandle mapFile;
+    private FileHandle mapFile;
     // Game objects
     private final Player player;
-    
+
 //    private final Chest chest;
-    
+
     private final Flowers[][] flowers;
 
     private List<IndestructibleWall> indestructibleWalls;
@@ -77,7 +77,7 @@ public class GameMap {
     public GameMap(BomberQuestGame game, FileHandle mapFile) {
         this.game = game;
         this.mapFile = mapFile;
-        timeLeft = 300;
+        timeLeft = 10;
         this.world = new World(Vector2.Zero, true);
         // initialise player position
         Coordinates entrancePlayerCoordinates = new Coordinates(0,0);
@@ -140,24 +140,22 @@ public class GameMap {
         // Create a player with initial position at entrance (or 0, 0 if no entrance was specified)
         this.player = new Player(this.world, entrancePlayerCoordinates.getX(), entrancePlayerCoordinates.getY(), this);
     }
-    
+
     /**
      * Updates the game state. This is called once per frame.
      * Every dynamic object in the game should update its state here.
      * @param frameTime the time that has passed since the last update
      */
     public void tick(float frameTime) {
-
-        //Player
-
+        // Player
         this.player.tick(frameTime);
+        // Enemies
         for (Enemy enemy : enemies) {
             enemy.tick(frameTime);
         }
-
         doPhysicsStep(frameTime);
     }
-    
+
     /**
      * Performs as many physics steps as necessary to catch up to the given frame time.
      * This will update the Box2D world by the given time step.
@@ -172,13 +170,13 @@ public class GameMap {
     }
 
     /**
-     * Chescks wether one of the conditions to win the game is fulfilled
+     * Checks whether one of the conditions to win the game is fulfilled
      * @return returns ture if one of the conditions to win the game is fulfilled
      */
     public boolean checkWinStatus() {
-        boolean allEnemiesDefeated = getEnemies().isEmpty();
-        return allEnemiesDefeated;
+        return getEnemies().isEmpty();
     }
+
     /**
      * Chescks whether one of the conditions to lose the game is fulfilled
      * @return returns true if one of the conditions to lose the game is fulfilled
@@ -189,7 +187,7 @@ public class GameMap {
     }
 
     /**
-     * Tests wether the player collides with an enemy
+     * Tests whether the player collides with an enemy
      * @return true if the player collides with the enemy
      */
     public boolean collisionPlayerEnemy() {
@@ -283,7 +281,6 @@ public class GameMap {
      *
      * @param wall the DestructibleWall to be removed from the game map
      */
-
     public void removeDestructibleWall(DestructibleWall wall) {
         destructibleWalls.remove(wall);
     }
@@ -291,19 +288,19 @@ public class GameMap {
 
     /** Cleans up resources when the game is disposed. */
     public void dispose() {
-        world.dispose();
+
     }
 
     /** Returns the player on the map. */
     public Player getPlayer() {
         return player;
     }
-    
+
     /** Returns the chest on the map. */
 //    public Chest getChest() {
 //        return chest;
 //    }
-    
+
     /** Returns the flowers on the map. */
     public List<Flowers> getFlowers() {
         return Arrays.stream(flowers).flatMap(Arrays::stream).toList();
@@ -345,5 +342,11 @@ public class GameMap {
     }
     public float getTimeLeft() {
         return timeLeft;
+    }
+    public void setMapFile(FileHandle mapFile) {
+        this.mapFile = mapFile;
+    }
+    public FileHandle getMapFile() {
+        return mapFile;
     }
 }

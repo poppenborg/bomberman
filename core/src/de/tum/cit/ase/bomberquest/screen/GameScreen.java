@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
+import de.tum.cit.ase.bomberquest.audio.MusicTrack;
 import de.tum.cit.ase.bomberquest.gameobjects.*;
 import de.tum.cit.ase.bomberquest.map.*;
 import de.tum.cit.ase.bomberquest.mobs.Enemy;
@@ -18,8 +19,8 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
  * The GameScreen class is responsible for rendering the gameplay screen.
  * It handles the game logic and rendering of the game elements.
  */
-public class GameScreen implements Screen {
-    
+public class GameScreen extends BaseScreen implements Screen {
+
     /**
      * The size of a grid cell in pixels.
      * This allows us to think of coordinates in terms of square grid tiles
@@ -27,7 +28,7 @@ public class GameScreen implements Screen {
      * rather than absolute pixel coordinates.
      */
     public static final int TILE_SIZE_PX = 16;
-    
+
     /**
      * The scale of the game.
      * This is used to make everything in the game look bigger or smaller.
@@ -38,7 +39,6 @@ public class GameScreen implements Screen {
     private final SpriteBatch spriteBatch;
     private final GameMap map;
     private final Hud hud;
-    private final OrthographicCamera mapCamera;
     /**
      * Timer of the game
      */
@@ -49,16 +49,21 @@ public class GameScreen implements Screen {
      * @param game The main game class, used to access global resources and methods.
      */
     public GameScreen(BomberQuestGame game) {
+        super(game);
+        // set the music
+        setMusicTrack(MusicTrack.GAME_BACKGROUND);
+        getMusicTrack().play();
+        // create the game
         this.game = game;
         this.spriteBatch = game.getSpriteBatch();
         this.map = game.getMap();
         this.hud = new Hud(spriteBatch, game.getSkin().getFont("font"));
         // Create and configure the camera for the game view
-        this.mapCamera = new OrthographicCamera();
-        this.mapCamera.setToOrtho(false);
+        camera.setToOrtho(false);
+        camera.zoom = 1f;
         this.timeLeft = map.getTimeLeft();
     }
-    
+
     /**
      * The render method is called every frame to render the game.
      * @param deltaTime The time in seconds since the last render.
@@ -67,18 +72,19 @@ public class GameScreen implements Screen {
     public void render(float deltaTime) {
         // Check for escape key press to go back to the menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.goToMenu();
+            game.goToPauseScreen();
+            dispose();
         }
-        
+
         // Clear the previous frame from the screen, or else the picture smears
         ScreenUtils.clear(Color.BLACK);
-        
+
         // Cap frame time to 250ms to prevent spiral of death
         float frameTime = Math.min(deltaTime, 0.250f);
-        
+
         // Update the map state
         map.tick(frameTime);
-        
+
         // Update the camera
         updateCamera();
 
@@ -88,11 +94,9 @@ public class GameScreen implements Screen {
         }
 
         //Render the Bombs
-
         map.updateBombs(deltaTime);
 
         //render the Bomb-Cooldown for the hud
-
         float bombCooldown = map.getPlayer().getRemainingBombCooldown();
         hud.setBombCooldown(bombCooldown);
 
@@ -110,32 +114,30 @@ public class GameScreen implements Screen {
 
         // Render the map on the screen
         renderMap();
-        
+
         // Render the HUD on the screen
         hud.render();
 
-
-
     }
-    
+
     /**
      * Updates the camera to match the current state of the game.
      * currently the camera follows the player.
      */
     private void updateCamera() {
-        mapCamera.setToOrtho(false);
-        mapCamera.position.x = map.getPlayer().getX() * TILE_SIZE_PX * SCALE;
-        mapCamera.position.y = map.getPlayer().getY() * TILE_SIZE_PX * SCALE;
-        mapCamera.update(); // This is necessary to apply the changes
+        camera.setToOrtho(false);
+        camera.position.x = map.getPlayer().getX() * TILE_SIZE_PX * SCALE;
+        camera.position.y = map.getPlayer().getY() * TILE_SIZE_PX * SCALE;
+        camera.update(); // This is necessary to apply the changes
     }
-    
+
     private void renderMap() {
         // This configures the spriteBatch to use the camera's perspective when rendering
-        spriteBatch.setProjectionMatrix(mapCamera.combined);
-        
+        spriteBatch.setProjectionMatrix(camera.combined);
+
         // Start drawing
         spriteBatch.begin();
-        
+
         // Render everything in the map here, in order from lowest to highest (later things appear on top)
         // You may want to add a method to GameMap to return all the drawables in the correct order
         for (Flowers flowers : map.getFlowers()) {
@@ -167,7 +169,6 @@ public class GameScreen implements Screen {
             }
         }
 
-
         // TODO: replace placeholder for Enemy + Exit + power-up until respective class was created
         // TODO: code must be placed before loop for destructibleWall to be placed underneath it
         for (Placeholder placeholder : map.getPlaceholders()) {
@@ -179,7 +180,7 @@ public class GameScreen implements Screen {
         spriteBatch.end();
 
     }
-    
+
     /**
      * Draws this object on the screen.
      * The texture will be scaled by the game scale and the tile size.
@@ -196,7 +197,7 @@ public class GameScreen implements Screen {
         float height = texture.getRegionHeight() * SCALE;
         spriteBatch.draw(texture, x, y, width, height);
     }
-    
+
     /**
      * Called when the window is resized.
      * This is where the camera is updated to match the new window size.
@@ -205,7 +206,7 @@ public class GameScreen implements Screen {
      */
     @Override
     public void resize(int width, int height) {
-        mapCamera.setToOrtho(false);
+        camera.setToOrtho(false);
         hud.resize(width, height);
     }
 
@@ -228,10 +229,10 @@ public class GameScreen implements Screen {
     }
 
     /** Cleans up resources when the game is disposed. */
-    @Override
-    public void dispose() {
+//    @Override
+//    public void dispose() {
 //        hud.dispose();
 //        map.dispose();
-    }
+//    }
 
 }

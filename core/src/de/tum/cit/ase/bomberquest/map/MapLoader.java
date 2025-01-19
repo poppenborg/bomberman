@@ -4,10 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,6 +93,15 @@ public class MapLoader {
             }
         }
         return lvl2Filtered;
+    }
+
+    /**
+     * load a random map of the possible ones
+     * @return randomly chosen mapFile
+     */
+    public FileHandle loadRandomMap() {
+        int nbrOfFiles = getMapFiles().length;
+        return getMapFiles()[new Random().nextInt(nbrOfFiles)];
     }
 
     public FileHandle[] getMapFiles() {
