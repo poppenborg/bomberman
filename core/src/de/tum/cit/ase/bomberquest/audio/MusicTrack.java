@@ -40,4 +40,8 @@ public enum MusicTrack {
     public void stop() {
         this.music.stop();
     }
+
+    public void dispose() {
+        music.dispose();
+    }
 }

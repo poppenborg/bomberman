@@ -71,7 +71,8 @@ public abstract class BaseScreen implements Screen {
     public void dispose() {
         // Dispose of the stage when screen is disposed
         stage.dispose();
-        getMusicTrack().stop();
+        musicTrack.dispose();
+
     }
 
     @Override
@@ -91,6 +92,7 @@ public abstract class BaseScreen implements Screen {
 
     @Override
     public void hide() {
+        dispose();
     }
 
     public void setMusicTrack(MusicTrack musicTrack) {

@@ -39,14 +39,14 @@ public class MenuScreen extends BaseScreen implements Screen {
         // Set camera zoom for a closer view
         camera.zoom = 1.5f;
         // Add a label as a title
-        table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
+        table.add(new Label("Welcome to Bomberman!", game.getSkin(), "title")).padBottom(80).row();
         // Create and add a button to go to the game screen
-        TextButton goToGameButton = new TextButton("Go To Game", game.getSkin());
+        TextButton goToGameButton = new TextButton("Play random Map", game.getSkin());
         table.add(goToGameButton).width(300).row();
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (game.getMap() == null) {
+                if (game.getMap() == null || game.getMap().getMapFile() == null) {
                     game.setMap(new GameMap(game, new MapLoader().loadRandomMap())); // if no map was chosen a random one is selected
                 }
                 dispose();
@@ -54,7 +54,7 @@ public class MenuScreen extends BaseScreen implements Screen {
             }
         });
         // Create and add a button to go to select a map file
-        TextButton mapButton = new TextButton("Select Map", game.getSkin());
+        TextButton mapButton = new TextButton("Play selected Map", game.getSkin());
         table.add(mapButton).width(300).row();
         mapButton.addListener(new ChangeListener() {
             @Override

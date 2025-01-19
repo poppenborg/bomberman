@@ -77,8 +77,6 @@ public class BomberQuestGame extends Game {
         this.spriteBatch = new SpriteBatch(); // Create SpriteBatch for rendering
         this.skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json")); // Load UI skin
         this.map = null; // Create an empty game map
-//        this.musicTrack = null;
-//        MusicTrack.BACKGROUND.play(); // Play some background music
         goToMenu(); // Navigate to the menu screen
     }
 
@@ -130,6 +128,7 @@ public class BomberQuestGame extends Game {
             @Override
             public void onFileChosen(FileHandle fileHandle) {
                 initializeMap(fileHandle);
+                goToGame();
             }
             @Override
             public void onCancellation() {
@@ -144,6 +143,7 @@ public class BomberQuestGame extends Game {
 
     public void initializeMap(FileHandle fileHandle) {
         this.map = new GameMap(this, fileHandle);
+//        this.map.setTimeLeft(7);
     }
 
     /** Returns the skin for UI elements. */
@@ -199,11 +199,13 @@ public class BomberQuestGame extends Game {
     public void checkGameState() {
         if (map.checkLoseStatus()){
             goToLooseScreen();
+            map.setMapFile(null);
             map.dispose();
         }
         if (map.checkWinStatus()) {
             goToWinScreen();
             map.setMapFile(null);
+            map.dispose();
         }
     }
     public MusicTrack getMusicTrack() {

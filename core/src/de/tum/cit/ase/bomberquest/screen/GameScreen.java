@@ -73,7 +73,7 @@ public class GameScreen extends BaseScreen implements Screen {
         // Check for escape key press to go back to the menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.goToPauseScreen();
-            dispose();
+//            dispose();
         }
 
         // Clear the previous frame from the screen, or else the picture smears
@@ -105,7 +105,10 @@ public class GameScreen extends BaseScreen implements Screen {
         hud.setBlastRadius(blastRadius);
 
         // update the timer
-        timeLeft -= deltaTime;
+        if (deltaTime < 1) {
+            timeLeft -= deltaTime;
+
+        }
         hud.setTimeLeft(timeLeft);
         map.setTimeLeft(timeLeft);
 

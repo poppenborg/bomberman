@@ -77,7 +77,7 @@ public class GameMap {
     public GameMap(BomberQuestGame game, FileHandle mapFile) {
         this.game = game;
         this.mapFile = mapFile;
-        timeLeft = 10;
+        this.timeLeft = 5;
         this.world = new World(Vector2.Zero, true);
         // initialise player position
         Coordinates entrancePlayerCoordinates = new Coordinates(0,0);
@@ -288,7 +288,7 @@ public class GameMap {
 
     /** Cleans up resources when the game is disposed. */
     public void dispose() {
-
+        this.timeLeft = 0;
     }
 
     /** Returns the player on the map. */

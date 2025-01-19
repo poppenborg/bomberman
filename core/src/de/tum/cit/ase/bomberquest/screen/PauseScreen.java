@@ -2,6 +2,7 @@ package de.tum.cit.ase.bomberquest.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -10,6 +11,9 @@ import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.audio.MusicTrack;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.map.MapLoader;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
+
 
 /**
  * The PauseScreen class is responsible for displaying the pause menu of the game.
@@ -36,10 +40,8 @@ public class PauseScreen extends BaseScreen implements Screen {
         goResumeGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                dispose();
                 game.goToGame(); // Change to the game screen when button is pressed
                 dispose();
-
             }
         });
         // Create and add a button to go to select a map file
@@ -49,8 +51,6 @@ public class PauseScreen extends BaseScreen implements Screen {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 game.openFileChooser();
-                dispose();
-                game.goToGame();
             }
         });
         // Create and add a button to exit the game
