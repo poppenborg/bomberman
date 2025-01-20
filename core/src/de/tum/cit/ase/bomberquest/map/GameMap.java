@@ -11,6 +11,7 @@ import de.tum.cit.ase.bomberquest.mobs.Enemy;
 import de.tum.cit.ase.bomberquest.mobs.Player;
 import de.tum.cit.ase.bomberquest.screen.MenuScreen;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
+import de.tum.cit.ase.bomberquest.texture.GameContactListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +56,8 @@ public class GameMap {
     private FileHandle mapFile;
     // Game objects
     private final Player player;
+    /** Individual contact listener with a specific behaviour when some of the game objects collide */
+    private GameContactListener contactListener;
 
 //    private final Chest chest;
 
@@ -80,6 +83,8 @@ public class GameMap {
         this.mapFile = mapFile;
         this.timeLeft = 500;
         this.world = new World(Vector2.Zero, true);
+        this.contactListener = new GameContactListener();
+        world.setContactListener(contactListener);
         // initialise player position
         Coordinates entrancePlayerCoordinates = new Coordinates(0,0);
         // Create a chest in the middle of the map
@@ -184,7 +189,8 @@ public class GameMap {
      */
     public boolean checkLoseStatus() {
         boolean timeRunOut = timeLeft <= 0;
-        return timeRunOut || collisionPlayerEnemy();
+        boolean PlayerEnemyCollision = contactListener.isPlayerEnemyCollision();
+        return timeRunOut || PlayerEnemyCollision;
     }
 
     /**
@@ -194,11 +200,35 @@ public class GameMap {
      */
     public boolean collisionPlayerEnemy() {
         for (Enemy enemy : enemies) {
+            // calculate the euclidean distance
             double xDistance = player.getX() - enemy.getX();
             double yDistance = player.getY() - enemy.getY();
-            double squaredDistance = Math.pow(xDistance, 2.0f) + Math.pow(yDistance, 2);
+            double squaredDistance = Math.pow(xDistance, 2.0f) + Math.pow(yDistance, 2f);
             double distance = Math.sqrt(squaredDistance);
+            // objects overlap if the distance is smaller than the 2 radii of the circles
             if (distance < (player.getRadius() + enemy.getRadius())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    // alternative method if one of the colliding objects is a rectangle
+    public boolean circleRectangle() {
+        for (Enemy enemy : enemies) {
+            // calculate rectangle edges
+            float xLeft = enemy.getX() - enemy.getRectangleWidth() / 2f;
+            float xRight = enemy.getX() + enemy.getRectangleWidth() / 2f;
+            float yLeft = enemy.getY() - enemy.getRectangleHeight() / 2f;
+            float yRight = enemy.getY() + enemy.getRectangleHeight() / 2f;
+            // calculate the closest point of the rectangle to circle
+            float xClosest = Math.max(xLeft, Math.min(xRight, player.getX()));
+            float yClosest = Math.max(yLeft, Math.min(yRight, player.getY()));
+            // calculate the euclidean distance between the closest point of the rectangle and the circle center
+            double xDistance = player.getX() - xClosest;
+            double yDistance = player.getY() - yClosest;
+            double distance = Math.sqrt(Math.pow(xDistance, 2f) + Math.pow(yDistance, 2f));
+            // objects overlap if the distance is smaller than the radius of the circle
+            if (distance < player.getRadius()) {
                 return true;
             }
         }

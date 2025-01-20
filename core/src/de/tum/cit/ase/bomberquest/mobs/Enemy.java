@@ -16,6 +16,8 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
 public class Enemy extends Mob implements Drawable {
 
     private float radius;
+    private float rectangleWidth;
+    private float rectangleHeight;
 
     public Enemy(World world, float x, float y) {
         super(world, x, y);
@@ -38,7 +40,9 @@ public class Enemy extends Mob implements Drawable {
         // Give the circle a radius of 0.3 tiles (the mob is 0.6 tiles wide).
         circle.setRadius(0.3f);
         radius = circle.getRadius();
-//        rectangle.setAsBox(0.2f, 0.3f);
+//        rectangleWidth = 0.4f;
+//        rectangleHeight = 0.6f;
+//        rectangle.setAsBox(rectangleWidth / 2f, rectangleHeight / 2f);
 //        rectangle.setAsBox(0.2f, 0.3f, new Vector2(0,0.5f),0);
         // Attach the shape to the body as a fixture.
         body.createFixture(circle, 1.0f);
@@ -87,5 +91,11 @@ public class Enemy extends Mob implements Drawable {
 
     public float getRadius() {
         return radius;
+    }
+    public float getRectangleWidth() {
+        return rectangleWidth;
+    }
+    public float getRectangleHeight() {
+        return rectangleHeight;
     }
 }
