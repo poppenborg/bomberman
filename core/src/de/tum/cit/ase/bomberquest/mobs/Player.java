@@ -3,11 +3,14 @@ package de.tum.cit.ase.bomberquest.mobs;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.physics.box2d.*;
 import de.tum.cit.ase.bomberquest.gameobjects.Bomb;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
+
+import java.awt.*;
 
 /**
  * Represents the player character in the game.
@@ -19,6 +22,7 @@ public class Player extends Mob implements Drawable {
     private float timeSinceLastBomb = 3.0f;
     private int blastRadius = 1;
     private GameMap gameMap;
+    private float radius;
 
 
     public Player(World world, float x, float y, GameMap gameMap) {
@@ -39,13 +43,18 @@ public class Player extends Mob implements Drawable {
         // Now we need to give the body a shape so the physics engine knows how to collide with it.
         // We'll use a circle shape for the mob.
         CircleShape circle = new CircleShape();
+//        PolygonShape rectangle = new PolygonShape();
         // Give the circle a radius of 0.3 tiles (the mob is 0.6 tiles wide).
         circle.setRadius(0.3f);
+        radius = circle.getRadius();
+//        rectangle.setAsBox(0.35f, 0.35f);
         // Attach the shape to the body as a fixture.
-        // Bodies can have multiple fixtures, but we only need one for the mob.
+        // Bodies can have multiple fixtures, but we only need one for the plyer.
         body.createFixture(circle, 1.0f);
+//        body.createFixture(rectangle, 1.0f);
         // We're done with the shape, so we should dispose of it to free up memory.
         circle.dispose();
+//        rectangle.dispose();
         // Set the mob as the user data of the body so we can look up the mob from the body later.
         body.setUserData(this);
         return body;
@@ -154,8 +163,6 @@ public class Player extends Mob implements Drawable {
 
 
     //Getter and Setters
-
-
     public int getBlastRadius() {
         return blastRadius;
     }
@@ -168,5 +175,9 @@ public class Player extends Mob implements Drawable {
         } else if (blastRadius > 8) {
             this.blastRadius = 8;
         }
+    }
+
+    public float getRadius() {
+        return radius;
     }
 }

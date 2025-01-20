@@ -34,7 +34,7 @@ public enum MusicTrack {
      * This will not stop other music from playing - if you add more tracks, you will have to handle that yourself.
      */
     public void play() {
-        this.music.play();
+//        this.music.play();
     }
 
     public void stop() {

@@ -3,10 +3,8 @@ package de.tum.cit.ase.bomberquest.mobs;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
@@ -16,6 +14,8 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
  * It moves around independendly
  */
 public class Enemy extends Mob implements Drawable {
+
+    private float radius;
 
     public Enemy(World world, float x, float y) {
         super(world, x, y);
@@ -34,13 +34,17 @@ public class Enemy extends Mob implements Drawable {
         // Now we need to give the body a shape so the physics engine knows how to collide with it.
         // We'll use a circle shape for the mob.
         CircleShape circle = new CircleShape();
+//        PolygonShape rectangle = new PolygonShape();
         // Give the circle a radius of 0.3 tiles (the mob is 0.6 tiles wide).
         circle.setRadius(0.3f);
+        radius = circle.getRadius();
+//        rectangle.setAsBox(0.2f, 0.3f);
+//        rectangle.setAsBox(0.2f, 0.3f, new Vector2(0,0.5f),0);
         // Attach the shape to the body as a fixture.
-        // Bodies can have multiple fixtures, but we only need one for the mob.
         body.createFixture(circle, 1.0f);
         // We're done with the shape, so we should dispose of it to free up memory.
         circle.dispose();
+//        rectangle.dispose();
         // Set the mob as the user data of the body so we can look up the mob from the body later.
         body.setUserData(this);
         return body;
@@ -79,4 +83,9 @@ public class Enemy extends Mob implements Drawable {
         }
     }
 
+    // Getters and Setters
+
+    public float getRadius() {
+        return radius;
+    }
 }

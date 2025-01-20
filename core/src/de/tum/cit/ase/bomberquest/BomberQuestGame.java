@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import de.tum.cit.ase.bomberquest.audio.MusicTrack;
 import de.tum.cit.ase.bomberquest.map.GameMap;
@@ -45,12 +46,6 @@ public class BomberQuestGame extends Game {
      * because the map should not be destroyed if we temporarily switch to another screen.
      */
     private GameMap map;
-
-    /**
-     * Respective music track to be played
-     * changes dependently on t. displayed screen
-     */
-    private MusicTrack musicTrack;
 
     /**
      * The File. This is the File that can be chosen with the fileChooser
@@ -143,7 +138,6 @@ public class BomberQuestGame extends Game {
 
     public void initializeMap(FileHandle fileHandle) {
         this.map = new GameMap(this, fileHandle);
-//        this.map.setTimeLeft(7);
     }
 
     /** Returns the skin for UI elements. */
@@ -194,24 +188,16 @@ public class BomberQuestGame extends Game {
 
     /**
      * Checks whether game is won or lost or still in progress
-     * Sets the screen accordingly
+     * If game is won or lost the screen is changed accordingly and superfluous resources are disposed of
      */
     public void checkGameState() {
         if (map.checkLoseStatus()){
             goToLooseScreen();
-            map.setMapFile(null);
             map.dispose();
         }
         if (map.checkWinStatus()) {
             goToWinScreen();
-            map.setMapFile(null);
             map.dispose();
         }
-    }
-    public MusicTrack getMusicTrack() {
-        return musicTrack;
-    }
-    public void setMusicTrack(MusicTrack musicTrack) {
-        this.musicTrack = musicTrack;
     }
 }

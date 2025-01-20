@@ -81,4 +81,5 @@ public abstract class Mob implements Drawable {
     public float getVELOCITYTHRESHOLD() {
         return VELOCITYTHRESHOLD;
     }
+
 }

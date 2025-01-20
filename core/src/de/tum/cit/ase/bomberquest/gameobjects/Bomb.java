@@ -171,7 +171,7 @@ public class Bomb extends Coordinates implements Drawable {
     private void calculateBlastCoordinates() {
         blastCoordinates.clear();
 
-        // Central explsion
+        // Central explosion
         blastCoordinates.add(new Coordinates(getX(), getY()));
 
         addBlastCoordinatesInDirection(0, 1);   // Up

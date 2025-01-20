@@ -73,7 +73,6 @@ public class GameScreen extends BaseScreen implements Screen {
         // Check for escape key press to go back to the menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.goToPauseScreen();
-//            dispose();
         }
 
         // Clear the previous frame from the screen, or else the picture smears
@@ -107,7 +106,6 @@ public class GameScreen extends BaseScreen implements Screen {
         // update the timer
         if (deltaTime < 1) {
             timeLeft -= deltaTime;
-
         }
         hud.setTimeLeft(timeLeft);
         map.setTimeLeft(timeLeft);
@@ -142,46 +140,25 @@ public class GameScreen extends BaseScreen implements Screen {
         spriteBatch.begin();
 
         // Render everything in the map here, in order from lowest to highest (later things appear on top)
-        // You may want to add a method to GameMap to return all the drawables in the correct order
-        for (Flowers flowers : map.getFlowers()) {
-            draw(spriteBatch, flowers);
-        }
-        for (IndestructibleWall indestructibleWall : map.getIndestructibleWalls()) {
-            draw(spriteBatch, indestructibleWall);
-        }
-        for (DestructibleWall destructibleWall : map.getDestructibleWalls()) {
-            draw(spriteBatch, destructibleWall);
-        }
-        for (Enemy enemy : map.getEnemies()) {
-            draw(spriteBatch, enemy);
-        }
+        for (Drawable drawable : map.allDrawablesOrdered()) {
+            draw(spriteBatch, drawable);
+            if (drawable instanceof Bomb) {
+                Bomb bomb = (Bomb) drawable;
+                for (Coordinates coord : bomb.getBlastCoordinates()) {
+                    float x = coord.getX() * TILE_SIZE_PX * SCALE;
+                    float y = coord.getY() * TILE_SIZE_PX * SCALE;
 
-        //Draw bombs
-        for (Bomb bomb : map.getBombs()) {
-            draw(spriteBatch, bomb);
+                    TextureRegion texture = bomb.getAppearanceForCoordinate(coord);
 
-            for (Coordinates coord : bomb.getBlastCoordinates()) {
-                float x = coord.getX() * TILE_SIZE_PX * SCALE;
-                float y = coord.getY() * TILE_SIZE_PX * SCALE;
-
-                TextureRegion texture = bomb.getAppearanceForCoordinate(coord);
-
-                if (texture != null) {
-                    spriteBatch.draw(texture, x, y, TILE_SIZE_PX * SCALE, TILE_SIZE_PX * SCALE);
+                    if (texture != null) {
+                        spriteBatch.draw(texture, x, y, TILE_SIZE_PX * SCALE, TILE_SIZE_PX * SCALE);
+                    }
                 }
             }
         }
 
-        // TODO: replace placeholder for Enemy + Exit + power-up until respective class was created
-        // TODO: code must be placed before loop for destructibleWall to be placed underneath it
-        for (Placeholder placeholder : map.getPlaceholders()) {
-            draw(spriteBatch, placeholder);
-        }
-//        draw(spriteBatch, map.getChest());
-        draw(spriteBatch, map.getPlayer());
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();
-
     }
 
     /**

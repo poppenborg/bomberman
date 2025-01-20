@@ -49,7 +49,6 @@ public class MenuScreen extends BaseScreen implements Screen {
                 if (game.getMap() == null || game.getMap().getMapFile() == null) {
                     game.setMap(new GameMap(game, new MapLoader().loadRandomMap())); // if no map was chosen a random one is selected
                 }
-                dispose();
                 game.goToGame(); // Change to the game screen when button is pressed
             }
         });

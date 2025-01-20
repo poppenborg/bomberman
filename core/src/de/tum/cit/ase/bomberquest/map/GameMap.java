@@ -10,6 +10,7 @@ import de.tum.cit.ase.bomberquest.gameobjects.*;
 import de.tum.cit.ase.bomberquest.mobs.Enemy;
 import de.tum.cit.ase.bomberquest.mobs.Player;
 import de.tum.cit.ase.bomberquest.screen.MenuScreen;
+import de.tum.cit.ase.bomberquest.texture.Drawable;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,7 +78,7 @@ public class GameMap {
     public GameMap(BomberQuestGame game, FileHandle mapFile) {
         this.game = game;
         this.mapFile = mapFile;
-        this.timeLeft = 5;
+        this.timeLeft = 500;
         this.world = new World(Vector2.Zero, true);
         // initialise player position
         Coordinates entrancePlayerCoordinates = new Coordinates(0,0);
@@ -183,22 +184,24 @@ public class GameMap {
      */
     public boolean checkLoseStatus() {
         boolean timeRunOut = timeLeft <= 0;
-        return timeRunOut;
+        return timeRunOut || collisionPlayerEnemy();
     }
 
     /**
      * Tests whether the player collides with an enemy
+     * Note: method is based on calculating distances, different shapes need different calculations
      * @return true if the player collides with the enemy
      */
     public boolean collisionPlayerEnemy() {
-//        for (Enemy enemy : enemies) {
-//            double xDistance = player.getX() - enemy.getX();
-//            double yDistance = player.getY() - enemy.getY();
-//            double squaredDistance = Math.pow(xDistance, 2.) + Math.pow(yDistance, 2);
-//            double distance = Math.sqrt(squaredDistance);
-//            if (distance < (player.getHitbox().)) {
-//            }
-//        }
+        for (Enemy enemy : enemies) {
+            double xDistance = player.getX() - enemy.getX();
+            double yDistance = player.getY() - enemy.getY();
+            double squaredDistance = Math.pow(xDistance, 2.0f) + Math.pow(yDistance, 2);
+            double distance = Math.sqrt(squaredDistance);
+            if (distance < (player.getRadius() + enemy.getRadius())) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -286,57 +289,73 @@ public class GameMap {
     }
 
 
+    /**
+     * Collect all drawable elements in one list
+     * Determins which drawables will be drawn over the other drawables
+     * @return List of all drawables
+     */
+    public List<Drawable> allDrawablesOrdered() {
+        List<Drawable> allDrawables = new ArrayList<>();
+        for (Flowers flowers : getFlowers()) {
+            allDrawables.add(flowers);
+        }
+        for (IndestructibleWall indestructibleWall : getIndestructibleWalls()) {
+            allDrawables.add(indestructibleWall);
+        }
+        for (DestructibleWall destructibleWall : getDestructibleWalls()) {
+            allDrawables.add(destructibleWall);
+        }
+        for (Enemy enemy : getEnemies()) {
+            allDrawables.add(enemy);
+        }
+        for (Bomb bomb : getBombs()) {
+            allDrawables.add(bomb);
+        }
+        // TODO: replace placeholder for Enemy + Exit + power-up until respective class was created
+        // TODO: code must be placed before loop for destructibleWall to be placed underneath it
+        for (Placeholder placeholder : getPlaceholders()) {
+            allDrawables.add(placeholder);
+        }
+//        allDrawables.add(getChest());
+        allDrawables.add(player);
+        return allDrawables;
+    }
+
+
     /** Cleans up resources when the game is disposed. */
     public void dispose() {
         this.timeLeft = 0;
+        setMapFile(null);
     }
-
-    /** Returns the player on the map. */
+    // getter and setter for the attributes
     public Player getPlayer() {
         return player;
     }
-
     /** Returns the chest on the map. */
 //    public Chest getChest() {
 //        return chest;
 //    }
-
-    /** Returns the flowers on the map. */
     public List<Flowers> getFlowers() {
         return Arrays.stream(flowers).flatMap(Arrays::stream).toList();
     }
-
-    /** Returns the indestructibleWalls on the map. */
     public List<IndestructibleWall> getIndestructibleWalls() {
         return indestructibleWalls;
     }
-
-    /** Returns the destructibleWalls on the map. */
     public List<DestructibleWall> getDestructibleWalls() {
         return destructibleWalls;
     }
-
-    /** Returns the Mobs on the map. */
     public List<Enemy> getEnemies() {
         return enemies;
     }
-
-    /** Returns the Bombs on the map. */
     public List<Bomb> getBombs() {
         return bombs;
     }
-
-    /** Returns the placeholders on the map. */
     public List<Placeholder> getPlaceholders() {
         return placeholders;
     }
-
-    /** Returns the world of the map. */
     public World getWorld() {
         return world;
     }
-
-    // getter and setter for the timer
     public void setTimeLeft(float timeLeft) {
         this.timeLeft = timeLeft;
     }
