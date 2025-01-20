@@ -65,7 +65,7 @@ public class DestructibleWall extends Wall {
             destroyed = true;
             playAnimation = true; //Start the animation of the destruction
             animationTime = 0;
-            world.destroyBody(getBody()); //Destroy the body and therefore the hitbox of the wall
+            world.destroyBody(hitbox); //Destroy the body and therefore the hitbox of the wall
         }
     }
 

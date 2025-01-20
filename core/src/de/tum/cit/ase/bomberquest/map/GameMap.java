@@ -114,10 +114,7 @@ public class GameMap {
             switch (entry.getValue()) {
                 case 0: indestructibleWalls.add(new IndestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY())); break;
                 case 1: destructibleWalls.add(new DestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY())); break;
-                case 2:
-                    entrancePlayerCoordinates.setX(entry.getKey().getX());
-                    entrancePlayerCoordinates.setY(entry.getKey().getY());
-                    break;
+                case 2: entrancePlayerCoordinates.setXaY(entry.getKey().getX(), entry.getKey().getY()); break;
                 case 3: enemies.add(new Enemy(this.world,entry.getKey().getX(),entry.getKey().getY())); break;
                 // needs to replce placeholder for Exit
                 case 4:

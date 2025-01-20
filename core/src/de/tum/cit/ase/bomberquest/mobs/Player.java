@@ -21,7 +21,6 @@ public class Player extends Mob implements Drawable {
     private static final float BOMB_COOLDOWN = 3.0f;
     private float timeSinceLastBomb = 3.0f;
     private int blastRadius = 1;
-    private GameMap gameMap;
     private float radius;
 
 

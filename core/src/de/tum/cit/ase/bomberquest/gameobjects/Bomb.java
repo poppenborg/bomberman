@@ -11,7 +11,7 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bomb extends Coordinates implements Drawable {
+public class Bomb extends GameObject {
 
     private static final float IGNITING_DURATION = 3.0f;
     private static final float EXPLOSION_DURATION = 0.5f;
@@ -21,7 +21,6 @@ public class Bomb extends Coordinates implements Drawable {
 
     private int blastRadius = 1; // default blast radius
     private List<Coordinates> blastCoordinates = new ArrayList<>(); // Coordinates of the explosion animation
-    private GameMap gameMap;
 
 
     /**

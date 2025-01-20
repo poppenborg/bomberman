@@ -12,10 +12,7 @@ import de.tum.cit.ase.bomberquest.texture.Textures;
 /**
  * A wall is a static object with a hitbox, so the player cannot walk through it, unless destroyed.
  */
-public abstract class Wall extends Coordinates implements Drawable {
-
-    // We would normally get the position from the hitbox, but since we don't need to move the chest, we can store the position directly.
-    private final Body body;
+public abstract class Wall extends GameObject {
 
     /**
      * Create a wall at the given position.
@@ -26,7 +23,7 @@ public abstract class Wall extends Coordinates implements Drawable {
     public Wall(World world, float x, float y) {
         super(x, y);
         // Since the hitbox never moves, and we never need to change it, we don't need to store a reference to it.
-        this.body = createHitbox(world);
+        this.hitbox = createHitbox(world);
     }
     
     /**
@@ -44,12 +41,5 @@ public abstract class Wall extends Coordinates implements Drawable {
         box.dispose();
         body.setUserData(this);
         return body; // Return the created body for future reference
-    }
-    
-    @Override
-    public abstract TextureRegion getCurrentAppearance();
-
-    public Body getBody() {
-        return body;
     }
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.World;
+import de.tum.cit.ase.bomberquest.gameobjects.GameObject;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
@@ -16,18 +17,15 @@ import java.awt.*;
  * Represents the mob in the game.
  * The mob has a hitbox, so it can collide with other objects in the game.
  */
-public abstract class Mob implements Drawable {
+public abstract class Mob extends GameObject {
 
     /** Total time elapsed since the game started. We use this for calculating the mob movement and animating it. */
     private float elapsedTime;
-
-    /** The Box2D hitbox of the mob, used for position and collision detection. */
-    private final Body hitbox;
-
     /** A threshold to avoid unintended animations because of colosions */
-    private final float VELOCITYTHRESHOLD = 0.1f;
+    private static final float VELOCITYTHRESHOLD = 0.1f;
 
     public Mob(World world, float x, float y) {
+        super(x, y);
         this.hitbox = createHitbox(world, x, y);
     }
 
@@ -53,31 +51,22 @@ public abstract class Mob implements Drawable {
      */
     @Override
     abstract public TextureRegion getCurrentAppearance();
-
     @Override
     public float getX() {
         // The x-coordinate of the mob is the x-coordinate of the hitbox (this can change every frame).
         return hitbox.getPosition().x;
     }
-
     @Override
     public float getY() {
         // The y-coordinate of the mob is the y-coordinate of the hitbox (this can change every frame).
         return hitbox.getPosition().y;
     }
-
     public float getElapsedTime() {
         return elapsedTime;
     }
-
-    public Body getHitbox() {
-        return hitbox;
-    }
-
     public void setElapsedTime(float elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
-
     public float getVELOCITYTHRESHOLD() {
         return VELOCITYTHRESHOLD;
     }
