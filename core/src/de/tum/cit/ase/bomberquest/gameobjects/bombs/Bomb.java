@@ -8,6 +8,7 @@ import de.tum.cit.ase.bomberquest.gameobjects.GameObject;
 import de.tum.cit.ase.bomberquest.gameobjects.mobs.Enemy;
 import de.tum.cit.ase.bomberquest.gameobjects.walls.DestructibleWall;
 import de.tum.cit.ase.bomberquest.map.GameMap;
+import de.tum.cit.ase.bomberquest.screen.LooseScreen;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 
 import java.util.ArrayList;
@@ -144,6 +145,8 @@ public class Bomb extends GameObject {
      * 4. Checks if the are enemies within the blast radius of the bomb
      *    a. Stores the killed enemies in list
      *    b. Removes the enemies from the list from the GameMap
+     * 5. Checks if the player is the blast radius of the bomb
+     *    If the player is in the blast radius the players status is set to killed which triggers the LooseScreen
      */
 
     public void explode() {
@@ -196,6 +199,15 @@ public class Bomb extends GameObject {
         for (Enemy enemy :killedEnemies) {
             gameMap.getEnemies().remove(enemy);
             gameMap.getWorld().destroyBody(enemy.getHitbox());
+        }
+
+        //Player in Blast radius
+
+        for (Coordinates coordinates : blastCoordinates) {
+            if (Math.round(gameMap.getPlayer().getX()) == coordinates.getX() && Math.round(gameMap.getPlayer().getY()) == coordinates.getY()) {
+                gameMap.getPlayer().setKilled(true);
+                return;
+            }
         }
 
 

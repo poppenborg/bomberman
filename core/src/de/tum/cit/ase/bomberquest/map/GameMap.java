@@ -182,13 +182,14 @@ public class GameMap {
     }
 
     /**
-     * Chescks whether one of the conditions to lose the game is fulfilled
+     * Checks whether one of the conditions to lose the game is fulfilled
      * @return returns true if one of the conditions to lose the game is fulfilled
      */
     public boolean checkLoseStatus() {
         boolean timeRunOut = timeLeft <= 0;
         boolean playerEnemyCollision = contactListener.isPlayerEnemyCollision();
-        return timeRunOut || playerEnemyCollision;
+        boolean playerIsKilled = player.isKilled();
+        return timeRunOut || playerEnemyCollision || playerIsKilled;
     }
 
     // PowerUps

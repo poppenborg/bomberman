@@ -29,6 +29,7 @@ public class Player extends Mob implements Drawable {
     private int bombNbr = 1;
     private float radius;
     private List<PowerUp> powerUps;
+    private boolean killed = false;
 
     public Player(World world, float x, float y, GameMap gameMap) {
         super(world, x, y);
@@ -192,5 +193,13 @@ public class Player extends Mob implements Drawable {
 
     public float getRadius() {
         return radius;
+    }
+
+    public boolean isKilled() {
+        return killed;
+    }
+
+    public void setKilled(boolean killed) {
+        this.killed = killed;
     }
 }
