@@ -1,5 +1,6 @@
 package de.tum.cit.ase.bomberquest.texture;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -8,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * These can be referenced anywhere they are needed.
  */
 public class Textures {
-    
+
     public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(2, 5);
 
     public static final TextureRegion CHEST = SpriteSheet.BASIC_TILES.at(5, 5);
@@ -26,6 +27,10 @@ public class Textures {
 
     public static final TextureRegion BOMBNBR = SpriteSheet.ORIGINAL_BOMBERMAN.at(15, 1);
     public static final TextureRegion BLASTRADIUS = SpriteSheet.ORIGINAL_BOMBERMAN.at(15, 2);
+
+    // Added textures for Exit
+
+    public static final TextureRegion EXIT = SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 12);
 
     // Added textures for Placeholders
 

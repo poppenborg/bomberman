@@ -104,8 +104,10 @@ public class GameScreen extends BaseScreen implements Screen {
         hud.setBlastRadius(blastRadius);
 
         // load the concurrent nbr of bombs
-        int bombNbr = map.getPlayer().getBombNbr();
-        hud.setBombNbr(bombNbr);
+        hud.setBombNbr(map.getPlayer().getBombNbr());
+
+        // load the remaning nbr of Enemies
+        hud.setEnemies(map.getEnemies().size());
 
         // update the timer
         if (deltaTime < 1) {

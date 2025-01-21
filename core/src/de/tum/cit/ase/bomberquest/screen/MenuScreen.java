@@ -42,7 +42,7 @@ public class MenuScreen extends BaseScreen implements Screen {
         table.add(new Label("Welcome to Bomberman!", game.getSkin(), "title")).padBottom(80).row();
         // Create and add a button to go to the game screen
         TextButton goToGameButton = new TextButton("Play random Map", game.getSkin());
-        table.add(goToGameButton).width(300).row();
+        table.add(goToGameButton).width(BUTTON_WITH).row();
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -54,7 +54,7 @@ public class MenuScreen extends BaseScreen implements Screen {
         });
         // Create and add a button to go to select a map file
         TextButton mapButton = new TextButton("Play selected Map", game.getSkin());
-        table.add(mapButton).width(300).row();
+        table.add(mapButton).width(BUTTON_WITH).row();
         mapButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -63,7 +63,7 @@ public class MenuScreen extends BaseScreen implements Screen {
         });
         // Create and add a button to exit the game
         TextButton exitButton = new TextButton("Exit Game", game.getSkin());
-        table.add(exitButton).width(300).row();
+        table.add(exitButton).width(BUTTON_WITH).row();
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {

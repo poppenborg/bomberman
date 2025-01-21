@@ -36,7 +36,7 @@ public class PauseScreen extends BaseScreen implements Screen {
         table.add(new Label("Pause", game.getSkin(), "title")).padBottom(80).row();
         // Create and add a button to go to the game screen
         TextButton goResumeGameButton = new TextButton("Resume Game", game.getSkin());
-        table.add(goResumeGameButton).width(300).row();
+        table.add(goResumeGameButton).width(BUTTON_WITH).row();
         goResumeGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -46,7 +46,7 @@ public class PauseScreen extends BaseScreen implements Screen {
         });
         // Create and add a button to go to select a map file
         TextButton newMapButton = new TextButton("Restart new map", game.getSkin());
-        table.add(newMapButton).width(300).row();
+        table.add(newMapButton).width(BUTTON_WITH).row();
         newMapButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -55,7 +55,7 @@ public class PauseScreen extends BaseScreen implements Screen {
         });
         // Create and add a button to exit the game
         TextButton exitButton = new TextButton("Exit Game", game.getSkin());
-        table.add(exitButton).width(300).row();
+        table.add(exitButton).width(BUTTON_WITH).row();
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {

@@ -22,14 +22,8 @@ public class Enemy extends Mob implements Drawable {
 
     @Override
     protected Body createHitbox(World world, float startX, float startY) {
-        // BodyDef is like a blueprint for the movement properties of the body.
-        BodyDef bodyDef = new BodyDef();
-        // Dynamic bodies are affected by forces and collisions.
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        // Set the initial position of the body.
-        bodyDef.position.set(startX, startY);
         // Create the body in the world using the body definition.
-        Body body = world.createBody(bodyDef);
+        Body body = createEmptyDynamicBody(world, startX, startY);
         // Now we need to give the body a shape so the physics engine knows how to collide with it.
         // We'll use a circle shape for the mob.
         CircleShape circle = new CircleShape();
