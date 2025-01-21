@@ -32,12 +32,5 @@ public class Textures {
 
     public static final TextureRegion EXIT = SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 12);
 
-    // Added textures for Placeholders
-
-    public static final TextureRegion PLACEHOLDER = SpriteSheet.ORIGINAL_BOMBERMAN.at(15, 9);
-
-
-
-
 
 }

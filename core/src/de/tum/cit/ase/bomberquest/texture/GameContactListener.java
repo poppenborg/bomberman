@@ -1,6 +1,7 @@
 package de.tum.cit.ase.bomberquest.texture;
 
 import com.badlogic.gdx.physics.box2d.*;
+import de.tum.cit.ase.bomberquest.gameobjects.Exits.Exit;
 import de.tum.cit.ase.bomberquest.gameobjects.powerups.PowerUp;
 import de.tum.cit.ase.bomberquest.gameobjects.Coordinates;
 import de.tum.cit.ase.bomberquest.gameobjects.mobs.Enemy;
@@ -15,6 +16,8 @@ public class GameContactListener implements ContactListener {
     private boolean playerEnemyCollision = false;
     // Coordinates of the power-up;
     private Coordinates powerUpCoordinates;
+    // indicator for whether the player reached the exit
+    private boolean exitReached;
 
     // defines the behaviour if 2 objects collide
     @Override
@@ -34,6 +37,10 @@ public class GameContactListener implements ContactListener {
         if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof PowerUp) {
             ((PowerUp) bodyB.getUserData()).setMarkedForRemoval(true);
             powerUpCoordinates = new Coordinates(((PowerUp) bodyB.getUserData()).getX(), ((PowerUp) bodyB.getUserData()).getY());
+        }
+        // check if the 2 colliding bodies are Player and PowerUp
+        if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof Exit || bodyA.getUserData() instanceof Exit && bodyB.getUserData() instanceof Player) {
+            this.exitReached = true;
         }
     }
 
@@ -69,5 +76,8 @@ public class GameContactListener implements ContactListener {
     }
     public Coordinates getPowerUpCoordinates() {
         return powerUpCoordinates;
+    }
+    public boolean isExitReached() {
+        return exitReached;
     }
 }

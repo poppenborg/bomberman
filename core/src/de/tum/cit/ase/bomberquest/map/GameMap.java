@@ -63,6 +63,7 @@ public class GameMap {
 
 //    private final Chest chest;
 
+    // all game objects
     private final Flowers[][] flowers;
     private List<IndestructibleWall> indestructibleWalls;
     private List<DestructibleWall> destructibleWalls;
@@ -71,8 +72,6 @@ public class GameMap {
     private List<BombNbrPowerUp> bombNbrPowerUps;
     private List<BlastRadiusPowerUp> blastRadiusPowerUps;
     private Exit exit;
-    //TODO: replace placeholder for Exit until respective class was created
-    private List<Placeholder> placeholders;
 
     /** The time left in the Game. */
     private float timeLeft;
@@ -104,7 +103,6 @@ public class GameMap {
         // initialize Lists of various objects
         this.indestructibleWalls = new ArrayList<>();
         this.destructibleWalls = new ArrayList<>();
-        this.placeholders = new ArrayList<>();
         this.enemies = new ArrayList<>();
         this.bombs = new ArrayList<>();
         this.bombNbrPowerUps = new ArrayList<>();
@@ -117,9 +115,8 @@ public class GameMap {
                 case 1: destructibleWalls.add(new DestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY())); break;
                 case 2: entrancePlayerCoordinates.setXaY(entry.getKey().getX(), entry.getKey().getY()); break;
                 case 3: enemies.add(new Enemy(this.world,entry.getKey().getX(),entry.getKey().getY())); break;
-                // needs to replce placeholder for Exit
                 case 4:
-                    placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY()));
+                    this.exit = new Exit(this.world, entry.getKey().getX(), entry.getKey().getY());
                     destructibleWalls.add(new DestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY()));
                     break;
                 case 5:
@@ -136,8 +133,7 @@ public class GameMap {
         if (prasedMap.values().stream().filter(entry -> entry.equals(4)).count() == 0) {
             List<Coordinates> possibleEntries = prasedMap.entrySet().stream().filter(entry -> entry.getValue().equals(1)).map(entry -> entry.getKey()).toList();
             Coordinates entryCoordinate = possibleEntries.get((int) (Math.random() * possibleEntries.size()));
-            // TODO: replace placeholder with exit object
-            placeholders.add(new Placeholder(entryCoordinate.getX(), entryCoordinate.getY()));
+            this.exit = new Exit(world, entryCoordinate.getX(), entryCoordinate.getY());
         }
         // Create a player with initial position at entrance (or 0, 0 if no entrance was specified)
         this.player = new Player(this.world, entrancePlayerCoordinates.getX(), entrancePlayerCoordinates.getY(), this);
@@ -177,7 +173,7 @@ public class GameMap {
      */
     public boolean checkWinStatus() {
         boolean allEnemiesDead = getEnemies().isEmpty();
-        boolean exitReached = false;
+        boolean exitReached = contactListener.isExitReached();
         return allEnemiesDead && exitReached;
     }
 
@@ -310,6 +306,7 @@ public class GameMap {
         for (BlastRadiusPowerUp blastRadiusPowerUp : blastRadiusPowerUps) {
             allDrawables.add(blastRadiusPowerUp);
         }
+        allDrawables.add(this.exit);
         for (IndestructibleWall indestructibleWall : getIndestructibleWalls()) {
             allDrawables.add(indestructibleWall);
         }
@@ -321,11 +318,6 @@ public class GameMap {
         }
         for (Enemy enemy : getEnemies()) {
             allDrawables.add(enemy);
-        }
-        // TODO: replace placeholder for Enemy + Exit + power-up until respective class was created
-        // TODO: code must be placed before loop for destructibleWall to be placed underneath it
-        for (Placeholder placeholder : getPlaceholders()) {
-            allDrawables.add(placeholder);
         }
 //        allDrawables.add(getChest());
         allDrawables.add(player);
@@ -403,14 +395,14 @@ public class GameMap {
     public List<Bomb> getBombs() {
         return bombs;
     }
-    public List<Placeholder> getPlaceholders() {
-        return placeholders;
-    }
     public List<BombNbrPowerUp> getBombNbrPowerUps() {
         return bombNbrPowerUps;
     }
     public List<BlastRadiusPowerUp> getBlastRadiusPowerUps() {
         return blastRadiusPowerUps;
+    }
+    public Exit getExit() {
+        return exit;
     }
     public World getWorld() {
         return world;
