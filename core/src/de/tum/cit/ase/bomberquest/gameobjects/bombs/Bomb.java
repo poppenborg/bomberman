@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Timer;
 import de.tum.cit.ase.bomberquest.gameobjects.Coordinates;
 import de.tum.cit.ase.bomberquest.gameobjects.GameObject;
+import de.tum.cit.ase.bomberquest.gameobjects.mobs.Enemy;
 import de.tum.cit.ase.bomberquest.gameobjects.walls.DestructibleWall;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.texture.Animations;
@@ -139,6 +140,9 @@ public class Bomb extends GameObject {
      * 3. Checks each blast coordinate for destructible walls. If a destructible wall is present at a given coordinate:
      *    a. Schedules the destruction of the wall after the explosion animation is complete.
      *    b. Schedules the removal of the wall from the game map once both the wall destruction and explosion animations are finished.
+     * 4. Checks if the are enemies within the blast radius of the bomb
+     *    a. Stores the killed enemies in list
+     *    b. Removes the enemies from the list from the GameMap
      */
 
     public void explode() {
@@ -146,9 +150,11 @@ public class Bomb extends GameObject {
         stateTime = 0f; // reset timer for explosion
         calculateBlastCoordinates(); //calculate the explosion radius
 
-        for (Coordinates coord : blastCoordinates) {
-            if (gameMap.isDestructibleWallAt(coord.getX(), coord.getY())) {
-                DestructibleWall wallToDestroy = gameMap.getDestructibleWall(coord.getX(), coord.getY());
+        //Destroy Destructible walls.
+
+        for (Coordinates coordinates : blastCoordinates) {
+            if (gameMap.isDestructibleWallAt(coordinates.getX(), coordinates.getY())) {
+                DestructibleWall wallToDestroy = gameMap.getDestructibleWall(coordinates.getX(), coordinates.getY());
                 if (wallToDestroy != null) {
 
                     // detroy the  wall, after the explosion animation is finished
@@ -169,8 +175,29 @@ public class Bomb extends GameObject {
                     }, Animations.DESTRUCTIBLE_WALL_DESTROY.getAnimationDuration() + Animations.BOMB_CENTER_EXPLOSION.getAnimationDuration());
                 }
             }
-
         }
+
+
+
+        //Kill enemies
+
+        List<Enemy> killedEnemies = new ArrayList<>();
+        for (Coordinates coordinates : blastCoordinates) {
+            for (Enemy enemy : gameMap.getEnemies()) {
+                // Test if the enemy is in the blast radius
+                float enemyXCoordinate = (float) Math.round(enemy.getX());
+                float enemyYCoordinate = (float) Math.round(enemy.getY());
+                if (coordinates.getX() == enemyXCoordinate && coordinates.getY() == enemyYCoordinate) {
+                    killedEnemies.add(enemy);
+                }
+            }
+        }
+        for (Enemy enemy :killedEnemies) {
+            gameMap.getEnemies().remove(enemy);
+            gameMap.getWorld().destroyBody(enemy.getHitbox());
+        }
+
+
     }
 
     private void calculateBlastCoordinates() {
