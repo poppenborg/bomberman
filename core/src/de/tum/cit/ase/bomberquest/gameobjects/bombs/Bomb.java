@@ -115,6 +115,7 @@ public class Bomb extends GameObject {
         return Animations.BOMB_CENTER_EXPLOSION.getKeyFrame(stateTime, false);
     }
 
+
     /**
      * Updates the bombs state depending o the passed time.
      */
