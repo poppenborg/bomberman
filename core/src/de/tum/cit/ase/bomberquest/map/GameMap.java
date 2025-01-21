@@ -62,14 +62,12 @@ public class GameMap {
 //    private final Chest chest;
 
     private final Flowers[][] flowers;
-
     private List<IndestructibleWall> indestructibleWalls;
-
     private List<DestructibleWall> destructibleWalls;
-
     private List<Enemy> enemies;
-
     private List<Bomb> bombs;
+    private List<BombNbrPowerUp> bombNbrPowerUps;
+    private List<BlastRadiusPowerUp> blastRadiusPowerUps;
 
     //TODO: replce placeholder for Entrance + Enemy + Exit + power-up until respective class was created
     private List<Placeholder> placeholders;
@@ -102,11 +100,13 @@ public class GameMap {
             }
         }
         // initialize Lists of various objects
-        indestructibleWalls = new ArrayList<>();
-        destructibleWalls = new ArrayList<>();
-        placeholders = new ArrayList<>();
-        enemies = new ArrayList<>();
-        bombs = new ArrayList<>();
+        this.indestructibleWalls = new ArrayList<>();
+        this.destructibleWalls = new ArrayList<>();
+        this.placeholders = new ArrayList<>();
+        this.enemies = new ArrayList<>();
+        this.bombs = new ArrayList<>();
+        this.bombNbrPowerUps = new ArrayList<>();
+        this.blastRadiusPowerUps = new ArrayList<>();
         //TODO: replace placeholders
         Map<Coordinates, Integer> prasedMap = mapLoader.prasingMap(mapFile);
         // Iterates over the gameObjects map
@@ -121,14 +121,12 @@ public class GameMap {
                     placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY()));
                     destructibleWalls.add(new DestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY()));
                     break;
-                // needs to replce placeholder for Concurrent bomb power-up
                 case 5:
-                    placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY()));
+                    bombNbrPowerUps.add(new BombNbrPowerUp(this.world, entry.getKey().getX(), entry.getKey().getY()));
                     destructibleWalls.add(new DestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY()));
                     break;
-                // needs to replce placeholder for Blast radius power-up
                 case 6:
-                    placeholders.add(new Placeholder(entry.getKey().getX(), entry.getKey().getY()));
+                    blastRadiusPowerUps.add(new BlastRadiusPowerUp(this.world, entry.getKey().getX(), entry.getKey().getY()));
                     destructibleWalls.add(new DestructibleWall(this.world, entry.getKey().getX(), entry.getKey().getY()));
                     break;
             }
@@ -190,46 +188,25 @@ public class GameMap {
         return timeRunOut || PlayerEnemyCollision;
     }
 
+    // PowerUps
+
     /**
-     * Tests whether the player collides with an enemy
-     * Note: method is based on calculating distances, different shapes need different calculations
-     * @return true if the player collides with the enemy
+     * Update the power-ups on the map
+     * If the player touches a power-up its is removed from the map and added into the power-up list of the player
      */
-    public boolean collisionPlayerEnemy() {
-        for (Enemy enemy : enemies) {
-            // calculate the euclidean distance
-            double xDistance = player.getX() - enemy.getX();
-            double yDistance = player.getY() - enemy.getY();
-            double squaredDistance = Math.pow(xDistance, 2.0f) + Math.pow(yDistance, 2f);
-            double distance = Math.sqrt(squaredDistance);
-            // objects overlap if the distance is smaller than the 2 radii of the circles
-            if (distance < (player.getRadius() + enemy.getRadius())) {
-                return true;
+    public void updatepowerUps() {
+        for (BombNbrPowerUp bombNbrPowerUp : bombNbrPowerUps) {
+            if (bombNbrPowerUp.isMarkedForRemoval() && !bombNbrPowerUp.isTaken() && bombNbrPowerUp.isBombNbrPowerUpAt(contactListener.getPowerUpCoordinates()) && contactListener.getPowerUpCoordinates() != null) {
+                player.addBombNbrPowerUp(bombNbrPowerUp);
+                bombNbrPowerUp.destroy(world);
             }
         }
-        return false;
-    }
-    // alternative method if one of the colliding objects is a rectangle
-    public boolean circleRectangle() {
-        for (Enemy enemy : enemies) {
-            // calculate rectangle edges
-            float xLeft = enemy.getX() - enemy.getRectangleWidth() / 2f;
-            float xRight = enemy.getX() + enemy.getRectangleWidth() / 2f;
-            float yLeft = enemy.getY() - enemy.getRectangleHeight() / 2f;
-            float yRight = enemy.getY() + enemy.getRectangleHeight() / 2f;
-            // calculate the closest point of the rectangle to circle
-            float xClosest = Math.max(xLeft, Math.min(xRight, player.getX()));
-            float yClosest = Math.max(yLeft, Math.min(yRight, player.getY()));
-            // calculate the euclidean distance between the closest point of the rectangle and the circle center
-            double xDistance = player.getX() - xClosest;
-            double yDistance = player.getY() - yClosest;
-            double distance = Math.sqrt(Math.pow(xDistance, 2f) + Math.pow(yDistance, 2f));
-            // objects overlap if the distance is smaller than the radius of the circle
-            if (distance < player.getRadius()) {
-                return true;
+        for (BlastRadiusPowerUp blastRadiusPowerUp : blastRadiusPowerUps) {
+            if (blastRadiusPowerUp.isMarkedForRemoval() && !blastRadiusPowerUp.isTaken() && blastRadiusPowerUp.isBlastRadiusPowerUpAt(contactListener.getPowerUpCoordinates()) && contactListener.getPowerUpCoordinates() != null) {
+                player.addBlastRadiusPowerUp(blastRadiusPowerUp);
+                blastRadiusPowerUp.destroy(world);
             }
         }
-        return false;
     }
 
     //Bombs
@@ -247,7 +224,6 @@ public class GameMap {
                 bombsToRemove.add(bomb);
             }
         }
-
         // Delete exploded Bombs
         bombs.removeAll(bombsToRemove);
     }
@@ -259,8 +235,6 @@ public class GameMap {
      * @param y the y-coordinate to check
      * @return true if an indestructible wall exists at the given coordinates, false otherwise
      */
-
-
     public boolean isIndestructibleWallAt(float x, float y) {
         for (Wall wall : indestructibleWalls) {
             if (wall.getX() == x && wall.getY() == y) {
@@ -326,17 +300,23 @@ public class GameMap {
         for (Flowers flowers : getFlowers()) {
             allDrawables.add(flowers);
         }
+        for (BombNbrPowerUp bombNbrPowerUp : bombNbrPowerUps) {
+            allDrawables.add(bombNbrPowerUp);
+        }
+        for (BlastRadiusPowerUp blastRadiusPowerUp : blastRadiusPowerUps) {
+            allDrawables.add(blastRadiusPowerUp);
+        }
         for (IndestructibleWall indestructibleWall : getIndestructibleWalls()) {
             allDrawables.add(indestructibleWall);
         }
         for (DestructibleWall destructibleWall : getDestructibleWalls()) {
             allDrawables.add(destructibleWall);
         }
-        for (Enemy enemy : getEnemies()) {
-            allDrawables.add(enemy);
-        }
         for (Bomb bomb : getBombs()) {
             allDrawables.add(bomb);
+        }
+        for (Enemy enemy : getEnemies()) {
+            allDrawables.add(enemy);
         }
         // TODO: replace placeholder for Enemy + Exit + power-up until respective class was created
         // TODO: code must be placed before loop for destructibleWall to be placed underneath it
@@ -346,6 +326,48 @@ public class GameMap {
 //        allDrawables.add(getChest());
         allDrawables.add(player);
         return allDrawables;
+    }
+
+    /**
+     * Tests whether the player collides with an enemy
+     * Note: method is based on calculating distances, different shapes need different calculations
+     * @return true if the player collides with the enemy
+     */
+    public boolean collisionPlayerEnemy() {
+        for (Enemy enemy : enemies) {
+            // calculate the euclidean distance
+            double xDistance = player.getX() - enemy.getX();
+            double yDistance = player.getY() - enemy.getY();
+            double squaredDistance = Math.pow(xDistance, 2.0f) + Math.pow(yDistance, 2f);
+            double distance = Math.sqrt(squaredDistance);
+            // objects overlap if the distance is smaller than the 2 radii of the circles
+            if (distance < (player.getRadius() + enemy.getRadius())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    // alternative method if one of the colliding objects is a rectangle
+    public boolean circleRectangle() {
+        for (Enemy enemy : enemies) {
+            // calculate rectangle edges
+            float xLeft = enemy.getX() - enemy.getRectangleWidth() / 2f;
+            float xRight = enemy.getX() + enemy.getRectangleWidth() / 2f;
+            float yLeft = enemy.getY() - enemy.getRectangleHeight() / 2f;
+            float yRight = enemy.getY() + enemy.getRectangleHeight() / 2f;
+            // calculate the closest point of the rectangle to circle
+            float xClosest = Math.max(xLeft, Math.min(xRight, player.getX()));
+            float yClosest = Math.max(yLeft, Math.min(yRight, player.getY()));
+            // calculate the euclidean distance between the closest point of the rectangle and the circle center
+            double xDistance = player.getX() - xClosest;
+            double yDistance = player.getY() - yClosest;
+            double distance = Math.sqrt(Math.pow(xDistance, 2f) + Math.pow(yDistance, 2f));
+            // objects overlap if the distance is smaller than the radius of the circle
+            if (distance < player.getRadius()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -380,6 +402,12 @@ public class GameMap {
     public List<Placeholder> getPlaceholders() {
         return placeholders;
     }
+    public List<BombNbrPowerUp> getBombNbrPowerUps() {
+        return bombNbrPowerUps;
+    }
+    public List<BlastRadiusPowerUp> getBlastRadiusPowerUps() {
+        return blastRadiusPowerUps;
+    }
     public World getWorld() {
         return world;
     }
@@ -394,5 +422,8 @@ public class GameMap {
     }
     public FileHandle getMapFile() {
         return mapFile;
+    }
+    public GameContactListener getContactListener() {
+        return contactListener;
     }
 }

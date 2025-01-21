@@ -22,6 +22,11 @@ public class Textures {
 
     public static final TextureRegion EMPTY = SpriteSheet.BASIC_TILES.at(13, 1);
 
+    // Added textures for PowerUps
+
+    public static final TextureRegion BOMBNBR = SpriteSheet.ORIGINAL_BOMBERMAN.at(15, 1);
+    public static final TextureRegion BLASTRADIUS = SpriteSheet.ORIGINAL_BOMBERMAN.at(15, 2);
+
     // Added textures for Placeholders
 
     public static final TextureRegion PLACEHOLDER = SpriteSheet.ORIGINAL_BOMBERMAN.at(15, 9);

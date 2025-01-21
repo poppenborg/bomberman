@@ -1,6 +1,9 @@
 package de.tum.cit.ase.bomberquest.texture;
 
 import com.badlogic.gdx.physics.box2d.*;
+import de.tum.cit.ase.bomberquest.gameobjects.BombNbrPowerUp;
+import de.tum.cit.ase.bomberquest.gameobjects.PowerUp;
+import de.tum.cit.ase.bomberquest.map.Coordinates;
 import de.tum.cit.ase.bomberquest.mobs.Enemy;
 import de.tum.cit.ase.bomberquest.mobs.Player;
 
@@ -10,7 +13,9 @@ import de.tum.cit.ase.bomberquest.mobs.Player;
 public class GameContactListener implements ContactListener {
 
     // attribute to represent the collision state of the Player with any Enemy
-    private boolean playerEnemyCollision;
+    private boolean playerEnemyCollision = false;
+    // Coordinates of the power-up;
+    private Coordinates powerUpCoordinates;
 
     // defines the behaviour if 2 objects collide
     @Override
@@ -19,8 +24,17 @@ public class GameContactListener implements ContactListener {
         Body bodyA = contact.getFixtureA().getBody();
         Body bodyB = contact.getFixtureB().getBody();
         // check if the 2 colliding bodies are Player and Enemy
-        if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof Enemy || bodyB.getUserData() instanceof Player && bodyA.getUserData() instanceof Enemy) {
+        if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof Enemy || bodyA.getUserData() instanceof Enemy && bodyB.getUserData() instanceof Player) {
             this.playerEnemyCollision = true;
+        }
+        // check if the 2 colliding bodies are Player and PowerUp
+        if (bodyA.getUserData() instanceof PowerUp && bodyB.getUserData() instanceof Player) {
+            ((PowerUp) bodyA.getUserData()).setMarkedForRemoval(true);
+            powerUpCoordinates = new Coordinates(((PowerUp) bodyA.getUserData()).getX(), ((PowerUp) bodyA.getUserData()).getY());
+        }
+        if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof PowerUp) {
+            ((PowerUp) bodyB.getUserData()).setMarkedForRemoval(true);
+            powerUpCoordinates = new Coordinates(((PowerUp) bodyB.getUserData()).getX(), ((PowerUp) bodyB.getUserData()).getY());
         }
     }
 
@@ -31,8 +45,11 @@ public class GameContactListener implements ContactListener {
         Body bodyA = contact.getFixtureA().getBody();
         Body bodyB = contact.getFixtureB().getBody();
         // check if the 2 colliding bodies are Player and Enemy
-        if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof Enemy || bodyB.getUserData() instanceof Player && bodyA.getUserData() instanceof Enemy) {
+        if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof Enemy || bodyA.getUserData() instanceof Enemy && bodyB.getUserData() instanceof Player) {
             this.playerEnemyCollision = false;
+        }
+        // check if the 2 colliding bodies are Player and PowerUp
+        else if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof PowerUp || bodyA.getUserData() instanceof PowerUp && bodyB.getUserData() instanceof Player) {
         }
     }
 
@@ -50,5 +67,8 @@ public class GameContactListener implements ContactListener {
     // getters and setters
     public boolean isPlayerEnemyCollision() {
         return playerEnemyCollision;
+    }
+    public Coordinates getPowerUpCoordinates() {
+        return powerUpCoordinates;
     }
 }

@@ -5,12 +5,17 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.physics.box2d.*;
+import de.tum.cit.ase.bomberquest.gameobjects.BlastRadiusPowerUp;
 import de.tum.cit.ase.bomberquest.gameobjects.Bomb;
+import de.tum.cit.ase.bomberquest.gameobjects.BombNbrPowerUp;
+import de.tum.cit.ase.bomberquest.gameobjects.PowerUp;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the player character in the game.
@@ -19,14 +24,17 @@ import java.awt.*;
 public class Player extends Mob implements Drawable {
 
     private static final float BOMB_COOLDOWN = 3.0f;
+    private static final int BLASTCAP = 7;
+    private static final int NBRCAP = 7;
     private float timeSinceLastBomb = 3.0f;
     private int blastRadius = 1;
     private float radius;
-
+    private List<PowerUp> powerUps;
 
     public Player(World world, float x, float y, GameMap gameMap) {
         super(world, x, y);
         this.gameMap = gameMap;
+        powerUps = new ArrayList<>();
     }
 
     @Override
@@ -132,6 +140,22 @@ public class Player extends Mob implements Drawable {
         }
     }
 
+    // PowerUps
+
+    /** Add the respective power-up if the maximum wasn´t reached */
+    public void addBlastRadiusPowerUp(BlastRadiusPowerUp blastRadiusPowerUp) {
+        if (powerUps.stream().filter(powerUp -> powerUp instanceof BlastRadiusPowerUp).count() < BLASTCAP) {
+            powerUps.add(blastRadiusPowerUp);
+            System.out.println("Added: " + blastRadiusPowerUp.getClass());
+        }
+    }
+    public void addBombNbrPowerUp(BombNbrPowerUp bombNbrPowerUp) {
+        if (powerUps.stream().filter(powerUp -> powerUp instanceof BombNbrPowerUp).count() < NBRCAP) {
+            powerUps.add(bombNbrPowerUp);
+            System.out.println("Added: " + bombNbrPowerUp.getClass());
+        }
+    }
+
     //Bombs
 
     private void dropBomb() {
@@ -143,9 +167,6 @@ public class Player extends Mob implements Drawable {
         Bomb bomb = new Bomb(bombX, bombY, gameMap);
         bomb.setBlastRadius(blastRadius);
         gameMap.getBombs().add(bomb);
-
-        System.out.println("Bomb dropped at position: " + bombX + ", " + bombY);
-
     }
 
     /**
@@ -154,10 +175,8 @@ public class Player extends Mob implements Drawable {
      * @return A float representing the remaining cooldown time in seconds.
      *         Returns 0 if the cooldown period has already elapsed.
      */
-
-
     public float getRemainingBombCooldown() {
-        return Math.max(0, BOMB_COOLDOWN -timeSinceLastBomb);
+        return Math.max(0, BOMB_COOLDOWN - timeSinceLastBomb);
     }
 
 

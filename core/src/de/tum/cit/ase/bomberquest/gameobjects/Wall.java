@@ -37,7 +37,7 @@ public abstract class Wall extends GameObject {
         Body body = world.createBody(bodyDef);
         PolygonShape box = new PolygonShape();
         box.setAsBox(0.5f, 0.5f);
-        body.createFixture(box, 1.0f);
+        body.createFixture(box, 1f);
         box.dispose();
         body.setUserData(this);
         return body; // Return the created body for future reference

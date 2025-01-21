@@ -87,19 +87,19 @@ public class GameScreen extends BaseScreen implements Screen {
         // Update the camera
         updateCamera();
 
-        //Update the destructible walls
+        // Update the destructible walls
         for (DestructibleWall wall : map.getDestructibleWalls()) {
             wall.update(frameTime);
         }
 
-        //Render the Bombs
+        // Render the Bombs
         map.updateBombs(deltaTime);
 
-        //render the Bomb-Cooldown for the hud
+        // render the Bomb-Cooldown for the hud
         float bombCooldown = map.getPlayer().getRemainingBombCooldown();
         hud.setBombCooldown(bombCooldown);
 
-        //load the current blast radius
+        // load the current blast radius
         int blastRadius = map.getPlayer().getBlastRadius();
         hud.setBlastRadius(blastRadius);
 
@@ -109,6 +109,9 @@ public class GameScreen extends BaseScreen implements Screen {
         }
         hud.setTimeLeft(timeLeft);
         map.setTimeLeft(timeLeft);
+
+        // PowerUps
+        map.updatepowerUps();
 
         // check the game status
         game.checkGameState();

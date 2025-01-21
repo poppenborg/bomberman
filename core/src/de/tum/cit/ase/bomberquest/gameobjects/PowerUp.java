@@ -1,0 +1,63 @@
+package de.tum.cit.ase.bomberquest.gameobjects;
+
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
+import de.tum.cit.ase.bomberquest.texture.GameContactListener;
+
+public abstract class PowerUp extends GameObject{
+
+    /** Indicates whether the power-up should be removed */
+    protected boolean markedForRemoval;
+    /** Indicates whether the power-up is removed */
+    protected boolean taken;
+
+    /**
+     * Constructor for the Power-up
+     * @param x x-coordinate in the GameMap
+     * @param y y-coordinate in the GameMap
+     */
+    public PowerUp(World world, float x, float y) {
+        super(x, y);
+        this.markedForRemoval = false;
+        this.taken = false;
+        this.hitbox = createHitbox(world);
+    }
+
+    /**
+     * Create a Box2D body for the PowerUp.
+     * @param world The Box2D world to add the body to.
+     */
+    private Body createHitbox(World world) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(getX(), getY());
+        Body body = world.createBody(bodyDef);
+        PolygonShape box = new PolygonShape();
+        box.setAsBox(0.45f, 0.45f);
+        // Create a hitbox in form of a rectangle that doesn´t prevent a mob to cross the space but still detects collision
+        body.createFixture(box, 1f).setSensor(true);
+        box.dispose();
+        body.setUserData(this);
+        return body;
+    }
+
+    public void destroy(World world) {
+        if (markedForRemoval) {
+            this.taken = true;
+            world.destroyBody(hitbox);
+        }
+    }
+
+    // getters and setters
+    public boolean isMarkedForRemoval() {
+        return markedForRemoval;
+    }
+    public void setMarkedForRemoval(boolean markedForRemoval) {
+        this.markedForRemoval = markedForRemoval;
+    }
+    public boolean isTaken() {
+        return taken;
+    }
+}
