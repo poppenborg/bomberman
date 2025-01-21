@@ -2,22 +2,23 @@ package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.gameobjects.*;
-import de.tum.cit.ase.bomberquest.mobs.Enemy;
-import de.tum.cit.ase.bomberquest.mobs.Player;
-import de.tum.cit.ase.bomberquest.screen.MenuScreen;
+import de.tum.cit.ase.bomberquest.gameobjects.bombs.Bomb;
+import de.tum.cit.ase.bomberquest.gameobjects.flowers.Flowers;
+import de.tum.cit.ase.bomberquest.gameobjects.powerups.BlastRadiusPowerUp;
+import de.tum.cit.ase.bomberquest.gameobjects.powerups.BombNbrPowerUp;
+import de.tum.cit.ase.bomberquest.gameobjects.walls.DestructibleWall;
+import de.tum.cit.ase.bomberquest.gameobjects.walls.IndestructibleWall;
+import de.tum.cit.ase.bomberquest.gameobjects.walls.Wall;
+import de.tum.cit.ase.bomberquest.gameobjects.mobs.Enemy;
+import de.tum.cit.ase.bomberquest.gameobjects.mobs.Player;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.GameContactListener;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Represents the game map.

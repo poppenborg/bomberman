@@ -1,8 +1,7 @@
-package de.tum.cit.ase.bomberquest.gameobjects;
+package de.tum.cit.ase.bomberquest.gameobjects.flowers;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import de.tum.cit.ase.bomberquest.map.Coordinates;
-import de.tum.cit.ase.bomberquest.texture.Drawable;
+import de.tum.cit.ase.bomberquest.gameobjects.GameObject;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
 /**

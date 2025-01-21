@@ -23,8 +23,9 @@ public class Hud {
     /** The Cooldown for the player to drop the next bomb*/
     private float bombCooldown;
     /** The current blast Radius*/
-    private float blastRadius;
-
+    private int blastRadius;
+    /** The current bomb nbr*/
+    private int bombNbr;
 
     public Hud(SpriteBatch spriteBatch, BitmapFont font) {
         this.spriteBatch = spriteBatch;
@@ -48,9 +49,20 @@ public class Hud {
 
         //Bomb-Cooldown
         if (bombCooldown <= 0) {
-            font.draw(spriteBatch, "BOMB READY!!!", 10, 80); // Text if ready
+            if (bombNbr > 1) {
+                font.draw(spriteBatch, "BOMBS READY!!!", 10, 90); // Text if ready
+            } else {
+                font.draw(spriteBatch, "BOMB READY!!!", 10, 90); // Text if ready
+            }
         } else {
-            font.draw(spriteBatch, "Bomb Cooldown: " + String.format("%.1f", bombCooldown), 10, 80);
+            font.draw(spriteBatch, "Bomb Cooldown: " + String.format("%.1f", bombCooldown), 10, 90);
+        }
+
+        // Max concurrent bombs
+        if (bombNbr == 8) {
+            font.draw(spriteBatch, "Concurrent bombs: 8 (Max)", 10, 60);
+        } else {
+            font.draw(spriteBatch, "Concurrent bombs: " + bombNbr, 10, 60);
         }
 
         //Blast Radius
@@ -97,10 +109,14 @@ public class Hud {
     /**
      * Set the blastradius
      */
-    public void setBlastRadius(float blastRadius) {
+    public void setBlastRadius(int blastRadius) {
         this.blastRadius = blastRadius;
     }
 
-
-
+    /**
+     * Set the concurrent nbr of bombs
+     */
+    public void setBombNbr(int bombNbr) {
+        this.bombNbr = bombNbr;
+    }
 }

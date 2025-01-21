@@ -4,15 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.audio.MusicTrack;
 import de.tum.cit.ase.bomberquest.gameobjects.*;
+import de.tum.cit.ase.bomberquest.gameobjects.bombs.Bomb;
+import de.tum.cit.ase.bomberquest.gameobjects.walls.DestructibleWall;
 import de.tum.cit.ase.bomberquest.map.*;
-import de.tum.cit.ase.bomberquest.mobs.Enemy;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
 /**
@@ -102,6 +102,10 @@ public class GameScreen extends BaseScreen implements Screen {
         // load the current blast radius
         int blastRadius = map.getPlayer().getBlastRadius();
         hud.setBlastRadius(blastRadius);
+
+        // load the concurrent nbr of bombs
+        int bombNbr = map.getPlayer().getBombNbr();
+        hud.setBombNbr(bombNbr);
 
         // update the timer
         if (deltaTime < 1) {

@@ -1,12 +1,13 @@
-package de.tum.cit.ase.bomberquest.gameobjects;
+package de.tum.cit.ase.bomberquest.gameobjects.powerups;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import de.tum.cit.ase.bomberquest.gameobjects.GameObject;
 import de.tum.cit.ase.bomberquest.texture.GameContactListener;
 
-public abstract class PowerUp extends GameObject{
+public abstract class PowerUp extends GameObject {
 
     /** Indicates whether the power-up should be removed */
     protected boolean markedForRemoval;

@@ -1,4 +1,4 @@
-package de.tum.cit.ase.bomberquest.map;
+package de.tum.cit.ase.bomberquest.gameobjects;
 
 /**
  * Collects the x- and y-values of a coorinate into 1 object to avoid confusing length and hight

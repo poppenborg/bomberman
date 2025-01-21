@@ -1,8 +1,8 @@
 package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.files.FileHandle;
+import de.tum.cit.ase.bomberquest.gameobjects.Coordinates;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;

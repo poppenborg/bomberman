@@ -1,11 +1,10 @@
 package de.tum.cit.ase.bomberquest.texture;
 
 import com.badlogic.gdx.physics.box2d.*;
-import de.tum.cit.ase.bomberquest.gameobjects.BombNbrPowerUp;
-import de.tum.cit.ase.bomberquest.gameobjects.PowerUp;
-import de.tum.cit.ase.bomberquest.map.Coordinates;
-import de.tum.cit.ase.bomberquest.mobs.Enemy;
-import de.tum.cit.ase.bomberquest.mobs.Player;
+import de.tum.cit.ase.bomberquest.gameobjects.powerups.PowerUp;
+import de.tum.cit.ase.bomberquest.gameobjects.Coordinates;
+import de.tum.cit.ase.bomberquest.gameobjects.mobs.Enemy;
+import de.tum.cit.ase.bomberquest.gameobjects.mobs.Player;
 
 /**
  * This is a modified contact listener defining to the game logic specific reactions if 2 bodies collide

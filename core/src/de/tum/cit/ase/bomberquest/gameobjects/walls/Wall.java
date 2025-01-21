@@ -1,13 +1,10 @@
-package de.tum.cit.ase.bomberquest.gameobjects;
+package de.tum.cit.ase.bomberquest.gameobjects.walls;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import de.tum.cit.ase.bomberquest.map.Coordinates;
-import de.tum.cit.ase.bomberquest.texture.Drawable;
-import de.tum.cit.ase.bomberquest.texture.Textures;
+import de.tum.cit.ase.bomberquest.gameobjects.GameObject;
 
 /**
  * A wall is a static object with a hitbox, so the player cannot walk through it, unless destroyed.

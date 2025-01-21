@@ -1,4 +1,4 @@
-package de.tum.cit.ase.bomberquest.mobs;
+package de.tum.cit.ase.bomberquest.gameobjects.mobs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

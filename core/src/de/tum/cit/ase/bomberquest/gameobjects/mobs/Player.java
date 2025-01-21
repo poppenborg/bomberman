@@ -1,19 +1,17 @@
-package de.tum.cit.ase.bomberquest.mobs;
+package de.tum.cit.ase.bomberquest.gameobjects.mobs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.physics.box2d.*;
-import de.tum.cit.ase.bomberquest.gameobjects.BlastRadiusPowerUp;
-import de.tum.cit.ase.bomberquest.gameobjects.Bomb;
-import de.tum.cit.ase.bomberquest.gameobjects.BombNbrPowerUp;
-import de.tum.cit.ase.bomberquest.gameobjects.PowerUp;
+import de.tum.cit.ase.bomberquest.gameobjects.powerups.BlastRadiusPowerUp;
+import de.tum.cit.ase.bomberquest.gameobjects.bombs.Bomb;
+import de.tum.cit.ase.bomberquest.gameobjects.powerups.BombNbrPowerUp;
+import de.tum.cit.ase.bomberquest.gameobjects.powerups.PowerUp;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +26,7 @@ public class Player extends Mob implements Drawable {
     private static final int NBRCAP = 7;
     private float timeSinceLastBomb = 3.0f;
     private int blastRadius = 1;
+    private int bombNbr = 1;
     private float radius;
     private List<PowerUp> powerUps;
 
@@ -105,7 +104,7 @@ public class Player extends Mob implements Drawable {
 
         //Drop Bomb
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && timeSinceLastBomb >= BOMB_COOLDOWN) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && (timeSinceLastBomb >= BOMB_COOLDOWN || gameMap.getBombs().size() < bombNbr)) {
             dropBomb();
             timeSinceLastBomb = 0f;
         }
@@ -146,13 +145,13 @@ public class Player extends Mob implements Drawable {
     public void addBlastRadiusPowerUp(BlastRadiusPowerUp blastRadiusPowerUp) {
         if (powerUps.stream().filter(powerUp -> powerUp instanceof BlastRadiusPowerUp).count() < BLASTCAP) {
             powerUps.add(blastRadiusPowerUp);
-            System.out.println("Added: " + blastRadiusPowerUp.getClass());
+            this.blastRadius += 1;
         }
     }
     public void addBombNbrPowerUp(BombNbrPowerUp bombNbrPowerUp) {
         if (powerUps.stream().filter(powerUp -> powerUp instanceof BombNbrPowerUp).count() < NBRCAP) {
             powerUps.add(bombNbrPowerUp);
-            System.out.println("Added: " + bombNbrPowerUp.getClass());
+            this.bombNbr += 1;
         }
     }
 
@@ -184,7 +183,6 @@ public class Player extends Mob implements Drawable {
     public int getBlastRadius() {
         return blastRadius;
     }
-
     public void setBlastRadius(int blastRadius) {
         if (blastRadius > 0 && blastRadius <= 8) {
             this.blastRadius = blastRadius;
@@ -193,6 +191,9 @@ public class Player extends Mob implements Drawable {
         } else if (blastRadius > 8) {
             this.blastRadius = 8;
         }
+    }
+    public int getBombNbr() {
+        return bombNbr;
     }
 
     public float getRadius() {

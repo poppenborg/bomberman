@@ -1,7 +1,8 @@
-package de.tum.cit.ase.bomberquest.gameobjects;
+package de.tum.cit.ase.bomberquest.gameobjects.walls;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.World;
+import de.tum.cit.ase.bomberquest.gameobjects.walls.Wall;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
 public class IndestructibleWall extends Wall {

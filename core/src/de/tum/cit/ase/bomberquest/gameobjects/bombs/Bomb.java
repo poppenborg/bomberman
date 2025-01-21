@@ -1,12 +1,13 @@
-package de.tum.cit.ase.bomberquest.gameobjects;
+package de.tum.cit.ase.bomberquest.gameobjects.bombs;
 
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Timer;
-import de.tum.cit.ase.bomberquest.map.Coordinates;
+import de.tum.cit.ase.bomberquest.gameobjects.Coordinates;
+import de.tum.cit.ase.bomberquest.gameobjects.GameObject;
+import de.tum.cit.ase.bomberquest.gameobjects.walls.DestructibleWall;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.texture.Animations;
-import de.tum.cit.ase.bomberquest.texture.Drawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,11 @@ public class Bomb extends GameObject {
     private int blastRadius = 1; // default blast radius
     private List<Coordinates> blastCoordinates = new ArrayList<>(); // Coordinates of the explosion animation
 
+    // currently not used, tried to solve the problem of wrong animation for destructible walls
+    private float maxUpCoordinate;
+    private float maxDownCoordinate;
+    private float maxLeftCoordinate;
+    private float maxRightCoordinate;
 
     /**
      * Creates a new Bomb object at the specified coordinates.
@@ -68,7 +74,7 @@ public class Bomb extends GameObject {
             return Animations.BOMB_CENTER_EXPLOSION.getKeyFrame(stateTime, false);
         }
 
-        // Vertical explosion
+       // Vertical explosion
         if (coord.getX() == getX()) {
             if (coord.getY() > getY() && coord.getY() < getY() + blastRadius) { // Up
                 return Animations.BOMB_BLAST_VERTICAL.getKeyFrame(stateTime, false);
@@ -89,18 +95,18 @@ public class Bomb extends GameObject {
         }
 
         // Endpoints of vertical explosion
-        if (coord.equals(new Coordinates(getX(), getY() + blastRadius))) { // End-Up
+        if (coord.getX() == getX() && coord.getY() == getY() + blastRadius) { // End-Up
             return Animations.BOMB_BLAST_END_UP.getKeyFrame(stateTime, false);
         }
-        if (coord.equals(new Coordinates(getX(), getY() - blastRadius))) { // End-Down
+        if (coord.getX() == getX() && coord.getY() == getY() - blastRadius) { // End-Down
             return Animations.BOMB_BLAST_END_DOWN.getKeyFrame(stateTime, false);
         }
 
         // Endpoints of horizontal explosion
-        if (coord.equals(new Coordinates(getX() + blastRadius, getY()))) { // End-Right
+        if (coord.getX() == getX() + blastRadius && coord.getY() == getY()) { // End-Right
             return Animations.BOMB_BLAST_END_RIGHT.getKeyFrame(stateTime, false);
         }
-        if (coord.equals(new Coordinates(getX() - blastRadius, getY()))) { // End-Left
+        if (coord.getX() == getX() - blastRadius && coord.getY() == getY()) { // End-Left
             return Animations.BOMB_BLAST_END_LEFT.getKeyFrame(stateTime, false);
         }
 
@@ -188,18 +194,42 @@ public class Bomb extends GameObject {
 
 
             if (gameMap.isIndestructibleWallAt(newX, newY)) {
+                setMaxCoordinate(dx, dy, newX, newY);
                 break;
             }
 
             blastCoordinates.add(new Coordinates(newX, newY));
 
             if (gameMap.isDestructibleWallAt(newX, newY)) {
+                setMaxCoordinate(dx, dy, newX, newY);
                 break;
+            }
+
+            if (i == blastRadius) {
+                setMaxCoordinate(dx, dy, newX, newY);
             }
         }
     }
 
-
+    // currently not used, tried to solve the problem of wrong animation for destructible walls
+    public void setMaxCoordinate(int dx, int dy, float newX, float newY) {
+        if (dx == 0) {
+            if (dy > 0) {
+                this.maxUpCoordinate = newY;
+            }
+            if (dy < 0) {
+                this.maxDownCoordinate = newY;
+            }
+        }
+        if (dy == 0) {
+            if (dx > 0) {
+                this.maxRightCoordinate = newX;
+            }
+            if (dx < 0) {
+                this.maxLeftCoordinate = newX;
+            }
+        }
+    }
 
 
     //Getters and Setter
