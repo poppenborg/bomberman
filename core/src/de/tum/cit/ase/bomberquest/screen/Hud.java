@@ -11,7 +11,7 @@ import de.tum.cit.ase.bomberquest.map.GameMap;
  * It uses a separate camera so that it is always fixed on the screen.
  */
 public class Hud {
-    
+
     /** The SpriteBatch used to draw the HUD. This is the same as the one used in the GameScreen. */
     private final SpriteBatch spriteBatch;
     /** The font used to draw text on the screen. */
@@ -20,19 +20,21 @@ public class Hud {
     private final OrthographicCamera camera;
     /** The time left in the Game. */
     private float timeLeft;
-    /** The Cooldown for the player to drop the next bomb*/
+    /** The Cooldown for the player to drop the next bomb */
     private float bombCooldown;
-    /** The current blast Radius*/
+    /** The current blast Radius */
     private int blastRadius;
-    /** The current bomb nbr*/
+    /** The current bomb nbr */
     private int bombNbr;
+    /** The current nbr of Enemies */
+    private int enemies;
 
     public Hud(SpriteBatch spriteBatch, BitmapFont font) {
         this.spriteBatch = spriteBatch;
         this.font = font;
         this.camera = new OrthographicCamera();
     }
-    
+
     /**
      * Renders the HUD on the screen.
      * This uses a different OrthographicCamera so that the HUD is always fixed on the screen.
@@ -42,10 +44,23 @@ public class Hud {
         spriteBatch.setProjectionMatrix(camera.combined);
         // Start drawing
         spriteBatch.begin();
+
         // Draw the HUD elements
+
+        // Esc comand
         font.draw(spriteBatch, "Press Esc to Pause!", 10, Gdx.graphics.getHeight() - 10);
+
+        // Time left
         font.draw(spriteBatch, "Time left: " + String.format("%.1f", timeLeft), 10, Gdx.graphics.getHeight() - 40);
 
+        // Enemies remaining
+        if (enemies > 1) {
+            font.draw(spriteBatch, enemies + " Enemies remaining", 10, Gdx.graphics.getHeight() - 70);
+        } else if (enemies == 1) {
+            font.draw(spriteBatch, enemies + " Enemy remaining", 10, Gdx.graphics.getHeight() - 70);
+        } else {
+            font.draw(spriteBatch, "All enemies are dead, go to exit!", 10, Gdx.graphics.getHeight() - 70);
+        }
 
         //Bomb-Cooldown
         if (bombCooldown <= 0) {
@@ -75,7 +90,7 @@ public class Hud {
         // Finish drawing
         spriteBatch.end();
     }
-    
+
     /**
      * Resizes the HUD when the screen size changes.
      * This is called when the window is resized.
@@ -86,37 +101,41 @@ public class Hud {
         camera.setToOrtho(false, width, height);
     }
 
-    /**
-     * Update the Timer
-     */
-    public void setTimeLeft(float timeLeft) {
-        this.timeLeft = timeLeft;
-    }
+
 
     /** Cleans up resources when the game is disposed. */
     public void dispose() {
         spriteBatch.dispose();
     }
 
-
+    /**
+     * Update the Timer
+     */
+    public void setTimeLeft(float timeLeft) {
+        this.timeLeft = timeLeft;
+    }
     /**
      * Set the bomb cooldown
      */
     public void setBombCooldown(float bombCooldown) {
         this.bombCooldown = bombCooldown;
     }
-
     /**
      * Set the blastradius
      */
     public void setBlastRadius(int blastRadius) {
         this.blastRadius = blastRadius;
     }
-
     /**
      * Set the concurrent nbr of bombs
      */
     public void setBombNbr(int bombNbr) {
         this.bombNbr = bombNbr;
+    }
+    /**
+     * Set the current nbr of enemies
+     */
+    public void setEnemies(int enemies) {
+        this.enemies = enemies;
     }
 }

@@ -28,10 +28,7 @@ public abstract class Wall extends GameObject {
      * @param world The Box2D world to add the body to.
      */
     private Body createHitbox(World world) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(getX(), getY());
-        Body body = world.createBody(bodyDef);
+        Body body = createEmptyStaticBody(world, getX(), getY());
         PolygonShape box = new PolygonShape();
         box.setAsBox(0.5f, 0.5f);
         body.createFixture(box, 1f);

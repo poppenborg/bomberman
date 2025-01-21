@@ -29,7 +29,7 @@ public class WinScreen extends BaseScreen{
         table.add(new Label("Congratulations you won!", game.getSkin(), "title")).padBottom(80).row();
         // Create and add a button to go bac to the menu screen
         TextButton goToMenuButton = new TextButton("Go To Menu", game.getSkin());
-        table.add(goToMenuButton).width(300).row();
+        table.add(goToMenuButton).width(BUTTON_WITH).row();
         goToMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -39,7 +39,7 @@ public class WinScreen extends BaseScreen{
         });
         // Create and add a button to exit the game
         TextButton exitButton = new TextButton("Exit Game", game.getSkin());
-        table.add(exitButton).width(300).row();
+        table.add(exitButton).width(BUTTON_WITH).row();
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {

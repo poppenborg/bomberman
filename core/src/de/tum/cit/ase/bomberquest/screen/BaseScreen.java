@@ -27,6 +27,8 @@ public abstract class BaseScreen implements Screen {
     protected final Viewport viewport;
     protected final Table table;
     protected MusicTrack musicTrack;
+    protected static final float BUTTON_WITH = 400;
+
     /**
      * Constructor for BaseScreen. Sets up the camera, viewport, stage, and UI elements.
      * @param game The main game class, used to access global resources and methods.

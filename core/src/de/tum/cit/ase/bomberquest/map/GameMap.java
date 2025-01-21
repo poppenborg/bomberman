@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.gameobjects.*;
+import de.tum.cit.ase.bomberquest.gameobjects.Exits.Exit;
 import de.tum.cit.ase.bomberquest.gameobjects.bombs.Bomb;
 import de.tum.cit.ase.bomberquest.gameobjects.flowers.Flowers;
 import de.tum.cit.ase.bomberquest.gameobjects.powerups.BlastRadiusPowerUp;
@@ -69,8 +70,8 @@ public class GameMap {
     private List<Bomb> bombs;
     private List<BombNbrPowerUp> bombNbrPowerUps;
     private List<BlastRadiusPowerUp> blastRadiusPowerUps;
-
-    //TODO: replce placeholder for Entrance + Enemy + Exit + power-up until respective class was created
+    private Exit exit;
+    //TODO: replace placeholder for Exit until respective class was created
     private List<Placeholder> placeholders;
 
     /** The time left in the Game. */
@@ -108,7 +109,6 @@ public class GameMap {
         this.bombs = new ArrayList<>();
         this.bombNbrPowerUps = new ArrayList<>();
         this.blastRadiusPowerUps = new ArrayList<>();
-        //TODO: replace placeholders
         Map<Coordinates, Integer> prasedMap = mapLoader.prasingMap(mapFile);
         // Iterates over the gameObjects map
         for (Map.Entry<Coordinates, Integer> entry : prasedMap.entrySet()) {
@@ -176,7 +176,9 @@ public class GameMap {
      * @return returns ture if one of the conditions to win the game is fulfilled
      */
     public boolean checkWinStatus() {
-        return getEnemies().isEmpty();
+        boolean allEnemiesDead = getEnemies().isEmpty();
+        boolean exitReached = false;
+        return allEnemiesDead && exitReached;
     }
 
     /**
@@ -185,8 +187,8 @@ public class GameMap {
      */
     public boolean checkLoseStatus() {
         boolean timeRunOut = timeLeft <= 0;
-        boolean PlayerEnemyCollision = contactListener.isPlayerEnemyCollision();
-        return timeRunOut || PlayerEnemyCollision;
+        boolean playerEnemyCollision = contactListener.isPlayerEnemyCollision();
+        return timeRunOut || playerEnemyCollision;
     }
 
     // PowerUps
