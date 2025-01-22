@@ -62,6 +62,17 @@ public class Animations {
             SpriteSheet.CHARACTER.at(4, 4)
     );
 
+    /**
+     * The animation for the character dying.
+     */
+    public static final Animation<TextureRegion> CHARACTER_DYING = new Animation<>(0.2f,
+            SpriteSheet.CHARACTER.at(1, 14),
+            SpriteSheet.CHARACTER.at(1, 6),
+            SpriteSheet.CHARACTER.at(1, 7)
+    );
+
+
+
     // ENEMY
     /**
      * The animation for the enemy walking down.

@@ -68,6 +68,11 @@ public class Player extends Mob implements Drawable {
      */
     @Override
     public void tick(float frameTime) {
+
+        if (killed) {
+            return; // If the player is killed no action is possible anymore
+        }
+
         setElapsedTime(getElapsedTime() + frameTime);
 
         float xVelocity = 0;
@@ -110,7 +115,12 @@ public class Player extends Mob implements Drawable {
 
     @Override
     public TextureRegion getCurrentAppearance() {
-        // Get the current velocity of the mob
+        // if the player is dead, return the death animation
+        if (killed) {
+            return Animations.CHARACTER_DYING.getKeyFrame(getElapsedTime(), false);
+        }
+
+        // Get the current velocity of the player
 
         float xVelocity = getHitbox().getLinearVelocity().x;
         float yVelocity = getHitbox().getLinearVelocity().y;

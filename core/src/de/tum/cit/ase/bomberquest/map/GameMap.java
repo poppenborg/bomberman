@@ -2,6 +2,8 @@ package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
@@ -16,6 +18,7 @@ import de.tum.cit.ase.bomberquest.gameobjects.walls.IndestructibleWall;
 import de.tum.cit.ase.bomberquest.gameobjects.walls.Wall;
 import de.tum.cit.ase.bomberquest.gameobjects.mobs.Enemy;
 import de.tum.cit.ase.bomberquest.gameobjects.mobs.Player;
+import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.GameContactListener;
 
@@ -75,6 +78,7 @@ public class GameMap {
 
     /** The time left in the Game. */
     private float timeLeft;
+    private float playerDeathAnimationTime = 0f;
 
 
     public GameMap(BomberQuestGame game, FileHandle mapFile) {
@@ -147,6 +151,10 @@ public class GameMap {
     public void tick(float frameTime) {
         // Player
         this.player.tick(frameTime);
+
+        if (collisionPlayerEnemy()) {
+            player.setKilled(true);
+        }
         // Enemies
         for (Enemy enemy : enemies) {
             enemy.tick(frameTime);
@@ -183,9 +191,21 @@ public class GameMap {
      */
     public boolean checkLoseStatus() {
         boolean timeRunOut = timeLeft <= 0;
-        boolean playerEnemyCollision = contactListener.isPlayerEnemyCollision();
-        boolean playerIsKilled = player.isKilled();
-        return timeRunOut || playerEnemyCollision || playerIsKilled;
+
+        if (player.isKilled()) {
+            Animation<TextureRegion> dyingAnimation = Animations.CHARACTER_DYING;
+            playerDeathAnimationTime += Gdx.graphics.getDeltaTime();
+
+            if (!dyingAnimation.isAnimationFinished(playerDeathAnimationTime)) {
+                return false;
+            }
+
+            playerDeathAnimationTime = 0f;
+
+            return true;
+        }
+
+        return timeRunOut;
     }
 
     // PowerUps
