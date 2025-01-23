@@ -14,6 +14,7 @@ import de.tum.cit.ase.bomberquest.texture.Animations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 
 public class Bomb extends GameObject {
 
@@ -196,13 +197,21 @@ public class Bomb extends GameObject {
                 float enemyXCoordinate = (float) Math.round(enemy.getX());
                 float enemyYCoordinate = (float) Math.round(enemy.getY());
                 if (coordinates.getX() == enemyXCoordinate && coordinates.getY() == enemyYCoordinate) {
+                    enemy.setKilled(true);
                     killedEnemies.add(enemy);
                 }
             }
         }
-        for (Enemy enemy :killedEnemies) {
-            gameMap.getEnemies().remove(enemy);
-            gameMap.getWorld().destroyBody(enemy.getHitbox());
+
+        for (Enemy enemy : killedEnemies) {
+
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    gameMap.getEnemies().remove(enemy);
+                    gameMap.getWorld().destroyBody(enemy.getHitbox());
+                }
+            }, Animations.BOMB_CENTER_EXPLOSION.getAnimationDuration());
         }
 
         //Player in Blast radius

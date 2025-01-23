@@ -15,6 +15,7 @@ public class Enemy extends Mob implements Drawable {
     private float radius;
     private float rectangleWidth;
     private float rectangleHeight;
+    private boolean killed = false;
 
     public Enemy(World world, float x, float y) {
         super(world, x, y);
@@ -52,14 +53,24 @@ public class Enemy extends Mob implements Drawable {
     @Override
     public void tick(float frameTime) {
         setElapsedTime(getElapsedTime() + frameTime);
-        // TODO: implement inteligent movement
-        float xVelocity = (float) Math.sin(getElapsedTime()) * 2;
-        float yVelocity = (float) Math.cos(getElapsedTime()) * 2;
-        getHitbox().setLinearVelocity(xVelocity, yVelocity);
+
+        if (killed) { //if the enemy  killed the movement is stopped.
+            getHitbox().setLinearVelocity(0,0);
+        } else {
+
+            // TODO: implement inteligent movement
+            float xVelocity = (float) Math.sin(getElapsedTime()) * 2;
+            float yVelocity = (float) Math.cos(getElapsedTime()) * 2;
+            getHitbox().setLinearVelocity(xVelocity, yVelocity);
+        }
     }
 
     @Override
     public TextureRegion getCurrentAppearance() {
+        if (killed) {
+            return Animations.ENEMY_DYING.getKeyFrame(getElapsedTime(), false);
+        }
+
         // Get the current velocity of the player
         float xVelocity = getHitbox().getLinearVelocity().x;
         float yVelocity = getHitbox().getLinearVelocity().y;
@@ -76,6 +87,8 @@ public class Enemy extends Mob implements Drawable {
         } else {
             return Animations.ENEMY_WALK_DOWN.getKeyFrame( 0, false);
         }
+
+
     }
 
     // Getters and Setters
@@ -88,5 +101,13 @@ public class Enemy extends Mob implements Drawable {
     }
     public float getRectangleHeight() {
         return rectangleHeight;
+    }
+
+    public boolean isKilled() {
+        return killed;
+    }
+
+    public void setKilled(boolean killed) {
+        this.killed = killed;
     }
 }

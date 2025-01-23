@@ -109,6 +109,13 @@ public class Animations {
             SpriteSheet.ENEMY.at(2, 10)
     );
 
+    public static final Animation<TextureRegion> ENEMY_DYING = new Animation<>(0.2f,
+            SpriteSheet.ENEMY.at(5, 7),
+            SpriteSheet.ENEMY.at(5, 8),
+            SpriteSheet.ENEMY.at(5, 9)
+    );
+
+
     // BOMB
     /**
      * The animation for the bomb igniting.

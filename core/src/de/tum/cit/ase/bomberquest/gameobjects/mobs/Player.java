@@ -71,7 +71,8 @@ public class Player extends Mob implements Drawable {
     @Override
     public void tick(float frameTime) {
 
-        if (killed) {
+        if (killed) { //if the player killed the movement is stopped.
+            getHitbox().setLinearVelocity(0,0);
             return; // If the player is killed no action is possible anymore
         }
 
