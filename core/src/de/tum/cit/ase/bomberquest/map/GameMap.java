@@ -84,7 +84,7 @@ public class GameMap {
     public GameMap(BomberQuestGame game, FileHandle mapFile) {
         this.game = game;
         this.mapFile = mapFile;
-        this.timeLeft = 500;
+        this.timeLeft = 5;
         this.world = new World(Vector2.Zero, true);
         this.contactListener = new GameContactListener();
         world.setContactListener(contactListener);
@@ -152,7 +152,7 @@ public class GameMap {
         // Player
         this.player.tick(frameTime);
 
-        if (contactListener.isPlayerEnemyCollision()) {
+        if (contactListener.isPlayerEnemyCollision() || timeLeft <= 0) {
             player.setKilled(true);
         }
         // Enemies
@@ -205,7 +205,7 @@ public class GameMap {
             return true;
         }
 
-        return timeRunOut;
+        return false;
     }
 
     // PowerUps

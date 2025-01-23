@@ -51,7 +51,9 @@ public class Hud {
         font.draw(spriteBatch, "Press Esc to Pause!", 10, Gdx.graphics.getHeight() - 10);
 
         // Time left
-        font.draw(spriteBatch, "Time left: " + String.format("%.1f", timeLeft), 10, Gdx.graphics.getHeight() - 40);
+        if (timeLeft <= 0) {
+            font.draw(spriteBatch, "Time left: " + String.format("%.1f", 0.0), 10, Gdx.graphics.getHeight() - 40);
+        } else font.draw(spriteBatch, "Time left: " + String.format("%.1f", timeLeft), 10, Gdx.graphics.getHeight() - 40);
 
         // Enemies remaining
         if (enemies > 1) {
