@@ -152,7 +152,7 @@ public class GameMap {
         // Player
         this.player.tick(frameTime);
 
-        if (collisionPlayerEnemy()) {
+        if (contactListener.isPlayerEnemyCollision()) {
             player.setKilled(true);
         }
         // Enemies
