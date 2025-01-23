@@ -10,12 +10,14 @@ import com.badlogic.gdx.audio.Music;
  */
 public enum MusicTrack {
 
-    GAME_BACKGROUND("gameBackground.mp3", 0.2f),
-    MENU("menu.mp3", 0.2f),
-    PAUSE("pause.OGG", 0.2f),
-    LOOSE("LooseScreen.OGG", 0.2f),
-    WIN("win.OGG", 0.2f);
+    GAME_BACKGROUND("gameBackground.mp3", getVOLUME()),
+    MENU("menu.mp3", getVOLUME()),
+    PAUSE("pause.OGG", getVOLUME()),
+    LOOSE("LooseScreen.OGG", getVOLUME()),
+    WIN("win.OGG", getVOLUME());
 
+    // General volume
+    private static final float VOLUME = 0.05f;
 
     /** The music file owned by this variant. */
     private final Music music;
@@ -40,5 +42,9 @@ public enum MusicTrack {
 
     public void dispose() {
         music.dispose();
+    }
+
+    public static float getVOLUME() {
+        return VOLUME;
     }
 }

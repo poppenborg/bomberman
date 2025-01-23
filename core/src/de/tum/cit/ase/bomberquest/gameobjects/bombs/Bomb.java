@@ -156,7 +156,7 @@ public class Bomb extends GameObject {
         calculateBlastCoordinates(); //calculate the explosion radius
 
         // Sound effect
-        Soundeffect.EXPLODS_SOUND.play(1);
+        Soundeffect.EXPLODS_SOUND.play(Soundeffect.getVOLUME());
 
         //Destroy Destructible walls.
 
@@ -197,6 +197,8 @@ public class Bomb extends GameObject {
                 float enemyYCoordinate = (float) Math.round(enemy.getY());
                 if (coordinates.getX() == enemyXCoordinate && coordinates.getY() == enemyYCoordinate) {
                     killedEnemies.add(enemy);
+                    Soundeffect.ENEMYDEATH_SOUN.play(Soundeffect.getVOLUME());
+
                 }
             }
         }

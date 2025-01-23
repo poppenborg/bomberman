@@ -22,7 +22,7 @@ public class WinScreen extends BaseScreen{
     public WinScreen(BomberQuestGame game) {
         super(game);
         // play victory sound effect
-        Soundeffect.WINN_SOUND.play(1);
+        Soundeffect.WINN_SOUND.play(Soundeffect.getVOLUME());
         // play winner music
         setMusicTrack(MusicTrack.WIN);
         getMusicTrack().play();
