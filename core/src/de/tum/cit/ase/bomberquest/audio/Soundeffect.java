@@ -17,14 +17,20 @@ public enum Soundeffect {
     DIE_SOUND("tribe_d.wav"),
     DROP_BOMB_SOUND("FX272.mp3"),
     EXPLODS_SOUND("Explosion.wav"),
-    POWERUP_SOUND("FX279.mp3");
+    POWERUP_SOUND("FX279.mp3"),
+    ENEMYDEATH_SOUN("GoblinDeath.wav");
+
+    // General Volume
+    private static float VOLUME = 1f;
+
+
+
 
     /** The sound effect file owned by this variant. */
     private final Sound sound;
 
     Soundeffect(String fileName) {
         this.sound = Gdx.audio.newSound(Gdx.files.internal("audio/" + fileName));
-        this.sound.play(0);
     }
 
     /**
@@ -48,5 +54,7 @@ public enum Soundeffect {
         sound.dispose();
     }
 
-
+    public static float getVOLUME() {
+        return VOLUME;
+    }
 }
