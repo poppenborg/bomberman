@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
+import de.tum.cit.ase.bomberquest.audio.Soundeffect;
 import de.tum.cit.ase.bomberquest.gameobjects.powerups.BlastRadiusPowerUp;
 import de.tum.cit.ase.bomberquest.gameobjects.bombs.Bomb;
 import de.tum.cit.ase.bomberquest.gameobjects.powerups.BombNbrPowerUp;
@@ -30,6 +31,7 @@ public class Player extends Mob implements Drawable {
     private float radius;
     private List<PowerUp> powerUps;
     private boolean killed = false;
+    private boolean soundWasPlayed = false;
 
     public Player(World world, float x, float y, GameMap gameMap) {
         super(world, x, y);
@@ -105,6 +107,8 @@ public class Player extends Mob implements Drawable {
         //Drop Bomb
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && (timeSinceLastBomb >= BOMB_COOLDOWN || gameMap.getBombs().size() < bombNbr)) {
+            // Create Sound Effect
+            Soundeffect.DROP_BOMB_SOUND.play(1);
             dropBomb();
             timeSinceLastBomb = 0f;
         }
@@ -211,5 +215,7 @@ public class Player extends Mob implements Drawable {
 
     public void setKilled(boolean killed) {
         this.killed = killed;
+        // Play sound effect
+        Soundeffect.DIE_SOUND.play(1);
     }
 }

@@ -3,6 +3,7 @@ package de.tum.cit.ase.bomberquest.gameobjects.bombs;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Timer;
+import de.tum.cit.ase.bomberquest.audio.Soundeffect;
 import de.tum.cit.ase.bomberquest.gameobjects.Coordinates;
 import de.tum.cit.ase.bomberquest.gameobjects.GameObject;
 import de.tum.cit.ase.bomberquest.gameobjects.mobs.Enemy;
@@ -154,6 +155,9 @@ public class Bomb extends GameObject {
         stateTime = 0f; // reset timer for explosion
         calculateBlastCoordinates(); //calculate the explosion radius
 
+        // Sound effect
+        Soundeffect.EXPLODS_SOUND.play(1);
+
         //Destroy Destructible walls.
 
         for (Coordinates coordinates : blastCoordinates) {
@@ -204,7 +208,7 @@ public class Bomb extends GameObject {
         //Player in Blast radius
 
         for (Coordinates coordinates : blastCoordinates) {
-            if (Math.round(gameMap.getPlayer().getX()) == coordinates.getX() && Math.round(gameMap.getPlayer().getY()) == coordinates.getY()) {
+            if (Math.round(gameMap.getPlayer().getX()) == coordinates.getX() && Math.round(gameMap.getPlayer().getY()) == coordinates.getY() && !gameMap.getPlayer().isKilled()) {
                 gameMap.getPlayer().setKilled(true);
                 return;
             }

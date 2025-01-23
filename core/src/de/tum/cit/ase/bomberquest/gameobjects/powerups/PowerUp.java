@@ -4,6 +4,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import de.tum.cit.ase.bomberquest.audio.Soundeffect;
 import de.tum.cit.ase.bomberquest.gameobjects.GameObject;
 import de.tum.cit.ase.bomberquest.texture.GameContactListener;
 
@@ -33,7 +34,7 @@ public abstract class PowerUp extends GameObject {
     private Body createHitbox(World world) {
         Body body = createEmptyStaticBody(world, getX(), getY());
         PolygonShape box = new PolygonShape();
-        box.setAsBox(0.45f, 0.45f);
+        box.setAsBox(0.48f, 0.48f);
         // Create a hitbox in form of a rectangle that doesn´t prevent a mob to cross the space but still detects collision
         body.createFixture(box, 1f).setSensor(true);
         box.dispose();
@@ -54,6 +55,7 @@ public abstract class PowerUp extends GameObject {
     }
     public void setMarkedForRemoval(boolean markedForRemoval) {
         this.markedForRemoval = markedForRemoval;
+        Soundeffect.POWERUP_SOUND.play(1);
     }
     public boolean isTaken() {
         return taken;

@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.audio.MusicTrack;
+import de.tum.cit.ase.bomberquest.audio.Soundeffect;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.map.MapLoader;
 
@@ -20,6 +21,8 @@ public class WinScreen extends BaseScreen{
      */
     public WinScreen(BomberQuestGame game) {
         super(game);
+        // play victory sound effect
+        Soundeffect.WINN_SOUND.play(1);
         // play winner music
         setMusicTrack(MusicTrack.WIN);
         getMusicTrack().play();

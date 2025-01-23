@@ -27,6 +27,8 @@ public class PauseScreen extends BaseScreen implements Screen {
      */
     public PauseScreen(BomberQuestGame game) {
         super(game);
+        // Memorize the current time
+        float timeLeft = game.getMap().getTimeLeft();
         // play looser music
         setMusicTrack(MusicTrack.PAUSE);
         getMusicTrack().play();
@@ -41,6 +43,7 @@ public class PauseScreen extends BaseScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.goToGame(); // Change to the game screen when button is pressed
+                game.getMap().setTimeLeft(timeLeft);
                 dispose();
             }
         });

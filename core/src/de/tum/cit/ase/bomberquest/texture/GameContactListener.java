@@ -17,7 +17,7 @@ public class GameContactListener implements ContactListener {
     // Coordinates of the power-up;
     private Coordinates powerUpCoordinates;
     // indicator for whether the player reached the exit
-    private boolean exitReached;
+    private boolean exitReached = false;
 
     // defines the behaviour if 2 objects collide
     @Override

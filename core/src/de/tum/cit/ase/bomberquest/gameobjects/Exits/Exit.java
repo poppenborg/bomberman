@@ -20,7 +20,7 @@ public class Exit extends GameObject {
     private Body createHitbox(World world) {
         Body body = createEmptyStaticBody(world, getX(), getY());
         PolygonShape box = new PolygonShape();
-        box.setAsBox(0.45f, 0.45f);
+        box.setAsBox(0.48f, 0.48f);
         // Create a hitbox in form of a rectangle that doesn´t prevent a mob to cross the space but still detects collision
         body.createFixture(box, 1f).setSensor(true);
         box.dispose();

@@ -1,12 +1,14 @@
 package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
+import de.tum.cit.ase.bomberquest.audio.Soundeffect;
 import de.tum.cit.ase.bomberquest.gameobjects.*;
 import de.tum.cit.ase.bomberquest.gameobjects.Exits.Exit;
 import de.tum.cit.ase.bomberquest.gameobjects.bombs.Bomb;
@@ -84,7 +86,7 @@ public class GameMap {
     public GameMap(BomberQuestGame game, FileHandle mapFile) {
         this.game = game;
         this.mapFile = mapFile;
-        this.timeLeft = 5;
+        this.timeLeft = 500;
         this.world = new World(Vector2.Zero, true);
         this.contactListener = new GameContactListener();
         world.setContactListener(contactListener);
@@ -152,7 +154,7 @@ public class GameMap {
         // Player
         this.player.tick(frameTime);
 
-        if (contactListener.isPlayerEnemyCollision() || timeLeft <= 0) {
+        if ((contactListener.isPlayerEnemyCollision() || timeLeft <= 0) && player.isKilled() != true) {
             player.setKilled(true);
         }
         // Enemies
@@ -190,8 +192,6 @@ public class GameMap {
      * @return returns true if one of the conditions to lose the game is fulfilled
      */
     public boolean checkLoseStatus() {
-        boolean timeRunOut = timeLeft <= 0;
-
         if (player.isKilled()) {
             Animation<TextureRegion> dyingAnimation = Animations.CHARACTER_DYING;
             playerDeathAnimationTime += Gdx.graphics.getDeltaTime();
@@ -199,7 +199,6 @@ public class GameMap {
             if (!dyingAnimation.isAnimationFinished(playerDeathAnimationTime)) {
                 return false;
             }
-
             playerDeathAnimationTime = 0f;
 
             return true;
@@ -219,6 +218,7 @@ public class GameMap {
             if (bombNbrPowerUp.isMarkedForRemoval() && !bombNbrPowerUp.isTaken() && bombNbrPowerUp.isBombNbrPowerUpAt(contactListener.getPowerUpCoordinates()) && contactListener.getPowerUpCoordinates() != null) {
                 player.addBombNbrPowerUp(bombNbrPowerUp);
                 bombNbrPowerUp.destroy(world);
+
             }
         }
         for (BlastRadiusPowerUp blastRadiusPowerUp : blastRadiusPowerUps) {
@@ -385,7 +385,6 @@ public class GameMap {
         }
         return false;
     }
-
 
     /** Cleans up resources when the game is disposed. */
     public void dispose() {

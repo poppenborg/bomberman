@@ -71,8 +71,6 @@ public class Animations {
             SpriteSheet.CHARACTER.at(1, 7)
     );
 
-
-
     // ENEMY
     /**
      * The animation for the enemy walking down.
