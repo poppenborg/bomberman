@@ -109,6 +109,10 @@ public class Animations {
             SpriteSheet.ENEMY.at(2, 10)
     );
 
+    /**
+     * The animation for the mob dying.
+     */
+
     public static final Animation<TextureRegion> ENEMY_DYING = new Animation<>(0.2f,
             SpriteSheet.ENEMY.at(5, 7),
             SpriteSheet.ENEMY.at(5, 8),
