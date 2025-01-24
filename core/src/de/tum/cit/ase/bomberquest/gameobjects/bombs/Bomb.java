@@ -255,10 +255,10 @@ public class Bomb extends GameObject {
 
             blastCoordinates.add(new Coordinates(newX, newY));
 
-            if (gameMap.isDestructibleWallAt(newX, newY)) {
+            /*if (gameMap.isDestructibleWallAt(newX, newY)) {
                 setMaxCoordinate(dx, dy, newX, newY);
                 break;
-            }
+            }*/
 
             if (i == blastRadius) {
                 setMaxCoordinate(dx, dy, newX, newY);
