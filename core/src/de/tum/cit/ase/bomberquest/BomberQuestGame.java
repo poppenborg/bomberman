@@ -77,42 +77,43 @@ public class BomberQuestGame extends Game {
     }
 
     /**
-     * Switches to the menu screen.
+     * Switch to the menu screen.
      */
     public void goToMenu() {
         this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
     }
 
     /**
-     * Switches to the game screen.
+     * Switch to the game screen.
      */
     public void goToGame() {
         this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
     }
 
     /**
-     * Switches to the pause screen.
+     * Switch to the pause screen.
      */
     public void goToPauseScreen() {
         this.setScreen(new PauseScreen(this));
     }
 
     /**
-     * Switches to the win screen.
+     * Switch to the win screen.
      */
     public void goToWinScreen() {
         this.setScreen(new WinScreen(this)); // Set the current screen to GameScreen
     }
 
     /**
-     * Switches to the loose screen.
+     * Switch to the loose screen.
      */
     public void goToLooseScreen() {
         this.setScreen(new LooseScreen(this)); // Set the current screen to GameScreen
     }
 
     /**
-     * Opens a folder to choose a map file from
+     * Open a folder to choose a map file from.
+     * When a file was selected, the game map is initialized and the game screen is displayed.
      */
     public void openFileChooser() {
         NativeFileChooserConfiguration nativeFileChooserConfiguration = new NativeFileChooserConfiguration();
@@ -137,32 +138,17 @@ public class BomberQuestGame extends Game {
         fileChooser.chooseFile(nativeFileChooserConfiguration, nativeFileChooserCallback);
     }
 
+    /**
+     * Initialize the game map with a specified file.
+     *
+     * @param fileHandle Map file to load.
+     */
     public void initializeMap(FileHandle fileHandle) {
         this.map = new GameMap(this, fileHandle);
     }
 
-    /** Returns the skin for UI elements. */
-    public Skin getSkin() {
-        return skin;
-    }
-
-    /** Returns the main SpriteBatch for rendering. */
-    public SpriteBatch getSpriteBatch() {
-        return spriteBatch;
-    }
-
-    /** Returns the current map, if there is one. */
-    public GameMap getMap() {
-        return map;
-    }
-
-    /** Returns the current file, if there is one. */
-    public NativeFileChooser getFileChooser() {
-        return fileChooser;
-    }
-
     /**
-     * Switches to the given screen and disposes of the previous screen.
+     * Switch to the given screen and disposes of the previous screen.
      * @param screen the new screen
      */
     @Override
@@ -174,7 +160,9 @@ public class BomberQuestGame extends Game {
         }
     }
 
-    /** Cleans up resources when the game is disposed. */
+    /**
+     * Clean up resources when the game is disposed.
+     */
     @Override
     public void dispose() {
         getScreen().hide(); // Hide the current screen
@@ -183,12 +171,8 @@ public class BomberQuestGame extends Game {
         skin.dispose(); // Dispose the skin
     }
 
-    public void setMap(GameMap map) {
-        this.map = map;
-    }
-
     /**
-     * Checks whether game is won or lost or still in progress
+     * Check whether game is won or lost or still in progress
      * If game is won or lost the screen is changed accordingly and superfluous resources are disposed of
      */
     public void checkGameState() {
@@ -200,5 +184,22 @@ public class BomberQuestGame extends Game {
             goToWinScreen();
             map.dispose();
         }
+    }
+
+    // Getters and Setters
+    public void setMap(GameMap map) {
+        this.map = map;
+    }
+    public Skin getSkin() {
+        return skin;
+    }
+    public SpriteBatch getSpriteBatch() {
+        return spriteBatch;
+    }
+    public GameMap getMap() {
+        return map;
+    }
+    public NativeFileChooser getFileChooser() {
+        return fileChooser;
     }
 }

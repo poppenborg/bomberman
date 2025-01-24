@@ -6,20 +6,28 @@ import de.tum.cit.ase.bomberquest.gameobjects.walls.Wall;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
+/**
+ * Destructible Wall is a static object preventing dynamic objects to pass.
+ * This wall can be destroyed by the blast radius of a bomb.
+ * The blast radius of the bomb is blocked after this wall.
+ */
 public class DestructibleWall extends Wall {
+
+    /** Indicator whether wall has been destroyed */
+    private boolean destroyed;
+    /** Time of the animation when the wall is destroyed */
+    private float animationTime;
+    /** Start the destroy animation */
+    private boolean playAnimation;
+
     /**
      * Create a DestructibleWall at the given position.
      * This wall can be destroyed
      *
      * @param world The Box2D world to add the DestructibleWall's hitbox to.
-     * @param x     The X position.
-     * @param y     The Y position.
+     * @param x The X position.
+     * @param y The Y position.
      */
-
-    private boolean destroyed;
-    private float animationTime; //to update the Animation
-    private boolean playAnimation; //to start the Animation
-
     public DestructibleWall(World world, float x, float y) {
         super(world, x, y);
         this.destroyed = false;
@@ -30,12 +38,11 @@ public class DestructibleWall extends Wall {
     //Methods
 
     /**
-     * Method for returning the correct texture for the DestructibleWall
+     * Return the correct texture for the DestructibleWall.
      * Default texture if not destroyed
      * Empty texture if destroyed
      * Animation if being destroyed
      */
-
     @Override
     public TextureRegion getCurrentAppearance() {
 
@@ -55,12 +62,12 @@ public class DestructibleWall extends Wall {
     }
 
     /**
-     * Method for destroying the DestructibleWall
-     * Sets destroyed to true
-     * Starts the animation
+     * Destroy the DestructibleWall.
+     * Sets destroyed to true.
+     * Starts the animation.
+     *
      * @param world The Box2D world to destroy the body.
      */
-
     public void destroy(World world) {
         if (!destroyed) {
             destroyed = true;
@@ -70,26 +77,22 @@ public class DestructibleWall extends Wall {
         }
     }
 
-
     /**
-     * Method update () for updating the state of the wall and the elapsed time for the animation
+     * Update the state of the wall and the elapsed time for the animation
      * Gets called in the GameScreen class
+     *
      * @param elapsedTime time that the animation has been going on.
      */
-
     public void update(float elapsedTime) {
         if (playAnimation) {
             animationTime += elapsedTime;
         }
     }
 
-
     //Getters and Setters
-
     public boolean isDestroyed() {
         return destroyed;
     }
-
     public void setDestroyed(boolean destroyed) {
         this.destroyed = destroyed;
     }

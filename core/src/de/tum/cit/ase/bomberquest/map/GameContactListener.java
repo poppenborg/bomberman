@@ -1,4 +1,4 @@
-package de.tum.cit.ase.bomberquest.texture;
+package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.physics.box2d.*;
 import de.tum.cit.ase.bomberquest.gameobjects.Exits.Exit;
@@ -8,18 +8,25 @@ import de.tum.cit.ase.bomberquest.gameobjects.mobs.Enemy;
 import de.tum.cit.ase.bomberquest.gameobjects.mobs.Player;
 
 /**
- * This is a modified contact listener defining to the game logic specific reactions if 2 bodies collide
+ * This is a modified contact listener defining to the game logic specific reactions if 2 bodies collide.
  */
 public class GameContactListener implements ContactListener {
 
-    // attribute to represent the collision state of the Player with any Enemy
+    // Collision state of the Player with any Enemy
     private boolean playerEnemyCollision = false;
     // Coordinates of the power-up;
     private Coordinates powerUpCoordinates;
-    // indicator for whether the player reached the exit
+    // Indicator for whether the player reached the exit
     private boolean exitReached = false;
 
-    // defines the behaviour if 2 objects collide
+    /**
+     * Define the consequences of 2 specific bodies colliding
+     * Specifically if Player and an Enemy collide the Player dies (via playerEnemyCollision = true),
+     * if Player and a PowerUp collide the PowerUp gets picked up (vie .setMarkedForRemoval(true)),
+     * if Player and Exit collide exitReached is set to true.
+     *
+     * @param contact Collision between 2 bodies
+     */
     @Override
     public void beginContact(Contact contact) {
         // get the 2 colliding bodies
@@ -32,19 +39,23 @@ public class GameContactListener implements ContactListener {
         // check if the 2 colliding bodies are Player and PowerUp
         if (bodyA.getUserData() instanceof PowerUp && bodyB.getUserData() instanceof Player) {
             ((PowerUp) bodyA.getUserData()).setMarkedForRemoval(true);
-            powerUpCoordinates = new Coordinates(((PowerUp) bodyA.getUserData()).getX(), ((PowerUp) bodyA.getUserData()).getY());
+//            powerUpCoordinates = new Coordinates(((PowerUp) bodyA.getUserData()).getX(), ((PowerUp) bodyA.getUserData()).getY());
         }
         if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof PowerUp) {
             ((PowerUp) bodyB.getUserData()).setMarkedForRemoval(true);
-            powerUpCoordinates = new Coordinates(((PowerUp) bodyB.getUserData()).getX(), ((PowerUp) bodyB.getUserData()).getY());
+//            powerUpCoordinates = new Coordinates(((PowerUp) bodyB.getUserData()).getX(), ((PowerUp) bodyB.getUserData()).getY());
         }
-        // check if the 2 colliding bodies are Player and PowerUp
+        // check if the 2 colliding bodies are Player and Exit
         if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof Exit || bodyA.getUserData() instanceof Exit && bodyB.getUserData() instanceof Player) {
             this.exitReached = true;
         }
     }
 
-    // defines the behaviour if the collision of the 2 objects ends
+    /**
+     * Handles the behavior when two bodies stop colliding.
+     *
+     * @param contact The contact object representing the collision between two bodies.
+     */
     @Override
     public void endContact(Contact contact) {
         // get the 2 colliding bodies
@@ -62,15 +73,13 @@ public class GameContactListener implements ContactListener {
     // unused methods form the interface
     @Override
     public void preSolve(Contact contact, Manifold manifold) {
-
     }
-
     @Override
     public void postSolve(Contact contact, ContactImpulse contactImpulse) {
 
     }
 
-    // getters and setters
+    // Getters and Setters
     public boolean isPlayerEnemyCollision() {
         return playerEnemyCollision;
     }

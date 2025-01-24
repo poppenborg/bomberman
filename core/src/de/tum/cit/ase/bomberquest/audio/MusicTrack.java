@@ -10,18 +10,26 @@ import com.badlogic.gdx.audio.Music;
  */
 public enum MusicTrack {
 
-    GAME_BACKGROUND("gameBackground.mp3", getVOLUME()),
-    MENU("menu.mp3", getVOLUME()),
-    PAUSE("pause.OGG", getVOLUME()),
-    LOOSE("LooseScreen.OGG", getVOLUME()),
-    WIN("win.OGG", getVOLUME());
+    /** Various music tracks for various screens */
+    GAME_BACKGROUND("gameScreen.mp3", getVOLUME()),
+    MENU("menuScreen.mp3", getVOLUME()),
+    PAUSE("pauseScreen.OGG", getVOLUME()),
+    LOOSE("looseScreen.OGG", getVOLUME()),
+    WIN("winScreen.OGG", getVOLUME());
 
-    // General volume
+    /** General volume for the music tracks */
     private static final float VOLUME = 0.05f;
 
     /** The music file owned by this variant. */
     private final Music music;
 
+    /**
+     * Constructor for the music tracks
+     * Sets the track to looping
+     * Predefines a volume
+     *
+     * @param fileName Name of the music track file to be used
+     */
     MusicTrack(String fileName, float volume) {
         this.music = Gdx.audio.newMusic(Gdx.files.internal("audio/" + fileName));
         this.music.setLooping(true);

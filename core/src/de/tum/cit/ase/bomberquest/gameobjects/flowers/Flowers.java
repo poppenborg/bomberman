@@ -11,10 +11,21 @@ import de.tum.cit.ase.bomberquest.texture.Textures;
  */
 public class Flowers extends GameObject {
 
+    /**
+     * Constructs a Flower at the specified position
+     *
+     * @param x The x-coordinate of the flower.
+     * @param y The y-coordinate of the flower.
+     */
     public Flowers(int x, int y) {
         super(x, y);
     }
-    
+
+    /**
+     * Return current appearance of the Flower.
+     *
+     * @return TextureRegion representing the appearance.
+     */
     @Override
     public TextureRegion getCurrentAppearance() {
         return Textures.FLOWERS;

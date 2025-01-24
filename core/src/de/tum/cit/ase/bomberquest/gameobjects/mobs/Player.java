@@ -19,53 +19,69 @@ import java.util.List;
 /**
  * Represents the player character in the game.
  * The player has a hitbox, so it can collide with other objects in the game.
+ * The player can move, collect power-ups, and drop bombs.
  */
 public class Player extends Mob implements Drawable {
 
+    /** Time (in seconds) that have to pass until the bomb can be dropped again. */
     private static final float BOMB_COOLDOWN = 3.0f;
+    /** Maximum blast radius possible. */
     private static final int BLASTCAP = 7;
+    /** Maximum number of bombs. */
     private static final int NBRCAP = 7;
+    /** Time elapsed since player last dropped a bomb. */
     private float timeSinceLastBomb = 3.0f;
+    /** Initial blast radius */
     private int blastRadius = 1;
+    /** Initial number of bombs */
     private int bombNbr = 1;
+    /** Tadius of the player's hitbox. */
     private float radius;
-    private List<PowerUp> powerUps;
+    /** List of collected power-ups. */
+    private List<PowerUp> powerUps = new ArrayList<>();
+    /** Flag to check if player is killed. */
     private boolean killed = false;
+    /** Flag to ensure death sound is only played once. */
     private boolean soundWasPlayed = false;
 
+    /**
+     * Constructs a Player at a given position on the game map.
+     *
+     * @param world The Box2D world.
+     * @param x Initial X position.
+     * @param y Initial Y position.
+     * @param gameMap Map that holds all the game objects.
+     */
     public Player(World world, float x, float y, GameMap gameMap) {
         super(world, x, y);
         this.gameMap = gameMap;
-        powerUps = new ArrayList<>();
     }
 
+    /**
+     * Create a circular hitbox to detect collision.
+     *
+     * @param world The Box2D world to add the hitbox to.
+     * @param startX The x-coordinate of the hitbox's starting position.
+     * @param startY The y-coordinate of the hitbox's starting position.
+     * @return The Box2D body for the hitbox.
+     */
     @Override
     protected Body createHitbox(World world, float startX, float startY) {
-        // Create the body in the world using the body definition.
         Body body = createEmptyDynamicBody(world, startX, startY);
-        // Now we need to give the body a shape so the physics engine knows how to collide with it.
-        // We'll use a circle shape for the mob.
         CircleShape circle = new CircleShape();
-//        PolygonShape rectangle = new PolygonShape();
-        // Give the circle a radius of 0.3 tiles (the mob is 0.6 tiles wide).
         circle.setRadius(0.3f);
         radius = circle.getRadius();
-//        rectangle.setAsBox(0.35f, 0.35f);
-        // Attach the shape to the body as a fixture.
-        // Bodies can have multiple fixtures, but we only need one for the plyer.
         body.createFixture(circle, 1.0f);
-//        body.createFixture(rectangle, 1.0f);
-        // We're done with the shape, so we should dispose of it to free up memory.
         circle.dispose();
-//        rectangle.dispose();
-        // Set the mob as the user data of the body so we can look up the mob from the body later.
         body.setUserData(this);
         return body;
     }
 
 
     /**
-     * Move the player via the keyboard using the arrow keys OR the WASD as an alternative
+     * Update the player's state dependent on user input and elapsed time.
+     * Handles movement, bomb dropping, and cooldown.
+     *
      * @param frameTime the time since the last frame.
      */
     @Override
@@ -109,7 +125,7 @@ public class Player extends Mob implements Drawable {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && (timeSinceLastBomb >= BOMB_COOLDOWN || gameMap.getBombs().size() < bombNbr)) {
             // Create Sound Effect
-            Soundeffect.DROP_BOMB_SOUND.play(Soundeffect.getVOLUME());
+            Soundeffect.DROP_BOMB_SOUND.play();
             dropBomb();
             timeSinceLastBomb = 0f;
         }
@@ -118,6 +134,11 @@ public class Player extends Mob implements Drawable {
 
     }
 
+    /**
+     * Return current visual representation based on movement and state.
+     *
+     * @return A TextureRegion for the player's current appearance.
+     */
     @Override
     public TextureRegion getCurrentAppearance() {
         // if the player is dead, return the death animation
@@ -151,13 +172,23 @@ public class Player extends Mob implements Drawable {
 
     // PowerUps
 
-    /** Add the respective power-up if the maximum wasn´t reached */
+    /**
+     * Add the power-up to increase the player´s blast radius if the maximum wasn´t reached
+     *
+     * @param blastRadiusPowerUp Blast Radius power-up to add.
+     */
     public void addBlastRadiusPowerUp(BlastRadiusPowerUp blastRadiusPowerUp) {
         if (powerUps.stream().filter(powerUp -> powerUp instanceof BlastRadiusPowerUp).count() < BLASTCAP) {
             powerUps.add(blastRadiusPowerUp);
             this.blastRadius += 1;
         }
     }
+
+    /**
+     * Add the power-up to increase the player´s number of simultaneously playable bombs if the maximum wasn´t reached
+     *
+     * @param bombNbrPowerUp Number of Bombs power-up to add.
+     */
     public void addBombNbrPowerUp(BombNbrPowerUp bombNbrPowerUp) {
         if (powerUps.stream().filter(powerUp -> powerUp instanceof BombNbrPowerUp).count() < NBRCAP) {
             powerUps.add(bombNbrPowerUp);
@@ -167,6 +198,9 @@ public class Player extends Mob implements Drawable {
 
     //Bombs
 
+    /**
+     * Drop a bomb with the player's current blast radius at the player's position.
+     */
     private void dropBomb() {
         //place bomb at position of player
         float bombX = Math.round(getX());
@@ -179,8 +213,9 @@ public class Player extends Mob implements Drawable {
     }
 
     /**
-     * Calculates and returns the remaining cooldown time before the player
+     * Calculate and return the remaining cool-down time before the player
      * can drop another bomb. Can not be negative.
+     *
      * @return A float representing the remaining cooldown time in seconds.
      *         Returns 0 if the cooldown period has already elapsed.
      */
@@ -217,6 +252,6 @@ public class Player extends Mob implements Drawable {
     public void setKilled(boolean killed) {
         this.killed = killed;
         // Play sound effect
-        Soundeffect.DIE_SOUND.play(Soundeffect.getVOLUME());
+        Soundeffect.DIE_SOUND.play();
     }
 }

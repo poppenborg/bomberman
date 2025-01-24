@@ -5,7 +5,13 @@ import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.gameobjects.walls.Wall;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
+/**
+ * Indestructible Wall is a static object preventing dynamic objects to pass.
+ * This wall can never be destroyed.
+ * The blast radius of the bomb is blocked before this wall.
+ */
 public class IndestructibleWall extends Wall {
+
     /**
      * Create a IndestructibleWall at the given position.
      * This wall can not be destroyed.
@@ -18,6 +24,11 @@ public class IndestructibleWall extends Wall {
         super(world, x, y);
     }
 
+    /**
+     * Return current appearance of the wall.
+     *
+     * @return TextureRegion representing the appearance.
+     */
     @Override
     public TextureRegion getCurrentAppearance() {
         return Textures.INDESTRUCTIBLE_WALL;

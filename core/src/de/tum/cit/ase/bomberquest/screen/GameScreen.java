@@ -39,12 +39,13 @@ public class GameScreen extends BaseScreen implements Screen {
     private final SpriteBatch spriteBatch;
     private final GameMap map;
     private final Hud hud;
-    /**
-     * Timer of the game
-     */
+
+    /** Timer of the game */
     private float timeLeft;
+
     /**
-     * Constructor for GameScreen. Sets up the camera and font.
+     * Constructor for GameScreen.
+     * Sets up the camera, music, and font.
      *
      * @param game The main game class, used to access global resources and methods.
      */
@@ -66,6 +67,9 @@ public class GameScreen extends BaseScreen implements Screen {
 
     /**
      * The render method is called every frame to render the game.
+     * Here all GameObjects that can change there state are rendered.
+     * If the user presses Esc the game is stopped and the pause screen is shown.
+     *
      * @param deltaTime The time in seconds since the last render.
      */
     @Override
@@ -131,8 +135,8 @@ public class GameScreen extends BaseScreen implements Screen {
     }
 
     /**
-     * Updates the camera to match the current state of the game.
-     * currently the camera follows the player.
+     * Update the camera to match the current state of the game.
+     * The camera follows the player.
      */
     private void updateCamera() {
         camera.setToOrtho(false);
@@ -141,6 +145,10 @@ public class GameScreen extends BaseScreen implements Screen {
         camera.update(); // This is necessary to apply the changes
     }
 
+    /**
+     * Render all objects on the game map.
+     * Objects are drawn in order, ensuring correct layering
+     */
     private void renderMap() {
         // This configures the spriteBatch to use the camera's perspective when rendering
         spriteBatch.setProjectionMatrix(camera.combined);
@@ -171,9 +179,10 @@ public class GameScreen extends BaseScreen implements Screen {
     }
 
     /**
-     * Draws this object on the screen.
+     * Draw this object on the screen.
      * The texture will be scaled by the game scale and the tile size.
      * This should only be called between spriteBatch.begin() and spriteBatch.end(), e.g. in the renderMap() method.
+     *
      * @param spriteBatch The SpriteBatch to draw with.
      */
     private static void draw(SpriteBatch spriteBatch, Drawable drawable) {
@@ -190,6 +199,7 @@ public class GameScreen extends BaseScreen implements Screen {
     /**
      * Called when the window is resized.
      * This is where the camera is updated to match the new window size.
+     *
      * @param width The new window width.
      * @param height The new window height.
      */
@@ -197,24 +207,6 @@ public class GameScreen extends BaseScreen implements Screen {
     public void resize(int width, int height) {
         camera.setToOrtho(false);
         hud.resize(width, height);
-    }
-
-    // Unused methods from the Screen interface
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void show() {
-
-    }
-
-    @Override
-    public void hide() {
     }
 
     /** Cleans up resources when the game is disposed. */

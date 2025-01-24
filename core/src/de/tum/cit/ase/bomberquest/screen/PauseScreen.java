@@ -9,19 +9,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.audio.MusicTrack;
+import de.tum.cit.ase.bomberquest.audio.Soundeffect;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.map.MapLoader;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
 
-
 /**
  * The PauseScreen class is responsible for displaying the pause menu of the game.
- * It extends the LibGDX Screen class and sets up the UI components for the menu.
+ * It extends the BasScreen class and sets up the UI components for the menu.
  */
 public class PauseScreen extends BaseScreen implements Screen {
+
     /**
      * Constructor for PauseScreen. Sets up the camera, viewport, stage, and UI elements.
+     * Three buttons are displayed, to resume the current game, choose and load a new game, and to exit the game
+     * A music track specific to the pause screen is played
      *
      * @param game The main game class, used to access global resources and methods.
      */
@@ -29,7 +32,7 @@ public class PauseScreen extends BaseScreen implements Screen {
         super(game);
         // Memorize the current time
         float timeLeft = game.getMap().getTimeLeft();
-        // play looser music
+        // play pause music
         setMusicTrack(MusicTrack.PAUSE);
         getMusicTrack().play();
         // Set camera zoom for a closer view
@@ -42,6 +45,7 @@ public class PauseScreen extends BaseScreen implements Screen {
         goResumeGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                Soundeffect.BUTTON_SOUN.play();
                 game.goToGame(); // Change to the game screen when button is pressed
                 game.getMap().setTimeLeft(timeLeft);
                 dispose();
@@ -53,6 +57,7 @@ public class PauseScreen extends BaseScreen implements Screen {
         newMapButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                Soundeffect.BUTTON_SOUN.play();
                 game.openFileChooser();
             }
         });

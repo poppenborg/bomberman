@@ -1,14 +1,21 @@
 package de.tum.cit.ase.bomberquest.gameobjects;
 
 /**
- * Collects the x- and y-values of a coorinate into 1 object to avoid confusing length and hight
+ * Collects the x- and y-values of a coordinate into 1 object to avoid confusing length and height.
+ * This class is implemented in all GameObjects
  */
 public class Coordinates {
-    // Extends horizontally
+    /** Horizontal extension */
     private float x;
-    // Extends vertically
+    /** Vertical extension */
     private float y;
 
+    /**
+     * Create a new 2-dimensional coordinate
+     *
+     * @param x Horizontal value
+     * @param y Vertical value
+     */
     public Coordinates(float x, float y) {
         this.x = x;
         this.y = y;
@@ -27,7 +34,7 @@ public class Coordinates {
     public void setY(float y) {
         this.y = y;
     }
-    // Set both coordinates simultaneously
+    /** Set both values - x and y - simultaneously */
     public void setXaY(float x, float y) {
         this.x = x;
         this.y = y;

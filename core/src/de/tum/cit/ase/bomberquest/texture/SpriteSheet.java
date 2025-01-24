@@ -19,18 +19,10 @@ public enum SpriteSheet {
     CHARACTER("character.png", 16, 32),
     /** The basic tiles spritesheet, which has a grid size of 16x16. */
     BASIC_TILES("basictiles.png", 16, 16),
-
-    //Added the original bomberman textures
     /** The basic tiles spritesheet, which has a grid size of 16x16. */
     ORIGINAL_BOMBERMAN("original-bomberman.png", 16, 16),
-
     /** The basic mobs spritesheet, which has a grid size of 16x16. */
     ENEMY("mobs.png", 16, 16);
-
-
-
-
-
 
     private final Texture spritesheet;
     private final int width;
@@ -39,6 +31,7 @@ public enum SpriteSheet {
     /**
      * Constructor for each variant of this enum.
      * Every SpriteSheet has a corresponding file, width, and height.
+     *
      * @param filename the filename of the spritesheet
      * @param width the width of a single grid cell
      * @param height the height of a single grid cell

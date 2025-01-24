@@ -1,14 +1,12 @@
 package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
-import de.tum.cit.ase.bomberquest.audio.Soundeffect;
 import de.tum.cit.ase.bomberquest.gameobjects.*;
 import de.tum.cit.ase.bomberquest.gameobjects.Exits.Exit;
 import de.tum.cit.ase.bomberquest.gameobjects.bombs.Bomb;
@@ -22,7 +20,6 @@ import de.tum.cit.ase.bomberquest.gameobjects.mobs.Enemy;
 import de.tum.cit.ase.bomberquest.gameobjects.mobs.Player;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
-import de.tum.cit.ase.bomberquest.texture.GameContactListener;
 
 import java.util.*;
 
@@ -39,6 +36,7 @@ public class GameMap {
     }
 
     // Box2D physics simulation parameters (you can experiment with these if you want, but they work well as they are)
+
     /**
      * The time step for the physics simulation.
      * This is the amount of time that the physics simulation advances by in each frame.
@@ -61,59 +59,54 @@ public class GameMap {
     private final World world;
     /** Map used in the game */
     private FileHandle mapFile;
-    // Game objects
-    private final Player player;
     /** Individual contact listener with a specific behaviour when some of the game objects collide */
     private GameContactListener contactListener;
-
-//    private final Chest chest;
-
-    // all game objects
+    /** Player used on the map */
+    private final Player player;
+    /** Flowers on the map */
     private final Flowers[][] flowers;
-    private List<IndestructibleWall> indestructibleWalls;
-    private List<DestructibleWall> destructibleWalls;
-    private List<Enemy> enemies;
-    private List<Bomb> bombs;
-    private List<BombNbrPowerUp> bombNbrPowerUps;
-    private List<BlastRadiusPowerUp> blastRadiusPowerUps;
+    /** Indestructible walls on the map */
+    private List<IndestructibleWall> indestructibleWalls = new ArrayList<>();
+    /** Destructible Walls on the map */
+    private List<DestructibleWall> destructibleWalls = new ArrayList<>();
+    /** Enemies on the map */
+    private List<Enemy> enemies = new ArrayList<>();
+    /** Bombs on the map */
+    private List<Bomb> bombs = new ArrayList<>();
+    /** Bomb number power-ups on the map */
+    private List<BombNbrPowerUp> bombNbrPowerUps = new ArrayList<>();
+    /** Blast radius power-ups on the map */
+    private List<BlastRadiusPowerUp> blastRadiusPowerUps = new ArrayList<>();
+    /** Exit used on the map */
     private Exit exit;
-
     /** The time left in the Game. */
     private float timeLeft;
+    /** Value to keep tract of the death animation */
     private float playerDeathAnimationTime = 0f;
 
-
+    /**
+     * Constructor of the GameMap, here are all GameObjects initialised
+     * All GameObjects of the chosen map file are assigned to their respective List or attribute,
+     * considering the individual coordinates.
+     * Special cases: for powerUps and the exit also a destructible wall is created on the same coordinate.
+     * if no exit was specified the coordinates of a random destructible wall are chosen.
+     *
+     * @param game Bomber Quest game
+     * @param mapFile File from which the map data is retrieved
+     */
     public GameMap(BomberQuestGame game, FileHandle mapFile) {
         this.game = game;
         this.mapFile = mapFile;
-        this.timeLeft = 500;
+        this.timeLeft = 52;
         this.world = new World(Vector2.Zero, true);
         this.contactListener = new GameContactListener();
         world.setContactListener(contactListener);
         // initialise player position
         Coordinates entrancePlayerCoordinates = new Coordinates(0,0);
-        // Create a chest in the middle of the map
-//        this.chest = new Chest(world, 10, 6);
         MapLoader mapLoader = new MapLoader();
-        // Create flowers/ ground for all tials
-        float x = mapLoader.prasingMap(mapFile).keySet().stream().map(Coordinates::getX).max(Float::compare).orElse(0f) + 1f;
-        // increases x by 1 because otherwise the coordinate 0 isn´t represented
-        float y = mapLoader.prasingMap(mapFile).keySet().stream().map(Coordinates::getY).max(Float::compare).orElse(0f) + 1f;
-        // increases y by 1 because otherwise the coordinate 0 isn´t represented
-        this.flowers = new Flowers[(int) x][(int) y];
-        for (int i = 0; i < flowers.length; i++) {
-            for (int j = 0; j < flowers[i].length; j++) {
-                this.flowers[i][j] = new Flowers(i, j);
-            }
-        }
-        // initialize Lists of various objects
-        this.indestructibleWalls = new ArrayList<>();
-        this.destructibleWalls = new ArrayList<>();
-        this.enemies = new ArrayList<>();
-        this.bombs = new ArrayList<>();
-        this.bombNbrPowerUps = new ArrayList<>();
-        this.blastRadiusPowerUps = new ArrayList<>();
+        // Create flowers/ ground for all tiles
         Map<Coordinates, Integer> prasedMap = mapLoader.prasingMap(mapFile);
+        this.flowers = mapLoader.loadFlowerFloor(prasedMap);
         // Iterates over the gameObjects map
         for (Map.Entry<Coordinates, Integer> entry : prasedMap.entrySet()) {
             switch (entry.getValue()) {
@@ -146,8 +139,9 @@ public class GameMap {
     }
 
     /**
-     * Updates the game state. This is called once per frame.
+     * Update the game state. This is called once per frame.
      * Every dynamic object in the game should update its state here.
+     *
      * @param frameTime the time that has passed since the last update
      */
     public void tick(float frameTime) {
@@ -165,8 +159,9 @@ public class GameMap {
     }
 
     /**
-     * Performs as many physics steps as necessary to catch up to the given frame time.
+     * Perform as many physics steps as necessary to catch up to the given frame time.
      * This will update the Box2D world by the given time step.
+     *
      * @param frameTime Time since last frame in seconds
      */
     private void doPhysicsStep(float frameTime) {
@@ -179,17 +174,18 @@ public class GameMap {
 
     /**
      * Checks whether one of the conditions to win the game is fulfilled
+     *
      * @return returns ture if one of the conditions to win the game is fulfilled
      */
     public boolean checkWinStatus() {
-        boolean allEnemiesDead = getEnemies().isEmpty();
-        boolean exitReached = contactListener.isExitReached();
-        return allEnemiesDead && exitReached;
+        return getEnemies().isEmpty() && contactListener.isExitReached();
     }
 
     /**
-     * Checks whether one of the conditions to lose the game is fulfilled
-     * @return returns true if one of the conditions to lose the game is fulfilled
+     * Check whether at least one of the conditions to lose the game is fulfilled.
+     * In case a loose condition is fulfilled the player performs a death animation before the method returns true.
+     *
+     * @return true if one of the conditions to lose the game is fulfilled
      */
     public boolean checkLoseStatus() {
         if (player.isKilled()) {
@@ -215,14 +211,14 @@ public class GameMap {
      */
     public void updatepowerUps() {
         for (BombNbrPowerUp bombNbrPowerUp : bombNbrPowerUps) {
-            if (bombNbrPowerUp.isMarkedForRemoval() && !bombNbrPowerUp.isTaken() && bombNbrPowerUp.isBombNbrPowerUpAt(contactListener.getPowerUpCoordinates()) && contactListener.getPowerUpCoordinates() != null) {
+            if (bombNbrPowerUp.isMarkedForRemoval() && !bombNbrPowerUp.isTaken()) {
                 player.addBombNbrPowerUp(bombNbrPowerUp);
                 bombNbrPowerUp.destroy(world);
-
             }
         }
         for (BlastRadiusPowerUp blastRadiusPowerUp : blastRadiusPowerUps) {
-            if (blastRadiusPowerUp.isMarkedForRemoval() && !blastRadiusPowerUp.isTaken() && blastRadiusPowerUp.isBlastRadiusPowerUpAt(contactListener.getPowerUpCoordinates()) && contactListener.getPowerUpCoordinates() != null) {
+//            if (blastRadiusPowerUp.isMarkedForRemoval() && !blastRadiusPowerUp.isTaken() && blastRadiusPowerUp.isBlastRadiusPowerUpAt(contactListener.getPowerUpCoordinates()) && contactListener.getPowerUpCoordinates() != null) {
+            if (blastRadiusPowerUp.isMarkedForRemoval() && !blastRadiusPowerUp.isTaken()) {
                 player.addBlastRadiusPowerUp(blastRadiusPowerUp);
                 blastRadiusPowerUp.destroy(world);
             }
@@ -282,7 +278,7 @@ public class GameMap {
     }
 
     /**
-     * Retrieves a destructible wall located at the specified coordinates.
+     * Retrieve a destructible wall located at the specified coordinates.
      * Searches through the list of destructible walls and returns the wall
      * matching the provided coordinates, if it exists.
      *
@@ -301,7 +297,7 @@ public class GameMap {
     }
 
     /**
-     * Removes the specified destructible wall from the list of destructible walls in the game map.
+     * Remove the specified destructible wall from the list of destructible walls in the game map.
      *
      * @param wall the DestructibleWall to be removed from the game map
      */
@@ -312,7 +308,8 @@ public class GameMap {
 
     /**
      * Collect all drawable elements in one list
-     * Determins which drawables will be drawn over the other drawables
+     * Determine which drawables will be drawn over the other drawables
+     *
      * @return List of all drawables
      */
     public List<Drawable> allDrawablesOrdered() {
@@ -339,66 +336,63 @@ public class GameMap {
         for (Enemy enemy : getEnemies()) {
             allDrawables.add(enemy);
         }
-//        allDrawables.add(getChest());
         allDrawables.add(player);
         return allDrawables;
     }
 
     /**
-     * Tests whether the player collides with an enemy
+     * Testswhether the player collides with an enemy
      * Note: method is based on calculating distances, different shapes need different calculations
+     *
      * @return true if the player collides with the enemy
      */
-    public boolean collisionPlayerEnemy() {
-        for (Enemy enemy : enemies) {
-            // calculate the euclidean distance
-            double xDistance = player.getX() - enemy.getX();
-            double yDistance = player.getY() - enemy.getY();
-            double squaredDistance = Math.pow(xDistance, 2.0f) + Math.pow(yDistance, 2f);
-            double distance = Math.sqrt(squaredDistance);
-            // objects overlap if the distance is smaller than the 2 radii of the circles
-            if (distance < (player.getRadius() + enemy.getRadius())) {
-                return true;
-            }
-        }
-        return false;
-    }
-    // alternative method if one of the colliding objects is a rectangle
-    public boolean circleRectangle() {
-        for (Enemy enemy : enemies) {
-            // calculate rectangle edges
-            float xLeft = enemy.getX() - enemy.getRectangleWidth() / 2f;
-            float xRight = enemy.getX() + enemy.getRectangleWidth() / 2f;
-            float yLeft = enemy.getY() - enemy.getRectangleHeight() / 2f;
-            float yRight = enemy.getY() + enemy.getRectangleHeight() / 2f;
-            // calculate the closest point of the rectangle to circle
-            float xClosest = Math.max(xLeft, Math.min(xRight, player.getX()));
-            float yClosest = Math.max(yLeft, Math.min(yRight, player.getY()));
-            // calculate the euclidean distance between the closest point of the rectangle and the circle center
-            double xDistance = player.getX() - xClosest;
-            double yDistance = player.getY() - yClosest;
-            double distance = Math.sqrt(Math.pow(xDistance, 2f) + Math.pow(yDistance, 2f));
-            // objects overlap if the distance is smaller than the radius of the circle
-            if (distance < player.getRadius()) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean collisionPlayerEnemy() {
+//        for (Enemy enemy : enemies) {
+//            // calculate the euclidean distance
+//            double xDistance = player.getX() - enemy.getX();
+//            double yDistance = player.getY() - enemy.getY();
+//            double squaredDistance = Math.pow(xDistance, 2.0f) + Math.pow(yDistance, 2f);
+//            double distance = Math.sqrt(squaredDistance);
+//            // objects overlap if the distance is smaller than the 2 radii of the circles
+//            if (distance < (player.getRadius() + enemy.getRadius())) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//    // alternative method if one of the colliding objects is a rectangle
+//    public boolean circleRectangle() {
+//        for (Enemy enemy : enemies) {
+//            // calculate rectangle edges
+//            float xLeft = enemy.getX() - enemy.getRectangleWidth() / 2f;
+//            float xRight = enemy.getX() + enemy.getRectangleWidth() / 2f;
+//            float yLeft = enemy.getY() - enemy.getRectangleHeight() / 2f;
+//            float yRight = enemy.getY() + enemy.getRectangleHeight() / 2f;
+//            // calculate the closest point of the rectangle to circle
+//            float xClosest = Math.max(xLeft, Math.min(xRight, player.getX()));
+//            float yClosest = Math.max(yLeft, Math.min(yRight, player.getY()));
+//            // calculate the euclidean distance between the closest point of the rectangle and the circle center
+//            double xDistance = player.getX() - xClosest;
+//            double yDistance = player.getY() - yClosest;
+//            double distance = Math.sqrt(Math.pow(xDistance, 2f) + Math.pow(yDistance, 2f));
+//            // objects overlap if the distance is smaller than the radius of the circle
+//            if (distance < player.getRadius()) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
-    /** Cleans up resources when the game is disposed. */
+    /** Clean up resources when the game is disposed. */
     public void dispose() {
         this.timeLeft = 0;
         setMapFile(null);
     }
-    // getter and setter for the attributes
+
+    // Getter and Setter for the attributes
     public Player getPlayer() {
         return player;
     }
-    /** Returns the chest on the map. */
-//    public Chest getChest() {
-//        return chest;
-//    }
     public List<Flowers> getFlowers() {
         return Arrays.stream(flowers).flatMap(Arrays::stream).toList();
     }
@@ -437,8 +431,5 @@ public class GameMap {
     }
     public FileHandle getMapFile() {
         return mapFile;
-    }
-    public GameContactListener getContactListener() {
-        return contactListener;
     }
 }

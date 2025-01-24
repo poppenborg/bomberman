@@ -19,36 +19,42 @@ import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.map.MapLoader;
 
 /**
- * Abstract super class for common functionalities of the screens
+ * Abstract super class for common functionalities of the different screens
  */
 public abstract class BaseScreen implements Screen {
+
+    /** Stage used to display and manage UI elements */
     protected final Stage stage;
+    /** Camera for rendering the screen */
     protected final OrthographicCamera camera;
+    /** Viewport to manage the camera's view area */
     protected final Viewport viewport;
+    /** Table for organizing and laying out the UI */
     protected final Table table;
+    /** Music track for the screen */
     protected MusicTrack musicTrack;
+    /** Standard width for buttons */
     protected static final float BUTTON_WITH = 400;
 
     /**
      * Constructor for BaseScreen. Sets up the camera, viewport, stage, and UI elements.
+     *
      * @param game The main game class, used to access global resources and methods.
      */
     public BaseScreen(BomberQuestGame game) {
         this.camera = new OrthographicCamera();
-
         this.viewport = new ScreenViewport(camera); // Create a viewport with the camera
         this.stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
-
         this.table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
-
         this.musicTrack = null;
     }
 
     /**
      * The render method is called every frame to render the menu screen.
      * It clears the screen and draws the stage.
+     *
      * @param deltaTime The time in seconds since the last render.
      */
     @Override
@@ -61,6 +67,7 @@ public abstract class BaseScreen implements Screen {
 
     /**
      * Resize the stage when the screen is resized.
+     *
      * @param width The new width of the screen.
      * @param height The new height of the screen.
      */
@@ -69,17 +76,21 @@ public abstract class BaseScreen implements Screen {
         stage.getViewport().update(width, height, true); // Update the stage viewport on resize
     }
 
+    /**
+     * Dispose of resources used by the screen.
+     */
     @Override
     public void dispose() {
         // Dispose of the stage when screen is disposed
         stage.dispose();
         musicTrack.dispose();
-
     }
 
+    /**
+     * Set the input processor to the stage so it can handle input events.
+     */
     @Override
     public void show() {
-        // Set the input processor so the stage can receive input events
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -87,16 +98,15 @@ public abstract class BaseScreen implements Screen {
     @Override
     public void pause() {
     }
-
     @Override
     public void resume() {
     }
-
     @Override
     public void hide() {
         dispose();
     }
 
+    // Getters and Setters
     public void setMusicTrack(MusicTrack musicTrack) {
         this.musicTrack = musicTrack;
     }

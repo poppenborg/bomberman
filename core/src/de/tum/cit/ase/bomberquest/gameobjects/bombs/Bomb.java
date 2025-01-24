@@ -16,16 +16,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 
+/**
+ * This class represents the bomb in the game
+ * When a bomb was created it remains 3 seconds on the map
+ * Afterwards an explosion is created which destroys all destructible walls and kills all enemies and players in its range
+ */
 public class Bomb extends GameObject {
 
+    /** Time until bomb explodes */
     private static final float IGNITING_DURATION = 3.0f;
+    /** Duration of the explosion  */
     private static final float EXPLOSION_DURATION = 0.5f;
-    private float stateTime; //time variable for the bomb
-    private boolean isExploding; // current state of the bomb (igniting or exploding)
-    private boolean toBeRemoved; // After the explosion, the bomb should be removed from the game
-
-    private int blastRadius = 1; // default blast radius
-    private List<Coordinates> blastCoordinates = new ArrayList<>(); // Coordinates of the explosion animation
+    /** Time variable for the bomb */
+    private float stateTime;
+    /** Current state of the bomb (igniting or exploding) */
+    private boolean isExploding;
+    /** After the explosion, the bomb should be removed from the game */
+    private boolean toBeRemoved;
+    /** default blast radius */
+    private int blastRadius = 1;
+    /** Coordinates of the explosion animation */
+    private List<Coordinates> blastCoordinates = new ArrayList<>();
 
     // currently not used, tried to solve the problem of wrong animation for destructible walls
     private float maxUpCoordinate;
@@ -39,8 +50,6 @@ public class Bomb extends GameObject {
      * @param x The x-coordinate where the bomb is placed.
      * @param y The y-coordinate where the bomb is placed.
      */
-
-
     public Bomb(float x, float y, GameMap gameMap) {
         super(x, y);
         this.gameMap = gameMap;
@@ -52,13 +61,12 @@ public class Bomb extends GameObject {
     //Methods
 
     /**
-     * Retrieves the current appearance of the bomb based on its state.
+     * Retrieve the current appearance of the bomb based on its state.
      * If the bomb is in the "exploding" state, it returns the appropriate frame of the explosion
      * animation. Otherwise, it returns the appropriate frame of the ignition animation.
      *
      * @return The current texture region representing the bomb's appearance.
      */
-
     public TextureRegion getCurrentAppearance () {
         if (isExploding) {
             return Animations.BOMB_CENTER_EXPLOSION.getKeyFrame(stateTime, false); // Render center explosion
@@ -67,7 +75,7 @@ public class Bomb extends GameObject {
     }
 
     /**
-     * Retrieves the animation for an explosion specific to given coordinates.
+     * Retrieve the animation for an explosion specific to given coordinates.
      *
      * @param coord The coordinate for which to retrieve the appearance.
      * @return The appropriate texture region for a specific part of the explosion.
@@ -120,9 +128,8 @@ public class Bomb extends GameObject {
 
 
     /**
-     * Updates the bombs state depending o the passed time.
+     * Update the bombs state depending on the passed time.
      */
-
     public void update(float deltaTime) {
         stateTime += deltaTime;
 
@@ -138,7 +145,7 @@ public class Bomb extends GameObject {
     }
 
     /**
-     * Triggers the explosion sequence for the bomb. This method performs the following tasks:
+     * Trigger the explosion sequence for the bomb. This method performs the following tasks:
      * 1. Sets the bomb's state to "exploding" and resets the internal timer to track the explosion animation.
      * 2. Calculates the bomb's blast coordinates to determine the explosion radius using the surrounding area.
      * 3. Checks each blast coordinate for destructible walls. If a destructible wall is present at a given coordinate:
@@ -150,14 +157,13 @@ public class Bomb extends GameObject {
      * 5. Checks if the player is the blast radius of the bomb
      *    If the player is in the blast radius the players status is set to killed which triggers the LooseScreen
      */
-
     public void explode() {
         isExploding = true;
         stateTime = 0f; // reset timer for explosion
         calculateBlastCoordinates(); //calculate the explosion radius
 
         // Sound effect
-        Soundeffect.EXPLODS_SOUND.play(Soundeffect.getVOLUME());
+        Soundeffect.EXPLODS_SOUND.play();
 
         //Destroy Destructible walls.
 
@@ -186,8 +192,6 @@ public class Bomb extends GameObject {
             }
         }
 
-
-
         //Kill enemies
 
         List<Enemy> killedEnemies = new ArrayList<>();
@@ -199,7 +203,7 @@ public class Bomb extends GameObject {
                 if (coordinates.getX() == enemyXCoordinate && coordinates.getY() == enemyYCoordinate) {
                     enemy.setKilled(true);
                     killedEnemies.add(enemy);
-                    Soundeffect.ENEMYDEATH_SOUN.play(Soundeffect.getVOLUME());
+                    Soundeffect.ENEMYDEATH_SOUN.play();
 
                 }
             }
@@ -224,10 +228,11 @@ public class Bomb extends GameObject {
                 return;
             }
         }
-
-
     }
 
+    /**
+     * Calculate the blast coordinates in all 4 directions
+     */
     private void calculateBlastCoordinates() {
         blastCoordinates.clear();
 
@@ -240,13 +245,18 @@ public class Bomb extends GameObject {
         addBlastCoordinatesInDirection(1, 0);   // Right
     }
 
+    /**
+     * Calculate the coordinates of the explosion for 1 specific direction
+     *
+     * @param dx initial value of the horizontal direction
+     * @param dy initial value of the vertical direction
+     */
     private void addBlastCoordinatesInDirection(int dx, int dy) {
         for (int i = 0; i <= blastRadius; i++) {
             float newX = getX() + i * dx;
             float newY = getY() + i * dy;
 
             // stop the animation at a wall if there are walls within the blast radius
-
 
             if (gameMap.isIndestructibleWallAt(newX, newY)) {
                 setMaxCoordinate(dx, dy, newX, newY);
@@ -286,30 +296,22 @@ public class Bomb extends GameObject {
         }
     }
 
-
     //Getters and Setter
-
     public boolean isToBeRemoved() {
         return toBeRemoved;
     }
-
     public float getStateTime() {
         return stateTime;
     }
-
     public boolean isExploding() {
         return isExploding;
     }
-
-
     public int getBlastRadius() {
         return blastRadius;
     }
-
     public void setBlastRadius(int blastRadius) {
         this.blastRadius = blastRadius;
     }
-
     public List<Coordinates> getBlastCoordinates() {
         return blastCoordinates;
     }
