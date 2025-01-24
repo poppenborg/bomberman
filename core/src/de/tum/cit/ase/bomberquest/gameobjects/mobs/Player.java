@@ -100,19 +100,19 @@ public class Player extends Mob implements Drawable {
         //Player can be controlled via the keyboard using the arrow keys OR the WASD as an alternative
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            xVelocity -= 2;
+            xVelocity -= 2.5f;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            xVelocity += 2;
+            xVelocity += 2.5f;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            yVelocity += 2;
+            yVelocity += 2.5f;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-            yVelocity -= 2;
+            yVelocity -= 2.5f;
         }
 
         getHitbox().setLinearVelocity(xVelocity, yVelocity);

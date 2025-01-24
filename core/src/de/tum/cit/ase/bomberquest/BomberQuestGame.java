@@ -119,7 +119,7 @@ public class BomberQuestGame extends Game {
         NativeFileChooserConfiguration nativeFileChooserConfiguration = new NativeFileChooserConfiguration();
         nativeFileChooserConfiguration.directory = Gdx.files.local("maps");
         nativeFileChooserConfiguration.title = "Choose a map file";
-        nativeFileChooserConfiguration.mimeFilter = "text/plain";
+        nativeFileChooserConfiguration.mimeFilter = "text/plain,application/octet-stream";
         nativeFileChooserConfiguration.intent = NativeFileChooserIntent.OPEN;
         NativeFileChooserCallback nativeFileChooserCallback = new NativeFileChooserCallback() {
             @Override
