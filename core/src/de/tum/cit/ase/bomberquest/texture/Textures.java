@@ -24,5 +24,6 @@ public class Textures {
     public static final TextureRegion BLASTRADIUS = SpriteSheet.ORIGINAL_BOMBERMAN.at(15, 2);
     /** Texture for Exit */
     public static final TextureRegion EXIT = SpriteSheet.ORIGINAL_BOMBERMAN.at(4, 12);
-
+    /** Texture for the SpeedPowerUp*/
+    public static final TextureRegion SPEED_POWERUP = SpriteSheet.ORIGINAL_BOMBERMAN.at(15, 4);
 }

@@ -29,6 +29,8 @@ public class Hud {
     private int bombNbr;
     /** The current nbr of Enemies */
     private int enemies;
+    /** The current movement speed */
+    private float movementSpeed;
 
     /**
      * Constructor for new HUD instance.
@@ -102,6 +104,12 @@ public class Hud {
         } else {
             font.draw(spriteBatch, "Blast Radius: " + blastRadius, 10, 30);
         }
+        //Movement - Speed
+        if (movementSpeed == 4.0) {
+            font.draw(spriteBatch, "MAXIMUM SPEED!!!", 10, 120); // if max is reached
+        } else {
+            font.draw(spriteBatch, "Movement Speed: " + movementSpeed, 10, 120);
+        }
 
         // Finish drawing
         spriteBatch.end();
@@ -138,5 +146,8 @@ public class Hud {
     }
     public void setEnemies(int enemies) {
         this.enemies = enemies;
+    }
+    public void setMovementSpeed(float movementSpeed) {
+        this.movementSpeed = movementSpeed;
     }
 }

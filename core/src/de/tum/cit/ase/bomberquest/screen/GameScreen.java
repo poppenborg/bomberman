@@ -113,6 +113,9 @@ public class GameScreen extends BaseScreen implements Screen {
         // load the remaning nbr of Enemies
         hud.setEnemies(map.getEnemies().size());
 
+        // load the current movement speed
+        hud.setMovementSpeed(map.getPlayer().getMovementSpeed());
+
         // update the timer
         if (deltaTime < 1) {
             timeLeft -= deltaTime;

@@ -8,6 +8,7 @@ import de.tum.cit.ase.bomberquest.audio.Soundeffect;
 import de.tum.cit.ase.bomberquest.gameobjects.powerups.BlastRadiusPowerUp;
 import de.tum.cit.ase.bomberquest.gameobjects.bombs.Bomb;
 import de.tum.cit.ase.bomberquest.gameobjects.powerups.BombNbrPowerUp;
+import de.tum.cit.ase.bomberquest.gameobjects.powerups.MovementSpeedPowerUp;
 import de.tum.cit.ase.bomberquest.gameobjects.powerups.PowerUp;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.texture.Animations;
@@ -35,7 +36,7 @@ public class Player extends Mob implements Drawable {
     private int blastRadius = 1;
     /** Initial number of bombs */
     private int bombNbr = 1;
-    /** Tadius of the player's hitbox. */
+    /** Radius of the player's hitbox. */
     private float radius;
     /** List of collected power-ups. */
     private List<PowerUp> powerUps = new ArrayList<>();
@@ -43,6 +44,13 @@ public class Player extends Mob implements Drawable {
     private boolean killed = false;
     /** Flag to ensure death sound is only played once. */
     private boolean soundWasPlayed = false;
+    /** Initial movement speed of the player.*/
+    private static final float MIN_MOVEMENTSPEED = 2.0f;
+    /** Maximum movement speed of the player.*/
+    private static final float MAX_MOVEMENTSPEED = 4.0f;
+    /** Movement speed of the player.*/
+    private float movementSpeed = MIN_MOVEMENTSPEED;
+
 
     /**
      * Constructs a Player at a given position on the game map.
@@ -100,19 +108,19 @@ public class Player extends Mob implements Drawable {
         //Player can be controlled via the keyboard using the arrow keys OR the WASD as an alternative
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            xVelocity -= 2.5f;
+            xVelocity -= movementSpeed;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            xVelocity += 2.5f;
+            xVelocity += movementSpeed;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            yVelocity += 2.5f;
+            yVelocity += movementSpeed;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-            yVelocity -= 2.5f;
+            yVelocity -= movementSpeed;
         }
 
         getHitbox().setLinearVelocity(xVelocity, yVelocity);
@@ -196,6 +204,18 @@ public class Player extends Mob implements Drawable {
         }
     }
 
+    /**
+     * Add the power-up to increase the player´s movement speed.
+     *
+     * @param movementSpeedPowerUp Number of MovementSpeed power-ups to add.
+     */
+    public void addMovementSpeedPowerUp(MovementSpeedPowerUp movementSpeedPowerUp) {
+        if (movementSpeed < MAX_MOVEMENTSPEED) {
+            powerUps.add(movementSpeedPowerUp);
+            this.increaseMovementSpeed();
+        }
+    }
+
     //Bombs
 
     /**
@@ -224,6 +244,17 @@ public class Player extends Mob implements Drawable {
     }
 
 
+    public boolean increaseMovementSpeed() {
+        if (movementSpeed >= MAX_MOVEMENTSPEED) {
+            this.movementSpeed = MAX_MOVEMENTSPEED;
+            return false;
+        } else {
+            this.movementSpeed += 0.5f;
+            return true;
+        }
+    }
+
+
     //Getter and Setters
     public int getBlastRadius() {
         return blastRadius;
@@ -237,6 +268,11 @@ public class Player extends Mob implements Drawable {
             this.blastRadius = 8;
         }
     }
+
+    public float getMovementSpeed() {
+        return movementSpeed;
+    }
+
     public int getBombNbr() {
         return bombNbr;
     }

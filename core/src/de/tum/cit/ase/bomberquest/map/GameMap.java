@@ -13,6 +13,7 @@ import de.tum.cit.ase.bomberquest.gameobjects.bombs.Bomb;
 import de.tum.cit.ase.bomberquest.gameobjects.flowers.Flowers;
 import de.tum.cit.ase.bomberquest.gameobjects.powerups.BlastRadiusPowerUp;
 import de.tum.cit.ase.bomberquest.gameobjects.powerups.BombNbrPowerUp;
+import de.tum.cit.ase.bomberquest.gameobjects.powerups.MovementSpeedPowerUp;
 import de.tum.cit.ase.bomberquest.gameobjects.walls.DestructibleWall;
 import de.tum.cit.ase.bomberquest.gameobjects.walls.IndestructibleWall;
 import de.tum.cit.ase.bomberquest.gameobjects.walls.Wall;
@@ -77,6 +78,8 @@ public class GameMap {
     private List<BombNbrPowerUp> bombNbrPowerUps = new ArrayList<>();
     /** Blast radius power-ups on the map */
     private List<BlastRadiusPowerUp> blastRadiusPowerUps = new ArrayList<>();
+    /** Movement speed power-ups on the map */
+    private List<MovementSpeedPowerUp> movementSpeedPowerUps = new ArrayList<>();
     /** Exit used on the map */
     private Exit exit;
     /** The time left in the Game. */
@@ -97,7 +100,7 @@ public class GameMap {
     public GameMap(BomberQuestGame game, FileHandle mapFile) {
         this.game = game;
         this.mapFile = mapFile;
-        this.timeLeft = 52;
+        this.timeLeft = 500;
         this.world = new World(Vector2.Zero, true);
         this.contactListener = new GameContactListener();
         world.setContactListener(contactListener);
@@ -134,6 +137,9 @@ public class GameMap {
             Coordinates entryCoordinate = possibleEntries.get((int) (Math.random() * possibleEntries.size()));
             this.exit = new Exit(world, entryCoordinate.getX(), entryCoordinate.getY());
         }
+        //Spawn movement speed power ups under a random DestructibleWall
+        addRandomMovementSpeedPowerUps(5);
+
         // Create a player with initial position at entrance (or 0, 0 if no entrance was specified)
         this.player = new Player(this.world, entrancePlayerCoordinates.getX(), entrancePlayerCoordinates.getY(), this);
     }
@@ -223,7 +229,51 @@ public class GameMap {
                 blastRadiusPowerUp.destroy(world);
             }
         }
+        for (MovementSpeedPowerUp movementSpeedPowerUp : movementSpeedPowerUps) {
+            if (movementSpeedPowerUp.isMarkedForRemoval() && !movementSpeedPowerUp.isTaken()) {
+                player.addMovementSpeedPowerUp(movementSpeedPowerUp);
+                movementSpeedPowerUp.destroy(world);
+            }
+        }
+
     }
+
+    /**
+     * Adds a specific number of movement speed power-ups under random destructible walls.
+     * Checks that no other power-ups are already placed under the same wall.
+     *
+     * @param count The number of power-ups to add to the map.
+     */
+    private void addRandomMovementSpeedPowerUps(int count) {
+        Random random = new Random();
+        List<DestructibleWall> availableWalls = new ArrayList<>(destructibleWalls);
+
+        for (int i = 0; i < count; i++) {
+            if (availableWalls.isEmpty()) {
+                break; // No more destructible walls to place power-ups
+            }
+
+            // random wall
+            int randomIndex = random.nextInt(availableWalls.size());
+            DestructibleWall selectedWall = availableWalls.get(randomIndex);
+
+            // Check if there is already a power-up under the wall
+            boolean powerUpExists = movementSpeedPowerUps.stream()
+                    .anyMatch(p -> p.getX() == selectedWall.getX() && p.getY() == selectedWall.getY());
+
+            if (!powerUpExists) {
+                // Set movement speed power-up
+                MovementSpeedPowerUp powerUp = new MovementSpeedPowerUp(
+                        world,
+                        selectedWall.getX(),
+                        selectedWall.getY()
+                );
+                movementSpeedPowerUps.add(powerUp);
+            }
+            availableWalls.remove(randomIndex);
+        }
+    }
+
 
     //Bombs
 
@@ -322,6 +372,9 @@ public class GameMap {
         }
         for (BlastRadiusPowerUp blastRadiusPowerUp : blastRadiusPowerUps) {
             allDrawables.add(blastRadiusPowerUp);
+        }
+        for (MovementSpeedPowerUp movementSpeedPowerUp : movementSpeedPowerUps) {
+            allDrawables.add(movementSpeedPowerUp);
         }
         allDrawables.add(this.exit);
         for (IndestructibleWall indestructibleWall : getIndestructibleWalls()) {
