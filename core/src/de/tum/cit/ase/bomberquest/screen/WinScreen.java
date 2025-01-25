@@ -30,7 +30,7 @@ public class WinScreen extends BaseScreen{
     public WinScreen(BomberQuestGame game) {
         super(game);
         // play victory sound effect
-        Soundeffect.WINN_SOUND.play();
+        Soundeffect.WINN_SOUND.play(Soundeffect.getVOLUME());
         // play winner music
         setMusicTrack(MusicTrack.WIN);
         getMusicTrack().play();
@@ -44,7 +44,7 @@ public class WinScreen extends BaseScreen{
         goToMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                Soundeffect.BUTTON_SOUN.play();
+                Soundeffect.BUTTON_SOUN.play(Soundeffect.getVOLUME());
                 game.goToMenu();
                 dispose();
             }

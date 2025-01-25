@@ -1,4 +1,4 @@
-package de.tum.cit.ase.bomberquest.gameobjects.Exits;
+package de.tum.cit.ase.bomberquest.gameobjects.exits;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;

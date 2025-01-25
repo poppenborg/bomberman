@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.gameobjects.*;
-import de.tum.cit.ase.bomberquest.gameobjects.Exits.Exit;
+import de.tum.cit.ase.bomberquest.gameobjects.exits.Exit;
 import de.tum.cit.ase.bomberquest.gameobjects.bombs.Bomb;
 import de.tum.cit.ase.bomberquest.gameobjects.flowers.Flowers;
 import de.tum.cit.ase.bomberquest.gameobjects.powerups.BlastRadiusPowerUp;
@@ -247,33 +247,33 @@ public class GameMap {
     private void addRandomMovementSpeedPowerUps(int count) {
         Random random = new Random();
         List<DestructibleWall> availableWalls = new ArrayList<>(destructibleWalls);
-
         for (int i = 0; i < count; i++) {
-            if (availableWalls.isEmpty()) {
-                break; // No more destructible walls to place power-ups
+            boolean wallFound = false;
+            while (!wallFound && !availableWalls.isEmpty()) {
+                // random wall
+                int randomIndex = random.nextInt(availableWalls.size());
+                DestructibleWall selectedWall = availableWalls.get(randomIndex);
+                availableWalls.remove(randomIndex);
+                // Check if there is already a power-up under the wall
+                boolean blastRadiusPowerUpAt = blastRadiusPowerUps.stream()
+                        .anyMatch(p -> p.getX() == selectedWall.getX() && p.getY() == selectedWall.getY());
+                boolean bombNbrPowerUpAt = bombNbrPowerUps.stream()
+                        .anyMatch(p -> p.getX() == selectedWall.getX() && p.getY() == selectedWall.getY());
+                boolean exitAt = exit.getX() == selectedWall.getX() && exit.getY() == selectedWall.getY();
+                boolean objectAt = blastRadiusPowerUpAt || bombNbrPowerUpAt || exitAt;
+                if (!objectAt) {
+                    wallFound = true;
+                    // Set movement speed power-up
+                    MovementSpeedPowerUp powerUp = new MovementSpeedPowerUp(
+                            world,
+                            selectedWall.getX(),
+                            selectedWall.getY()
+                    );
+                    movementSpeedPowerUps.add(powerUp);
+                }
             }
-
-            // random wall
-            int randomIndex = random.nextInt(availableWalls.size());
-            DestructibleWall selectedWall = availableWalls.get(randomIndex);
-
-            // Check if there is already a power-up under the wall
-            boolean powerUpExists = movementSpeedPowerUps.stream()
-                    .anyMatch(p -> p.getX() == selectedWall.getX() && p.getY() == selectedWall.getY());
-
-            if (!powerUpExists) {
-                // Set movement speed power-up
-                MovementSpeedPowerUp powerUp = new MovementSpeedPowerUp(
-                        world,
-                        selectedWall.getX(),
-                        selectedWall.getY()
-                );
-                movementSpeedPowerUps.add(powerUp);
-            }
-            availableWalls.remove(randomIndex);
         }
     }
-
 
     //Bombs
 

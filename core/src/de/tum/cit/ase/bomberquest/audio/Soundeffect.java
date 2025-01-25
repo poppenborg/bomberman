@@ -1,7 +1,6 @@
 package de.tum.cit.ase.bomberquest.audio;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
 import javax.sound.midi.Soundbank;
@@ -40,10 +39,10 @@ public enum Soundeffect {
     /**
      * Play this sound effect.
      * This will not stop other sound effects from playing.
-     * Sets the Volume to the general volume
+     * The Volume can be chosen idividually
      */
-    public void play() {
-        this.sound.play(getVOLUME());
+    public void play(float volume) {
+        this.sound.play(volume);
     }
 
     // Setters and Getters

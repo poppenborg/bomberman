@@ -19,7 +19,7 @@ import java.util.TimerTask;
 /**
  * This class represents the bomb in the game
  * When a bomb was created it remains 3 seconds on the map
- * Afterwards an explosion is created which destroys all destructible walls and kills all enemies and players in its range
+ * Afterward an explosion is created which destroys all destructible walls and kills all enemies and players in its range
  */
 public class Bomb extends GameObject {
 
@@ -163,7 +163,7 @@ public class Bomb extends GameObject {
         calculateBlastCoordinates(); //calculate the explosion radius
 
         // Sound effect
-        Soundeffect.EXPLODS_SOUND.play();
+        Soundeffect.EXPLODS_SOUND.play(0.5f);
 
         //Destroy Destructible walls.
 
@@ -203,7 +203,7 @@ public class Bomb extends GameObject {
                 if (coordinates.getX() == enemyXCoordinate && coordinates.getY() == enemyYCoordinate) {
                     enemy.setKilled(true);
                     killedEnemies.add(enemy);
-                    Soundeffect.ENEMYDEATH_SOUN.play();
+                    Soundeffect.ENEMYDEATH_SOUN.play(Soundeffect.getVOLUME());
 
                 }
             }

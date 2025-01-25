@@ -52,7 +52,7 @@ public class MenuScreen extends BaseScreen implements Screen {
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Soundeffect.BUTTON_SOUN.play();
+                Soundeffect.BUTTON_SOUN.play(Soundeffect.getVOLUME());
                 if (game.getMap() == null || game.getMap().getMapFile() == null) {
                     game.setMap(new GameMap(game, new MapLoader().loadRandomMap())); // if no map was chosen a random one is selected
                 }
@@ -65,7 +65,7 @@ public class MenuScreen extends BaseScreen implements Screen {
         mapButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                Soundeffect.BUTTON_SOUN.play();
+                Soundeffect.BUTTON_SOUN.play(Soundeffect.getVOLUME());
                 game.openFileChooser();
             }
         });

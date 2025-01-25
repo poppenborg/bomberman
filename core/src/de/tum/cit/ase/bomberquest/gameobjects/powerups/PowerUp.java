@@ -69,7 +69,7 @@ public abstract class PowerUp extends GameObject {
     public void setMarkedForRemoval(boolean markedForRemoval) {
         this.markedForRemoval = markedForRemoval;
         // Play sound when power-up is collected
-        Soundeffect.POWERUP_SOUND.play();
+        Soundeffect.POWERUP_SOUND.play(Soundeffect.getVOLUME());
     }
     public boolean isTaken() {
         return taken;

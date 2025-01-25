@@ -35,7 +35,7 @@ public class LooseScreen extends BaseScreen{
         goToMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                Soundeffect.BUTTON_SOUN.play();
+                Soundeffect.BUTTON_SOUN.play(Soundeffect.getVOLUME());
                 game.goToMenu();
                 dispose();
             }

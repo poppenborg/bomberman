@@ -45,7 +45,7 @@ public class PauseScreen extends BaseScreen implements Screen {
         goResumeGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Soundeffect.BUTTON_SOUN.play();
+                Soundeffect.BUTTON_SOUN.play(Soundeffect.getVOLUME());
                 game.goToGame(); // Change to the game screen when button is pressed
                 game.getMap().setTimeLeft(timeLeft);
                 dispose();
@@ -57,7 +57,7 @@ public class PauseScreen extends BaseScreen implements Screen {
         newMapButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                Soundeffect.BUTTON_SOUN.play();
+                Soundeffect.BUTTON_SOUN.play(Soundeffect.getVOLUME());
                 game.openFileChooser();
             }
         });

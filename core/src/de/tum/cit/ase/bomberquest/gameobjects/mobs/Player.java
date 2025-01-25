@@ -133,7 +133,7 @@ public class Player extends Mob implements Drawable {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && (timeSinceLastBomb >= BOMB_COOLDOWN || gameMap.getBombs().size() < bombNbr)) {
             // Create Sound Effect
-            Soundeffect.DROP_BOMB_SOUND.play();
+            Soundeffect.DROP_BOMB_SOUND.play(Soundeffect.getVOLUME());
             dropBomb();
             timeSinceLastBomb = 0f;
         }
@@ -288,6 +288,6 @@ public class Player extends Mob implements Drawable {
     public void setKilled(boolean killed) {
         this.killed = killed;
         // Play sound effect
-        Soundeffect.DIE_SOUND.play();
+        Soundeffect.DIE_SOUND.play(5f);
     }
 }
