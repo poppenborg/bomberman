@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.gameobjects.*;
-import de.tum.cit.ase.bomberquest.gameobjects.exits.Exit;
+import de.tum.cit.ase.bomberquest.gameobjects.Exits.Exit;
 import de.tum.cit.ase.bomberquest.gameobjects.bombs.Bomb;
 import de.tum.cit.ase.bomberquest.gameobjects.flowers.Flowers;
 import de.tum.cit.ase.bomberquest.gameobjects.powerups.BlastRadiusPowerUp;

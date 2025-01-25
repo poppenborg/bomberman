@@ -1,7 +1,7 @@
 package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.physics.box2d.*;
-import de.tum.cit.ase.bomberquest.gameobjects.exits.Exit;
+import de.tum.cit.ase.bomberquest.gameobjects.Exits.Exit;
 import de.tum.cit.ase.bomberquest.gameobjects.powerups.PowerUp;
 import de.tum.cit.ase.bomberquest.gameobjects.Coordinates;
 import de.tum.cit.ase.bomberquest.gameobjects.mobs.Enemy;
