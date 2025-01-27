@@ -137,9 +137,6 @@ public class Player extends Mob implements Drawable {
             dropBomb();
             timeSinceLastBomb = 0f;
         }
-
-        //Update bombs
-
     }
 
     /**
@@ -259,32 +256,18 @@ public class Player extends Mob implements Drawable {
     public int getBlastRadius() {
         return blastRadius;
     }
-    public void setBlastRadius(int blastRadius) {
-        if (blastRadius > 0 && blastRadius <= 8) {
-            this.blastRadius = blastRadius;
-        } else if (blastRadius < 0) {
-            this.blastRadius = 1;
-        } else if (blastRadius > 8) {
-            this.blastRadius = 8;
-        }
-    }
-
     public float getMovementSpeed() {
         return movementSpeed;
     }
-
     public int getBombNbr() {
         return bombNbr;
     }
-
     public float getRadius() {
         return radius;
     }
-
     public boolean isKilled() {
         return killed;
     }
-
     public void setKilled(boolean killed) {
         this.killed = killed;
         // Play sound effect

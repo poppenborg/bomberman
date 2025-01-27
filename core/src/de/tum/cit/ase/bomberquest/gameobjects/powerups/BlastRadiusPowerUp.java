@@ -45,10 +45,4 @@ public class BlastRadiusPowerUp extends PowerUp {
      * @param coordinates the x- and y-coordinate to check
      * @return true if a blastRadiusPowerUp exists at the given coordinates, false otherwise
      */
-//    public boolean isBlastRadiusPowerUpAt(Coordinates coordinates) {
-//        if (this.getX() == coordinates.getX() && this.getY() == coordinates.getY()) {
-//            return true;
-//        }
-//        return false;
-//    }
 }

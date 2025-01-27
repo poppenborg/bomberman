@@ -14,8 +14,6 @@ public class Enemy extends Mob implements Drawable {
 
     /** Radius of the circular body */
     private float radius;
-    private float rectangleWidth;
-    private float rectangleHeight;
     /** Indicates whether the enemy has been killed. */
     private boolean killed = false;
 
@@ -98,12 +96,6 @@ public class Enemy extends Mob implements Drawable {
     // Getters and Setters
     public float getRadius() {
         return radius;
-    }
-    public float getRectangleWidth() {
-        return rectangleWidth;
-    }
-    public float getRectangleHeight() {
-        return rectangleHeight;
     }
     public boolean isKilled() {
         return killed;

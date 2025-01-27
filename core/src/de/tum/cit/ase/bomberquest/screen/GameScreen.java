@@ -212,11 +212,4 @@ public class GameScreen extends BaseScreen implements Screen {
         hud.resize(width, height);
     }
 
-    /** Cleans up resources when the game is disposed. */
-//    @Override
-//    public void dispose() {
-//        hud.dispose();
-//        map.dispose();
-//    }
-
 }

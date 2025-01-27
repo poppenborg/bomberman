@@ -38,11 +38,14 @@ public class Bomb extends GameObject {
     /** Coordinates of the explosion animation */
     private List<Coordinates> blastCoordinates = new ArrayList<>();
 
-    // currently not used, tried to solve the problem of wrong animation for destructible walls
-    private float maxUpCoordinate;
-    private float maxDownCoordinate;
-    private float maxLeftCoordinate;
-    private float maxRightCoordinate;
+    /** Maximum coordinate of the explosion in the horizontal direction */
+    private float maxX = 0;
+    /** Minimum coordinate of the explosion in the horizontal direction */
+    private float minX = 0;
+    /** Maximum coordinate of the explosion in the vertical direction */
+    private float maxY = 0;
+    /** Minimum coordinate of the explosion in the vertical direction */
+    private float minY = 0;
 
     /**
      * Creates a new Bomb object at the specified coordinates.
@@ -82,48 +85,25 @@ public class Bomb extends GameObject {
      */
     public TextureRegion getAppearanceForCoordinate(Coordinates coord) {
         // Center explosion
-        if (coord.equals(new Coordinates(getX(), getY()))) {
+        if (coord.getX() == getX() && coord.getY() == getY()) {
             return Animations.BOMB_CENTER_EXPLOSION.getKeyFrame(stateTime, false);
-        }
-
-       // Vertical explosion
-        if (coord.getX() == getX()) {
-            if (coord.getY() > getY() && coord.getY() < getY() + blastRadius) { // Up
-                return Animations.BOMB_BLAST_VERTICAL.getKeyFrame(stateTime, false);
-            }
-            if (coord.getY() < getY() && coord.getY() > getY() - blastRadius) { // Down
-                return Animations.BOMB_BLAST_VERTICAL.getKeyFrame(stateTime, false);
-            }
-        }
-
-        // Horizontal explosion
-        if (coord.getY() == getY()) {
-            if (coord.getX() > getX() && coord.getX() < getX() + blastRadius) { // Right
+        } else if (coord.getY() == getY()) {
+            if (coord.getX() == maxX) {
+                return Animations.BOMB_BLAST_END_RIGHT.getKeyFrame(stateTime, false);
+            } else if (coord.getX() == minX) {
+                return Animations.BOMB_BLAST_END_LEFT.getKeyFrame(stateTime, false);
+            } else {
                 return Animations.BOMB_BLAST_HORIZONTAL.getKeyFrame(stateTime, false);
             }
-            if (coord.getX() < getX() && coord.getX() > getX() - blastRadius) { // Left
-                return Animations.BOMB_BLAST_HORIZONTAL.getKeyFrame(stateTime, false);
+        } else {
+            if (coord.getY() == maxY) {
+                return Animations.BOMB_BLAST_END_UP.getKeyFrame(stateTime, false);
+            } else if (coord.getY() == minY) {
+                return Animations.BOMB_BLAST_END_DOWN.getKeyFrame(stateTime, false);
+            } else {
+                return Animations.BOMB_BLAST_VERTICAL.getKeyFrame(stateTime, false);
             }
         }
-
-        // Endpoints of vertical explosion
-        if (coord.getX() == getX() && coord.getY() == getY() + blastRadius) { // End-Up
-            return Animations.BOMB_BLAST_END_UP.getKeyFrame(stateTime, false);
-        }
-        if (coord.getX() == getX() && coord.getY() == getY() - blastRadius) { // End-Down
-            return Animations.BOMB_BLAST_END_DOWN.getKeyFrame(stateTime, false);
-        }
-
-        // Endpoints of horizontal explosion
-        if (coord.getX() == getX() + blastRadius && coord.getY() == getY()) { // End-Right
-            return Animations.BOMB_BLAST_END_RIGHT.getKeyFrame(stateTime, false);
-        }
-        if (coord.getX() == getX() - blastRadius && coord.getY() == getY()) { // End-Left
-            return Animations.BOMB_BLAST_END_LEFT.getKeyFrame(stateTime, false);
-        }
-
-        // Fallback (just in case)
-        return Animations.BOMB_CENTER_EXPLOSION.getKeyFrame(stateTime, false);
     }
 
 
@@ -234,7 +214,7 @@ public class Bomb extends GameObject {
      * Calculate the blast coordinates in all 4 directions
      */
     private void calculateBlastCoordinates() {
-        blastCoordinates.clear();
+        this.blastCoordinates.clear();
 
         // Central explosion
         blastCoordinates.add(new Coordinates(getX(), getY()));
@@ -252,23 +232,23 @@ public class Bomb extends GameObject {
      * @param dy initial value of the vertical direction
      */
     private void addBlastCoordinatesInDirection(int dx, int dy) {
-        for (int i = 0; i <= blastRadius; i++) {
+        for (int i = 1; i <= blastRadius; i++) {
             float newX = getX() + i * dx;
             float newY = getY() + i * dy;
 
             // stop the animation at a wall if there are walls within the blast radius
 
             if (gameMap.isIndestructibleWallAt(newX, newY)) {
-                setMaxCoordinate(dx, dy, newX, newY);
+                setMaxCoordinate(dx, dy, getX() + (i - 1) * dx, getY() + (i - 1) * dy);
                 break;
             }
 
             blastCoordinates.add(new Coordinates(newX, newY));
 
-            /*if (gameMap.isDestructibleWallAt(newX, newY)) {
+            if (gameMap.isDestructibleWallAt(newX, newY)) {
                 setMaxCoordinate(dx, dy, newX, newY);
                 break;
-            }*/
+            }
 
             if (i == blastRadius) {
                 setMaxCoordinate(dx, dy, newX, newY);
@@ -276,22 +256,29 @@ public class Bomb extends GameObject {
         }
     }
 
-    // currently not used, tried to solve the problem of wrong animation for destructible walls
+    /**
+     * Set the maximum value of the explosion coordinates in the respective direction
+     *
+     * @param dx Horizontal direction
+     * @param dy Vertical direction
+     * @param newX Current x coordinate to be set as maximum
+     * @param newY Current y coordinate to be set as maximum
+     */
     public void setMaxCoordinate(int dx, int dy, float newX, float newY) {
         if (dx == 0) {
             if (dy > 0) {
-                this.maxUpCoordinate = newY;
+                this.maxY = newY;
             }
             if (dy < 0) {
-                this.maxDownCoordinate = newY;
+                this.minY = newY;
             }
         }
         if (dy == 0) {
             if (dx > 0) {
-                this.maxRightCoordinate = newX;
+                this.maxX = newX;
             }
             if (dx < 0) {
-                this.maxLeftCoordinate = newX;
+                this.minX = newX;
             }
         }
     }
@@ -299,15 +286,6 @@ public class Bomb extends GameObject {
     //Getters and Setter
     public boolean isToBeRemoved() {
         return toBeRemoved;
-    }
-    public float getStateTime() {
-        return stateTime;
-    }
-    public boolean isExploding() {
-        return isExploding;
-    }
-    public int getBlastRadius() {
-        return blastRadius;
     }
     public void setBlastRadius(int blastRadius) {
         this.blastRadius = blastRadius;

@@ -96,6 +96,4 @@ public class DestructibleWall extends Wall {
     public void setDestroyed(boolean destroyed) {
         this.destroyed = destroyed;
     }
-
-
 }

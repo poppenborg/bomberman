@@ -44,10 +44,4 @@ public class BombNbrPowerUp extends PowerUp {
      * @param coordinates the x- and y-coordinate to check
      * @return true if a bombNbrPowerUp exists at the given coordinates, false otherwise
      */
-//    public boolean isBombNbrPowerUpAt(Coordinates coordinates) {
-//        if (this.getX() == coordinates.getX() && this.getY() == coordinates.getY()) {
-//            return true;
-//        }
-//        return false;
-//    }
 }

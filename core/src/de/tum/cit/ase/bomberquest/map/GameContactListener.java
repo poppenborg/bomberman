@@ -65,8 +65,9 @@ public class GameContactListener implements ContactListener {
         if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof Enemy || bodyA.getUserData() instanceof Enemy && bodyB.getUserData() instanceof Player) {
             this.playerEnemyCollision = false;
         }
-        // check if the 2 colliding bodies are Player and PowerUp
-        else if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof PowerUp || bodyA.getUserData() instanceof PowerUp && bodyB.getUserData() instanceof Player) {
+        // check if the 2 colliding bodies are Player and Exit
+        if (bodyA.getUserData() instanceof Player && bodyB.getUserData() instanceof Exit || bodyA.getUserData() instanceof Exit && bodyB.getUserData() instanceof Player) {
+            this.exitReached = false;
         }
     }
 

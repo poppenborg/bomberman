@@ -223,7 +223,6 @@ public class GameMap {
             }
         }
         for (BlastRadiusPowerUp blastRadiusPowerUp : blastRadiusPowerUps) {
-//            if (blastRadiusPowerUp.isMarkedForRemoval() && !blastRadiusPowerUp.isTaken() && blastRadiusPowerUp.isBlastRadiusPowerUpAt(contactListener.getPowerUpCoordinates()) && contactListener.getPowerUpCoordinates() != null) {
             if (blastRadiusPowerUp.isMarkedForRemoval() && !blastRadiusPowerUp.isTaken()) {
                 player.addBlastRadiusPowerUp(blastRadiusPowerUp);
                 blastRadiusPowerUp.destroy(world);
@@ -392,49 +391,6 @@ public class GameMap {
         allDrawables.add(player);
         return allDrawables;
     }
-
-    /**
-     * Testswhether the player collides with an enemy
-     * Note: method is based on calculating distances, different shapes need different calculations
-     *
-     * @return true if the player collides with the enemy
-     */
-//    public boolean collisionPlayerEnemy() {
-//        for (Enemy enemy : enemies) {
-//            // calculate the euclidean distance
-//            double xDistance = player.getX() - enemy.getX();
-//            double yDistance = player.getY() - enemy.getY();
-//            double squaredDistance = Math.pow(xDistance, 2.0f) + Math.pow(yDistance, 2f);
-//            double distance = Math.sqrt(squaredDistance);
-//            // objects overlap if the distance is smaller than the 2 radii of the circles
-//            if (distance < (player.getRadius() + enemy.getRadius())) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//    // alternative method if one of the colliding objects is a rectangle
-//    public boolean circleRectangle() {
-//        for (Enemy enemy : enemies) {
-//            // calculate rectangle edges
-//            float xLeft = enemy.getX() - enemy.getRectangleWidth() / 2f;
-//            float xRight = enemy.getX() + enemy.getRectangleWidth() / 2f;
-//            float yLeft = enemy.getY() - enemy.getRectangleHeight() / 2f;
-//            float yRight = enemy.getY() + enemy.getRectangleHeight() / 2f;
-//            // calculate the closest point of the rectangle to circle
-//            float xClosest = Math.max(xLeft, Math.min(xRight, player.getX()));
-//            float yClosest = Math.max(yLeft, Math.min(yRight, player.getY()));
-//            // calculate the euclidean distance between the closest point of the rectangle and the circle center
-//            double xDistance = player.getX() - xClosest;
-//            double yDistance = player.getY() - yClosest;
-//            double distance = Math.sqrt(Math.pow(xDistance, 2f) + Math.pow(yDistance, 2f));
-//            // objects overlap if the distance is smaller than the radius of the circle
-//            if (distance < player.getRadius()) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     /** Clean up resources when the game is disposed. */
     public void dispose() {
