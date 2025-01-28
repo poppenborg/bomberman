@@ -4,6 +4,7 @@ This project is a Java application providing a Bomberman-style game made by Leon
 
 # Code structure:
 
+
 scr/de/tum/cit/ase/bomberquest/
 ├── BomberQuestGame                 # Core of the Bomber Quest game, manages the screens and global resources.
 ├── audio/
@@ -49,7 +50,11 @@ scr/de/tum/cit/ase/bomberquest/
     ├── SpriteSheet                 # Enum for all spritesheets used in the game, provides helper methods for grabbing texture regions.
     └── Textures                    # All texture constants used in the game
 
+
+
 # How to run the game:
+
+You can run the game on MacOS, Windows and Linus by selecting the respective "Run Game" application for you system.
 
 When running the game, the user is first greeted by the menu screen. Here the user can press three buttons. The first one will select a random map and start the game. With the second button the player will be forwarded to the map folder where he can choose a map himself. After choosing a map the game starts. With the third button the user can end the application.
 
@@ -66,3 +71,5 @@ Upon winning or losing the game – according to the logic of the project work �
 Besides a power-up that increases the number of bombs the player can drop simultaneously and another one that increases the blast radius of the explosions there is also a power-up that increases the speed of the player. Up to five instances (dependent on the amount of free destructible walls) of this power-up are placed randomly underneath existing destructible walls. After the player has collected four speed power-ups the maximum speed is reached, collecting further speed power-ups won´t increase the player’s speed.
 
 Besides the required sound effects there is also one for pressing buttons in the different screens.
+
+
