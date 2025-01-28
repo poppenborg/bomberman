@@ -1,6 +1,6 @@
 # Bomber Quest
 
-This project is a Java application providing a Bomberman-style made by Leonard Poppenborg and Florian Janner.
+This project is a Java application providing a Bomberman-style game made by Leonard Poppenborg and Florian Janner.
 
 # Code structure:
 

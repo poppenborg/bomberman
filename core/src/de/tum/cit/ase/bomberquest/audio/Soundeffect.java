@@ -12,6 +12,9 @@ import javax.sound.midi.Soundbank;
  */
 public enum Soundeffect {
 
+
+
+
     /** Various sound effects for various occasions */
     WINN_SOUND("winSound.wav"),
     DIE_SOUND("dieSound.wav"),

@@ -271,6 +271,6 @@ public class Player extends Mob implements Drawable {
     public void setKilled(boolean killed) {
         this.killed = killed;
         // Play sound effect
-        Soundeffect.DIE_SOUND.play(5f);
+        Soundeffect.DIE_SOUND.play(Soundeffect.getVOLUME());
     }
 }

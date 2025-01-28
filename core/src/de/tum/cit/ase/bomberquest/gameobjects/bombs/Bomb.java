@@ -143,7 +143,7 @@ public class Bomb extends GameObject {
         calculateBlastCoordinates(); //calculate the explosion radius
 
         // Sound effect
-        Soundeffect.EXPLODS_SOUND.play(0.5f);
+        Soundeffect.EXPLODS_SOUND.play(0.2f);
 
         //Destroy Destructible walls.
 
