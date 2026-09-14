@@ -100,7 +100,7 @@ public class GameMap {
     public GameMap(BomberQuestGame game, FileHandle mapFile) {
         this.game = game;
         this.mapFile = mapFile;
-        this.timeLeft = 180;
+        this.timeLeft = 360;
         this.world = new World(Vector2.Zero, true);
         this.contactListener = new GameContactListener();
         world.setContactListener(contactListener);
